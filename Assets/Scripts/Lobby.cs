@@ -35,6 +35,7 @@ public class ConnectionManager : MonoBehaviour
         m_NetworkManager = GetComponent<NetworkManager>();
         m_NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
         m_NetworkManager.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
+        m_NetworkManager.OnClientDisconnectCallback += OnClientDisconnect;
         await UnityServices.InitializeAsync();
         
         username.onValueChanged.AddListener(onUsernameSet);
@@ -60,6 +61,17 @@ public class ConnectionManager : MonoBehaviour
     private void onSessionNameSet(string value)
     {
         _sessionName = value;
+    }
+    
+    private async void OnClientDisconnect(ulong clientId)
+    {
+        if (clientId != m_NetworkManager.LocalClientId && SceneManager.GetActiveScene().name == "Battle")
+        {
+            await _session.LeaveAsync();
+            AuthenticationService.Instance.SignOut();
+            SceneManager.LoadScene("Lobby");
+        }
+        
     }
 
     private void OnSessionOwnerPromoted(ulong sessionOwnerPromoted)
@@ -118,6 +130,7 @@ public class ConnectionManager : MonoBehaviour
        {
            _state = ConnectionState.Disconnected;
            Debug.LogException(e);
+           AuthenticationService.Instance.SignOut();
            statusText.text = "Failed to connect. Error: " + e;
            username.gameObject.SetActive(true);
            sessionName.gameObject.SetActive(true);

@@ -25,14 +25,14 @@ public class BoardManager : NetworkBehaviour
         
     }
         
-    struct DamageInstances : INetworkSerializeByMemcpy
+    struct DamageInstance
     {
-        public List<String> Names;
-        public List<Player.PlayerId> ID;
-        public List<int> Damage;
-        public List<List<Tuple<int, int>>> Positions;
+        public String Names;
+        public Player.PlayerId ID;
+        public int Damage;
+        public List<Tuple<int, int>> Positions;
 
-        public DamageInstances(List<string> names, List<Player.PlayerId> id, List<int> damage, List<List<Tuple<int, int>>> positions)
+        public DamageInstance(string names, Player.PlayerId id, int damage, List<Tuple<int, int>> positions)
         {
             Names = names;
             ID = id;
@@ -41,14 +41,14 @@ public class BoardManager : NetworkBehaviour
         }
     }
 
-    struct DefenseInstances
+    struct DefenseInstance
     {
-        public List<String> Names;
-        public List<Player.PlayerId> ID;
-        public List<int> Defense;
-        public List<List<Tuple<int, int>>> Positions;
+        public String Names;
+        public Player.PlayerId ID;
+        public int Defense;
+        public List<Tuple<int, int>> Positions;
 
-        public DefenseInstances(List<string> names, List<Player.PlayerId> id, List<int> defense, List<List<Tuple<int, int>>> positions)
+        public DefenseInstance(string names, Player.PlayerId id, int defense, List<Tuple<int, int>> positions)
         {
             Names = names;
             ID = id;
@@ -57,18 +57,17 @@ public class BoardManager : NetworkBehaviour
         }
     }
 
-    struct Units
+    struct Unit
     {
-        public List<String> Names;
-        public List<Player.PlayerId> ID;
-        public List<int> Health;
-        public List<int> Damage;
-        public List<int> Movement;
-        public List<List<Tuple<int, int>>> AttackPositions;
-        public List<Tuple<int, int>> Positions;
+        public String Names;
+        public Player.PlayerId ID;
+        public int Health;
+        public int Damage;
+        public int Movement;
+        public List<Tuple<int, int>> AttackPositions;
+        public Tuple<int, int> Position;
 
-
-        public Units(List<string> names, List<Player.PlayerId> id, List<int> health, List<int> damage, List<int> movement, List<List<Tuple<int, int>>> attackPositions, List<Tuple<int, int>> positions)
+        public Unit(string names, Player.PlayerId id, int health, int damage, int movement, List<Tuple<int, int>> attackPositions, Tuple<int, int> position)
         {
             Names = names;
             ID = id;
@@ -76,16 +75,16 @@ public class BoardManager : NetworkBehaviour
             Damage = damage;
             Movement = movement;
             AttackPositions = attackPositions;
-            Positions = positions;
+            Position = position;
         }
     }
 
     private PlayerBoard player1Board;
     private PlayerBoard player2Board;
 
-    private DamageInstances damageInstances;
-    private DefenseInstances defenseInstances;
-    private Units units;
+    private List<Unit> unitsList;
+    private List<DamageInstance> damageInstances;
+    private List<DefenseInstance> defenseInstances;
 
     [Header("Board References")] 
     [SerializeField]
@@ -93,7 +92,7 @@ public class BoardManager : NetworkBehaviour
     [SerializeField] 
     private GameObject player2BoardGameObject;
 
-    private LayerMask tileLayer;
+    [SerializeField] private LayerMask tileLayer;
     private Camera cam;
 
     public Tuple<int, int> CurrentSelectedTile;
@@ -112,7 +111,7 @@ public class BoardManager : NetworkBehaviour
             Destroy(this);
         }
 
-        select = InputSystem.actions.FindAction("Attack");
+        select = InputSystem.actions.FindAction("Click");
 
         cam = Camera.main;
     }
@@ -126,33 +125,7 @@ public class BoardManager : NetworkBehaviour
         player2Board = new PlayerBoard(new GameObject[3,3],
             new GameObject[3,3]
         );
-
-        damageInstances = new DamageInstances
-        {
-            Names = new List<string>(),
-            ID = new List<Player.PlayerId>(),
-            Damage = new List<int>(),
-            Positions = new List<List<Tuple<int, int>>>()
-        };
-
-        defenseInstances = new DefenseInstances
-        {
-            Names = new List<string>(),
-            ID = new List<Player.PlayerId>(),
-            Defense = new List<int>(),
-            Positions = new List<List<Tuple<int, int>>>()
-        };
-
-        units = new Units
-        {
-            Names = new List<string>(),
-            ID = new List<Player.PlayerId>(),
-            Health = new List<int>(),
-            Damage = new List<int>(),
-            Movement = new List<int>(),
-            AttackPositions = new List<List<Tuple<int, int>>>(),
-            Positions = new List<Tuple<int, int>>()
-        };
+        
 
         int childIndex = 1;
         for (int i = 0; i < 3; i++)
@@ -190,8 +163,9 @@ public class BoardManager : NetworkBehaviour
 
     public void Update()
     {
-        if (select.IsPressed())
+        if (Input.GetMouseButtonDown(0))
         {
+            
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             

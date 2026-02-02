@@ -26,15 +26,11 @@ public class GameManager : NetworkBehaviour
         
         playerId = Player.AssignPlayerID();
 
-        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
+        
 
     }
 
-    private void OnClientDisconnect(ulong clientId)
-    {
-        NetworkManager.Singleton.gameObject.GetComponent<ConnectionManager>()._session.LeaveAsync();
-        SceneManager.LoadScene("Lobby");
-    }
+    
 
     //In this instance, because this scene is loaded using the scene manager, Start is actually called before OnNetworkSpawn,
     //keep this in mind when considering execution order.
