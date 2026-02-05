@@ -1,5 +1,6 @@
 using System;
 using TMPro;
+using Unity.Entities;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,6 +8,10 @@ using UnityEngine.UI;
 
 public class GameManager : NetworkBehaviour
 {
+
+    [SerializeField] private GameObject playerHead;
+    private GameObject headInstance;
+    private NetworkObject headInstanceNO;
 
     public static GameManager instance;
 
@@ -36,8 +41,13 @@ public class GameManager : NetworkBehaviour
     //keep this in mind when considering execution order.
     public override void OnNetworkSpawn()
     {
+
+        headInstance = Instantiate(playerHead);
+
+        headInstanceNO = headInstance.GetComponent<NetworkObject>();
         
-       
+        headInstanceNO.Spawn(false);
+
     }
 
     private void Start()

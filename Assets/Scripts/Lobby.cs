@@ -94,7 +94,7 @@ public class ConnectionManager : MonoBehaviour
         
         if (m_NetworkManager.ConnectedClientsList.Count == 2)
         {
-            m_NetworkManager.SceneManager.LoadScene("Battle", LoadSceneMode.Single);
+            m_NetworkManager.SceneManager.LoadScene("Battle2", LoadSceneMode.Single);
         }
     }
     

@@ -57,11 +57,11 @@ public class TurnManager : NetworkBehaviour
 
         if (turnState == TurnState.Player1Turn)
         {
-            turnText.text = GameManager.instance.playerId == Player.PlayerId.Player1 ? "Your Turn" : "Enemy Turn";
+            turnText.text = GameManager.instance.playerId == Player.PlayerId.Player1 ? "Make Your Move!" : "Waiting...";
         }
         else
         {
-            turnText.text = GameManager.instance.playerId == Player.PlayerId.Player2 ? "Your Turn" : "Enemy Turn";
+            turnText.text = GameManager.instance.playerId == Player.PlayerId.Player2 ? "Make Your Move!" : "Waiting...";
         }
         
     }
