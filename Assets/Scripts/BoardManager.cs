@@ -25,41 +25,41 @@ public class BoardManager : NetworkBehaviour
         
     }
         
-    struct DamageInstance
+    public struct DamageInstance
     {
-        public String Names;
+        public String Name;
         public Player.PlayerId ID;
         public int Damage;
         public List<Tuple<int, int>> Positions;
 
-        public DamageInstance(string names, Player.PlayerId id, int damage, List<Tuple<int, int>> positions)
+        public DamageInstance(string name, Player.PlayerId id, int damage, List<Tuple<int, int>> positions)
         {
-            Names = names;
+            Name = name;
             ID = id;
             Damage = damage;
             Positions = positions;
         }
     }
 
-    struct DefenseInstance
+    public struct DefenseInstance
     {
-        public String Names;
+        public String Name;
         public Player.PlayerId ID;
         public int Defense;
         public List<Tuple<int, int>> Positions;
 
-        public DefenseInstance(string names, Player.PlayerId id, int defense, List<Tuple<int, int>> positions)
+        public DefenseInstance(string name, Player.PlayerId id, int defense, List<Tuple<int, int>> positions)
         {
-            Names = names;
+            Name = name;
             ID = id;
             Defense = defense;
             Positions = positions;
         }
     }
 
-    struct Unit
+    public struct Unit
     {
-        public String Names;
+        public String Name;
         public Player.PlayerId ID;
         public int Health;
         public int Damage;
@@ -67,9 +67,9 @@ public class BoardManager : NetworkBehaviour
         public List<Tuple<int, int>> AttackPositions;
         public Tuple<int, int> Position;
 
-        public Unit(string names, Player.PlayerId id, int health, int damage, int movement, List<Tuple<int, int>> attackPositions, Tuple<int, int> position)
+        public Unit(string name, Player.PlayerId id, int health, int damage, int movement, List<Tuple<int, int>> attackPositions, Tuple<int, int> position)
         {
-            Names = names;
+            Name = name;
             ID = id;
             Health = health;
             Damage = damage;
@@ -82,9 +82,9 @@ public class BoardManager : NetworkBehaviour
     private PlayerBoard player1Board;
     private PlayerBoard player2Board;
 
-    private List<Unit> unitsList;
-    private List<DamageInstance> damageInstances;
-    private List<DefenseInstance> defenseInstances;
+    public List<Unit> unitsList;
+    public List<DamageInstance> damageInstances;
+    public List<DefenseInstance> defenseInstances;
 
     [Header("Board References")] 
     [SerializeField]
@@ -145,6 +145,11 @@ public class BoardManager : NetworkBehaviour
 
             
         }
+
+        unitsList = new List<Unit>();
+        damageInstances = new List<DamageInstance>();
+        defenseInstances = new List<DefenseInstance>();
+
     }
 
     public override void OnNetworkSpawn()
@@ -169,6 +174,7 @@ public class BoardManager : NetworkBehaviour
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             
+            //If we hit something.
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, tileLayer))
             {
                 GameObject[,] arrayToCheck;
@@ -181,21 +187,27 @@ public class BoardManager : NetworkBehaviour
                     arrayToCheck = player2Board.TileTransforms;
                 }
                 
+                //If there was a previously selected tile with an outline, remove it.
                 if(currentSelectedTileGameObject) 
                 {
                     DestroyImmediate(currentSelectedTileGameObject.GetComponent<Outline>());
                 }
-
+                
+                //If the same tile was clicked again, deselect it.
                 if (currentSelectedTileGameObject == hit.transform.gameObject)
                 {
                     currentSelectedTileGameObject = null;
                     CurrentSelectedTile = null;
+                    UIManager.Instance.DestroyCurrentInfoInstance();
                 }
                 else
                 {
+                    //If the tile is different, do this.
                     currentSelectedTileGameObject = hit.transform.gameObject;
                 
                     CurrentSelectedTile = CoordinatesOf<GameObject>(arrayToCheck, hit.transform.gameObject);
+                    
+                    UIManager.Instance.CreateInfoPanel(CurrentSelectedTile);
 
                     if (!hit.transform.gameObject.GetComponent<Outline>())
                     {
@@ -207,6 +219,18 @@ public class BoardManager : NetworkBehaviour
                     }
                 }
 
+                
+            }
+            else
+            {
+                //If the raycast hit nothing at all.
+                UIManager.Instance.DestroyCurrentInfoInstance();
+                if (currentSelectedTileGameObject)
+                {
+                    DestroyImmediate(currentSelectedTileGameObject.GetComponent<Outline>());
+                    currentSelectedTileGameObject = null;
+                    CurrentSelectedTile = null;
+                }
                 
             }
             

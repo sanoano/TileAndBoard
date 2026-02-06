@@ -255,7 +255,7 @@ GameObject:
   - component: {fileID: 101417696}
   - component: {fileID: 101417695}
   m_Layer: 5
-  m_Name: TurnText (1)
+  m_Name: Mana Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1154,6 +1154,7 @@ Transform:
   - {fileID: 415498522}
   - {fileID: 906517483}
   - {fileID: 109864142}
+  - {fileID: 1013383363}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &928676842
@@ -1188,6 +1189,53 @@ Transform:
   - {fileID: 903592726}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1013383362
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1013383363}
+  - component: {fileID: 1013383364}
+  m_Layer: 0
+  m_Name: UIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1013383363
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013383362}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 919036220}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1013383364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013383362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b8045f061d6f4470aa53b727ec18608, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIManager
+  uiInfoPrefab: {fileID: 5223788855421830316, guid: 3ed9d650e46c04ac4a5eccf3b6e695fa, type: 3}
+  uiInfoPrefabInstance: {fileID: 0}
+  Canvas: {fileID: 2089643498}
 --- !u!1 &1031192592
 GameObject:
   m_ObjectHideFlags: 0
@@ -1200,7 +1248,7 @@ GameObject:
   - component: {fileID: 1031192595}
   - component: {fileID: 1031192594}
   m_Layer: 5
-  m_Name: Image (1)
+  m_Name: Decal 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1426,7 +1474,7 @@ GameObject:
   - component: {fileID: 1456741235}
   - component: {fileID: 1456741234}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Decal 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
