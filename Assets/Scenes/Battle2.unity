@@ -277,7 +277,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -434.75, y: 61.799988}
+  m_AnchoredPosition: {x: -434.75, y: 61.80005}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &101417695
@@ -549,7 +549,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.27059746, y: -0.653282, z: 0.27059776, w: 0.65328145}
-  m_LocalPosition: {x: 23.47, y: 23.07, z: -8.26}
+  m_LocalPosition: {x: 24.41878, y: 25.468699, z: -7.48}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -616,6 +616,7 @@ MonoBehaviour:
   orbitRadius: 20
   minimumOrbitDistance: 15
   maximumOrbitDistance: 50
+  cameraState: 0
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1236,6 +1237,8 @@ MonoBehaviour:
   uiInfoPrefab: {fileID: 5223788855421830316, guid: 3ed9d650e46c04ac4a5eccf3b6e695fa, type: 3}
   uiInfoPrefabInstance: {fileID: 0}
   Canvas: {fileID: 2089643498}
+  infoXOffset: 300
+  infoYOffset: 230
 --- !u!1 &1031192592
 GameObject:
   m_ObjectHideFlags: 0
@@ -1855,7 +1858,7 @@ Transform:
   m_GameObject: {fileID: 1904340812}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.63, y: 2.021, z: -7.77}
+  m_LocalPosition: {x: -0.33, y: 0.72, z: -7.48}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2197,7 +2200,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4197737935915274142, guid: bfe3c2c4d9e1e4302a1607207895dc64, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 3936851402
+      value: 2571341697
       objectReference: {fileID: 0}
     - target: {fileID: 4197737935915274142, guid: bfe3c2c4d9e1e4302a1607207895dc64, type: 3}
       propertyPath: SceneMigrationSynchronization

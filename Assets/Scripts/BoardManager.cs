@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 
 public class BoardManager : NetworkBehaviour
 {
@@ -92,13 +93,16 @@ public class BoardManager : NetworkBehaviour
     [SerializeField] 
     private GameObject player2BoardGameObject;
 
-    [SerializeField] private LayerMask tileLayer;
+    [SerializeField] private LayerMask playerSpecificLayer;
+    [SerializeField] private LayerMask interactionLayers;
     private Camera cam;
 
     public Tuple<int, int> CurrentSelectedTile;
     public GameObject currentSelectedTileGameObject;
 
     private InputAction select;
+
+    private OrbitCamera cameraInfo;
 
     private void Awake()
     {
@@ -114,6 +118,10 @@ public class BoardManager : NetworkBehaviour
         select = InputSystem.actions.FindAction("Click");
 
         cam = Camera.main;
+
+        cameraInfo = cam.GetComponent<OrbitCamera>();
+
+        interactionLayers = LayerMask.GetMask("Player1Tile", "Player2Tile");
     }
 
     private void Start()
@@ -156,11 +164,11 @@ public class BoardManager : NetworkBehaviour
     {
         if (GameManager.instance.playerId == Player.PlayerId.Player1)
         {
-            tileLayer= LayerMask.GetMask("Player1Tile");
+            playerSpecificLayer= LayerMask.GetMask("Player1Tile");
         }
         else
         {
-            tileLayer= LayerMask.GetMask("Player2Tile");
+            playerSpecificLayer= LayerMask.GetMask("Player2Tile");
         }
         
         print(GameManager.instance.playerId);
@@ -170,22 +178,15 @@ public class BoardManager : NetworkBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+
+            if (cameraInfo.cameraState == OrbitCamera.CameraState.Free) return;
             
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             
             //If we hit something.
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, tileLayer))
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, interactionLayers))
             {
-                GameObject[,] arrayToCheck;
-                if (GameManager.instance.playerId == Player.PlayerId.Player1)
-                {
-                    arrayToCheck = player1Board.TileTransforms;
-                }
-                else
-                {
-                    arrayToCheck = player2Board.TileTransforms;
-                }
                 
                 //If there was a previously selected tile with an outline, remove it.
                 if(currentSelectedTileGameObject) 
@@ -205,7 +206,11 @@ public class BoardManager : NetworkBehaviour
                     //If the tile is different, do this.
                     currentSelectedTileGameObject = hit.transform.gameObject;
                 
-                    CurrentSelectedTile = CoordinatesOf<GameObject>(arrayToCheck, hit.transform.gameObject);
+                    CurrentSelectedTile = CoordinatesOf<GameObject>(player1Board.TileTransforms, hit.transform.gameObject);
+                    if (Equals(CurrentSelectedTile, new Tuple<int, int>(-1, -1)))
+                    {
+                        CurrentSelectedTile = CoordinatesOf<GameObject>(player2Board.TileTransforms, hit.transform.gameObject);
+                    }
                     
                     UIManager.Instance.CreateInfoPanel(CurrentSelectedTile);
 

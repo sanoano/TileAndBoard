@@ -18,7 +18,13 @@ public class OrbitCamera : MonoBehaviour
 
     private Vector3 cameraStaticPostion;
     private Quaternion cameraStaticRotation;
-    private bool freeCameraEnabled;
+    public CameraState cameraState;
+
+    public enum CameraState
+    {
+        Static,
+        Free
+    }
 
     private void Awake()
     {
@@ -26,9 +32,9 @@ public class OrbitCamera : MonoBehaviour
         cameraStaticRotation = transform.rotation;
         defaultPitch = transform.eulerAngles.x;
         defaultYaw = transform.eulerAngles.y;
-        
-        
-        freeCameraEnabled = false;
+
+
+        cameraState = CameraState.Static;
     }
 
     void Start() 
@@ -42,9 +48,16 @@ public class OrbitCamera : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.C))
         {
-            freeCameraEnabled = !freeCameraEnabled;
+            if (cameraState == CameraState.Static)
+            {
+                cameraState = CameraState.Free;
+            }
+            else
+            {
+                cameraState = CameraState.Static;
+            }
 
-            if (!freeCameraEnabled)
+            if (cameraState == CameraState.Static)
             {
                 StopAllCoroutines();
                 StartCoroutine(lerpCamera());
@@ -60,7 +73,7 @@ public class OrbitCamera : MonoBehaviour
         }
         
         
-        if (Input.GetMouseButton(1) && freeCameraEnabled) 
+        if (Input.GetMouseButton(1) && cameraState == CameraState.Free) 
         {
             float mouseX = Input.GetAxis("Mouse X");
             float mouseY = Input.GetAxis("Mouse Y");
@@ -79,12 +92,14 @@ public class OrbitCamera : MonoBehaviour
             transform.rotation = Quaternion.Euler(pitch, yaw, 0);
         }
 
-        if (freeCameraEnabled)
+        if (cameraState == CameraState.Free)
         {
             orbitRadius -= Input.mouseScrollDelta.y / sensitivity;
             orbitRadius = Mathf.Clamp(orbitRadius, minimumOrbitDistance, maximumOrbitDistance);
 
             transform.position = target.position - transform.forward * orbitRadius;
+            
+            UIManager.Instance.DestroyCurrentInfoInstance();
         }
         
     }

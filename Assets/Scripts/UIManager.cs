@@ -15,6 +15,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject uiInfoPrefabInstance;
     [SerializeField] private GameObject Canvas;
 
+    [Header("UI Element Offsets")]
+    [SerializeField] private int infoXOffset;
+    [SerializeField] private int infoYOffset;
+
     private void Awake()
     {
         if (Instance == null)
@@ -33,8 +37,10 @@ public class UIManager : MonoBehaviour
         {
             DestroyImmediate(uiInfoPrefabInstance);
         }
+
+        Vector3 spawnPosition = new Vector3(Input.mousePosition.x + infoXOffset, Input.mousePosition.y + infoYOffset);
         
-        uiInfoPrefabInstance = Instantiate(uiInfoPrefab, Input.mousePosition, Quaternion.identity, Canvas.transform);
+        uiInfoPrefabInstance = Instantiate(uiInfoPrefab, spawnPosition, Quaternion.identity, Canvas.transform);
 
         Transform[] children = uiInfoPrefabInstance.GetComponentsInChildren<Transform>();
 
