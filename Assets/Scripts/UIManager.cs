@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
+using UnityEngine.Audio;
 
 
 public class UIManager : MonoBehaviour
@@ -11,10 +12,16 @@ public class UIManager : MonoBehaviour
 
     public static UIManager Instance;
     
+    [Header("Info Panel")]
     [SerializeField] private GameObject uiInfoPrefab;
     [SerializeField] private GameObject uiInfoPrefabInstance;
     [SerializeField] private GameObject Canvas;
 
+    [Header("Settings Menu")] 
+    public GameObject settingsMenu;
+
+    public AudioMixer mixer;
+    
     [Header("UI Element Offsets")]
     [SerializeField] private int infoXOffset;
     [SerializeField] private int infoYOffset;
@@ -28,6 +35,16 @@ public class UIManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+        
+        
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.Escape))
+        {
+            settingsMenu.SetActive(!settingsMenu.activeSelf);
         }
     }
 

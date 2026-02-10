@@ -179,6 +179,7 @@ public class BoardManager : NetworkBehaviour
         if (Input.GetMouseButtonDown(0))
         {
 
+            if (UIManager.Instance.settingsMenu.activeSelf) return;
             if (cameraInfo.cameraState == OrbitCamera.CameraState.Free) return;
             
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);

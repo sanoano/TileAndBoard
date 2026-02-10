@@ -7,6 +7,8 @@ public class AudioManager : MonoBehaviour
     
     public static AudioManager singleton { get; private set; }
 
+    [SerializeField] private AudioMixerGroup sfxGroup; 
+
     private void Awake()
     {
         if (singleton != null && singleton != this)
@@ -27,6 +29,7 @@ public class AudioManager : MonoBehaviour
         AudioSource source = new GameObject().AddComponent<AudioSource>();
         source.gameObject.transform.SetParent(transform);
         source.clip = clip;
+        source.outputAudioMixerGroup = sfxGroup;
         source.Play();
         StartCoroutine(DestroyInstance(source.gameObject, source.clip.length));
     }
