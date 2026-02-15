@@ -1,15 +1,22 @@
 using System;
 using System.Collections;
+using Tweens;
 using UnityEngine;
 
 public class OrbitCamera : MonoBehaviour
 {
+    
+    [Header("Sensitivity")]
     [SerializeField] private Transform target;
     [SerializeField] private float sensitivity = 5f;
     [SerializeField] private float orbitRadius = 5f;
 
+    [Header("Orbit Distance")]
     [SerializeField] private float minimumOrbitDistance = 2f;
     [SerializeField] private float maximumOrbitDistance = 10f;
+
+    [Header("Tween")]
+    [SerializeField] private float returnDuration;
 
     private float yaw;
     private float pitch;
@@ -37,13 +44,13 @@ public class OrbitCamera : MonoBehaviour
         cameraState = CameraState.Static;
     }
 
-    void Start() 
+    void Start()
     {
         yaw = transform.eulerAngles.y;
         pitch = transform.eulerAngles.x;
     }
 
-    void Update() 
+    void Update()
     {
 
         if (Input.GetKeyUp(KeyCode.C))
@@ -57,23 +64,47 @@ public class OrbitCamera : MonoBehaviour
                 cameraState = CameraState.Static;
             }
 
+            //If static camera  has just been enabled
             if (cameraState == CameraState.Static)
             {
-                StopAllCoroutines();
-                StartCoroutine(lerpCamera());
+                var positionTween = new PositionTween
+                {
+                    to = cameraStaticPostion,
+                    duration = returnDuration,
+                    easeType = EaseType.ElasticOut,
+                    onEnd = (instance) =>
+                    {
+                        CardManager.instance.cardHoldPosition.SetActive(true);
+                    },
+                };
+
+                var rotationTween = new RotationTween
+                {
+                    to = cameraStaticRotation,
+                    duration = returnDuration,
+                    easeType = EaseType.ElasticOut
+                };
+
+                gameObject.AddTween(positionTween);
+                gameObject.AddTween(rotationTween);
                 
+
             }
+            //If free cam has just been enabled
             else
             {
                 orbitRadius = 35;
                 yaw = defaultYaw;
                 pitch = defaultPitch;
+                
+                UIManager.Instance.DestroyCurrentInfoInstance();
+                CardManager.instance.cardHoldPosition.SetActive(false);
             }
 
         }
-        
-        
-        if (Input.GetMouseButton(1) && cameraState == CameraState.Free) 
+
+
+        if (Input.GetMouseButton(1) && cameraState == CameraState.Free)
         {
             float mouseX = Input.GetAxis("Mouse X");
             float mouseY = Input.GetAxis("Mouse Y");
@@ -83,44 +114,29 @@ public class OrbitCamera : MonoBehaviour
             bool isUpsideDown = pitch > 90f || pitch < -90f;
 
             // Invert yaw input if the camera is upside down
-            if (isUpsideDown) {
+            if (isUpsideDown)
+            {
                 yaw -= mouseX * sensitivity;
-            } else {
+            }
+            else
+            {
                 yaw += mouseX * sensitivity;
             }
 
             transform.rotation = Quaternion.Euler(pitch, yaw, 0);
         }
-
+        
         if (cameraState == CameraState.Free)
         {
             orbitRadius -= Input.mouseScrollDelta.y / sensitivity;
             orbitRadius = Mathf.Clamp(orbitRadius, minimumOrbitDistance, maximumOrbitDistance);
 
             transform.position = target.position - transform.forward * orbitRadius;
+
             
-            UIManager.Instance.DestroyCurrentInfoInstance();
-        }
-        
-    }
-
-    public IEnumerator lerpCamera()
-    {
-
-        var animSpeed = 0.5f;
-
-        float progress = 0.0f;  //This value is used for LERP
-
-        while (progress < 1.0f)
-        {
-            transform.position = Vector3.Lerp(transform.position, cameraStaticPostion, progress);
-            transform.rotation = Quaternion.Lerp(transform.rotation, cameraStaticRotation, progress);
-            yield return new WaitForEndOfFrame();
-            progress += Time.deltaTime * animSpeed;
         }
 
-        //Set final transform
-        transform.position = cameraStaticPostion;
-        transform.rotation = cameraStaticRotation;
     }
 }
+
+  

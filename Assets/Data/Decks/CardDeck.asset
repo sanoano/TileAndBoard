@@ -12,14 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebbabcda8d10b4021a44c9a5a238b1eb, type: 3}
   m_Name: CardDeck
   m_EditorClassIdentifier: Assembly-CSharp::CardDeck
-  cardIds: 010000000200000003000000
+  cardIds: 00000000020000000300000004000000050000000600000007000000
   Cards:
-  - ID: 1
-    Name: TEST2
+  - ID: 0
+    Name: TEST1
     Health: 1
-    Cost: 1
-    Speed: 1
+    Cost: 0
+    Speed: 0
     Defence: 1
+    Range:
+    - {x: 0, y: 2}
+    - {x: 2, y: 0}
     Damage: 1
   - ID: 2
     Name: TEST3
@@ -27,6 +30,9 @@ MonoBehaviour:
     Cost: 1
     Speed: 1
     Defence: 1
+    Range:
+    - {x: 0, y: 2}
+    - {x: 2, y: 0}
     Damage: 1
   - ID: 3
     Name: TEST4
@@ -34,6 +40,49 @@ MonoBehaviour:
     Cost: 1
     Speed: 1
     Defence: 1
+    Range:
+    - {x: 0, y: 2}
+    - {x: 2, y: 0}
     Damage: 2
+  - ID: 4
+    Name: TEST5
+    Health: 1
+    Cost: 1
+    Speed: 1
+    Defence: 2
+    Range:
+    - {x: 0, y: 2}
+    - {x: 2, y: 0}
+    Damage: 1
+  - ID: 5
+    Name: TEST6
+    Health: 1
+    Cost: 1
+    Speed: 1
+    Defence: 1
+    Range:
+    - {x: 0, y: 2}
+    - {x: 2, y: 0}
+    Damage: 1
+  - ID: 6
+    Name: TEST7
+    Health: 3
+    Cost: 2
+    Speed: 1
+    Defence: 1
+    Range:
+    - {x: 0, y: 2}
+    - {x: 2, y: 0}
+    Damage: 2
+  - ID: 7
+    Name: TEST8
+    Health: 2
+    Cost: 2
+    Speed: 2
+    Defence: 2
+    Range:
+    - {x: 0, y: 2}
+    - {x: 2, y: 0}
+    Damage: 1
   populateDeck: 0
   clearDeck: 0

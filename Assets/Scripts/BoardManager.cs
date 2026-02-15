@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 using System.Collections.Generic;
+using Tweens;
 using UnityEditor.Experimental.GraphView;
 
 public class BoardManager : NetworkBehaviour
@@ -12,6 +13,7 @@ public class BoardManager : NetworkBehaviour
 
     public static BoardManager Instance;
     
+    [Serializable]
     struct PlayerBoard
     {
 
@@ -25,15 +27,16 @@ public class BoardManager : NetworkBehaviour
         }
         
     }
-        
+    
+    [Serializable]
     public struct DamageInstance
     {
         public String Name;
         public Player.PlayerId ID;
         public int Damage;
-        public List<Tuple<int, int>> Positions;
+        public List<Vector2Int> Positions;
 
-        public DamageInstance(string name, Player.PlayerId id, int damage, List<Tuple<int, int>> positions)
+        public DamageInstance(string name, Player.PlayerId id, int damage, List<Vector2Int> positions)
         {
             Name = name;
             ID = id;
@@ -41,15 +44,16 @@ public class BoardManager : NetworkBehaviour
             Positions = positions;
         }
     }
-
+    
+    [Serializable]
     public struct DefenseInstance
     {
         public String Name;
         public Player.PlayerId ID;
         public int Defense;
-        public List<Tuple<int, int>> Positions;
+        public List<Vector2Int> Positions;
 
-        public DefenseInstance(string name, Player.PlayerId id, int defense, List<Tuple<int, int>> positions)
+        public DefenseInstance(string name, Player.PlayerId id, int defense, List<Vector2Int> positions)
         {
             Name = name;
             ID = id;
@@ -58,6 +62,7 @@ public class BoardManager : NetworkBehaviour
         }
     }
 
+    [Serializable]
     public struct Unit
     {
         public String Name;
@@ -65,10 +70,10 @@ public class BoardManager : NetworkBehaviour
         public int Health;
         public int Damage;
         public int Movement;
-        public List<Tuple<int, int>> AttackPositions;
-        public Tuple<int, int> Position;
+        public List<Vector2Int> AttackPositions;
+        public Vector2Int Position;
 
-        public Unit(string name, Player.PlayerId id, int health, int damage, int movement, List<Tuple<int, int>> attackPositions, Tuple<int, int> position)
+        public Unit(string name, Player.PlayerId id, int health, int damage, int movement, List<Vector2Int> attackPositions, Vector2Int position)
         {
             Name = name;
             ID = id;
@@ -83,6 +88,9 @@ public class BoardManager : NetworkBehaviour
     private PlayerBoard player1Board;
     private PlayerBoard player2Board;
 
+    private PlayerBoard localBoard;
+
+    [Header("Lists")]
     public List<Unit> unitsList;
     public List<DamageInstance> damageInstances;
     public List<DefenseInstance> defenseInstances;
@@ -93,12 +101,17 @@ public class BoardManager : NetworkBehaviour
     [SerializeField] 
     private GameObject player2BoardGameObject;
 
-    [SerializeField] private LayerMask playerSpecificLayer;
+    [Header("Layers")]
+    public LayerMask playerSpecificLayer;
     [SerializeField] private LayerMask interactionLayers;
     private Camera cam;
 
-    public Tuple<int, int> CurrentSelectedTile;
+    [Header("Selected Tile")]
+    public Vector2Int CurrentSelectedTile;
     public GameObject currentSelectedTileGameObject;
+
+    [Header("Parameters")] 
+    [SerializeField] private float placeAnimationTime;
 
     private InputAction select;
 
@@ -158,6 +171,16 @@ public class BoardManager : NetworkBehaviour
         damageInstances = new List<DamageInstance>();
         defenseInstances = new List<DefenseInstance>();
 
+        if (GameManager.instance.playerId == Player.PlayerId.Player1)
+        {
+            localBoard = player1Board;
+        }
+        else
+        {
+            localBoard = player2Board;
+        }
+        
+
     }
 
     public override void OnNetworkSpawn()
@@ -199,7 +222,7 @@ public class BoardManager : NetworkBehaviour
                 if (currentSelectedTileGameObject == hit.transform.gameObject)
                 {
                     currentSelectedTileGameObject = null;
-                    CurrentSelectedTile = null;
+                    CurrentSelectedTile = new Vector2Int(-1, -1);
                     UIManager.Instance.DestroyCurrentInfoInstance();
                 }
                 else
@@ -208,7 +231,7 @@ public class BoardManager : NetworkBehaviour
                     currentSelectedTileGameObject = hit.transform.gameObject;
                 
                     CurrentSelectedTile = CoordinatesOf<GameObject>(player1Board.TileTransforms, hit.transform.gameObject);
-                    if (Equals(CurrentSelectedTile, new Tuple<int, int>(-1, -1)))
+                    if (Equals(CurrentSelectedTile, new Vector2Int(-1, -1)))
                     {
                         CurrentSelectedTile = CoordinatesOf<GameObject>(player2Board.TileTransforms, hit.transform.gameObject);
                     }
@@ -235,19 +258,76 @@ public class BoardManager : NetworkBehaviour
                 {
                     DestroyImmediate(currentSelectedTileGameObject.GetComponent<Outline>());
                     currentSelectedTileGameObject = null;
-                    CurrentSelectedTile = null;
+                    CurrentSelectedTile = new Vector2Int(-1, -1);
                 }
                 
             }
             
         }
     }
+
+    public void PlaceCard(GameObject cardVisual, CardDeck.CardData cardData, GameObject tile)
+    {
+
+        Vector2Int coordinates = CoordinatesOf<GameObject>(localBoard.TileTransforms, tile);
+        
+        Unit unit = new Unit(
+            name: cardData.Name,
+            id: GameManager.instance.playerId,
+            health: cardData.Health,
+            damage: cardData.Damage,
+            movement: cardData.Speed,
+            attackPositions: cardData.Range,
+            position: coordinates
+            );
+        
+        unitsList.Add(unit);
+        
+        CardManager.instance.playerHandVisuals.Remove(cardVisual);
+        CardManager.instance.playerHand.Remove(cardData);
+        
+        localBoard.Visuals[coordinates.x, coordinates.y] = cardVisual;
+        
+        cardVisual.transform.parent = tile.transform;
+
+        Vector3 position = new Vector3(0, tile.transform.localPosition.y + 1, 0);
+
+        Quaternion rotation = Quaternion.Euler(new Vector3(90, 0, 0));
+
+        Vector3 scale = new Vector3(1, 0.8f, 0);
+
+        var positionTween = new LocalPositionTween()
+        {
+            to = position,
+            duration = placeAnimationTime,
+            easeType = EaseType.BounceInOut
+        };
+
+        var rotationTween = new RotationTween()
+        {
+            to = rotation,
+            duration = placeAnimationTime,
+            easeType = EaseType.BounceInOut
+        };
+
+        var scaleTween = new LocalScaleTween()
+        {
+            to = scale,
+            duration = placeAnimationTime,
+            easeType = EaseType.BounceInOut
+        };
+
+        cardVisual.AddTween(positionTween, rotationTween, scaleTween);
+
+    }
+    
+    
     
     // Source - https://stackoverflow.com/a
     // Posted by Dan Tao
     // Retrieved 2026-01-29, License - CC BY-SA 2.5
 
-    public static Tuple<int, int> CoordinatesOf<T>(T[,] matrix, T value)
+    public static Vector2Int CoordinatesOf<T>(T[,] matrix, T value)
     {
         int w = matrix.GetLength(0); // width
         int h = matrix.GetLength(1); // height
@@ -257,11 +337,26 @@ public class BoardManager : NetworkBehaviour
             for (int y = 0; y < h; ++y)
             {
                 if (matrix[x, y].Equals(value))
-                    return Tuple.Create(x, y);
+                    return new Vector2Int(x, y);
             }
         }
 
-        return Tuple.Create(-1, -1);
+        return new Vector2Int(-1, -1);
     }
+
+    // public static List<Vector2Int> convertToTupleList(List<int[]> input)
+    // {
+    //
+    //     List<Vector2Int> output = new List<Vector2Int>();
+    //
+    //     foreach (int[] array in input)
+    //     {
+    //         Vector2Int tuple = new Vector2Int(array[0], array[1]);
+    //         Debug.Log(tuple);
+    //         output.Add(tuple);
+    //     }
+    //
+    //     return output;
+    // }
 
 }

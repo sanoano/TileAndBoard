@@ -45,10 +45,11 @@ public class UIManager : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Escape))
         {
             settingsMenu.SetActive(!settingsMenu.activeSelf);
+            DestroyCurrentInfoInstance();
         }
     }
 
-    public void CreateInfoPanel(Tuple<int, int> position)
+    public void CreateInfoPanel(Vector2Int position)
     {
         if (uiInfoPrefabInstance)
         {
@@ -72,7 +73,7 @@ public class UIManager : MonoBehaviour
         {
             foreach (BoardManager.DamageInstance thing in BoardManager.Instance.damageInstances)
             {
-                foreach (Tuple<int, int> damagePosition in thing.Positions)
+                foreach (Vector2Int damagePosition in thing.Positions)
                 {
                     if (Equals(damagePosition, position))
                     {
@@ -91,7 +92,7 @@ public class UIManager : MonoBehaviour
         {
             foreach (BoardManager.DefenseInstance thing in BoardManager.Instance.defenseInstances)
             {
-                foreach (Tuple<int, int> defensePosition in thing.Positions)
+                foreach (Vector2Int defensePosition in thing.Positions)
                 {
                     if (Equals(defensePosition, position))
                     {
