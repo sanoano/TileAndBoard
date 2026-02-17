@@ -30,8 +30,8 @@ public class GameManager : NetworkBehaviour
         }
         
         playerId = Player.AssignPlayerID();
-
         
+        Application.targetFrameRate = 60;
 
     }
 

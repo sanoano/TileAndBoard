@@ -57,6 +57,9 @@ public class CardDeck : ScriptableObject
     [InspectorButton("ClearDeck")]
     public bool clearDeck;
 
+    [InspectorButton("FromJSONToMaster")] 
+    public bool addAll;
+
     public void FromJsonToDeck()
     {
         TextAsset jsonAsset = Resources.Load<TextAsset>("Data/CardData");
@@ -96,6 +99,55 @@ public class CardDeck : ScriptableObject
                         Debug.Log($"Card {card.Name}: Range is null");
                     }
                 }
+            }
+            
+            // Mark ScriptableObject as dirty (essential for range values to persist at runtime)
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"JSON Deserialization failed: {e.Message}");
+        }
+    }
+
+    public void FromJSONToMaster()
+    {
+        TextAsset jsonAsset = Resources.Load<TextAsset>("Data/CardData");
+        if (jsonAsset == null)
+        {
+            Debug.LogError("Failed to load 'Data/CardData' from Resources folder.");
+            return;
+        }
+        string json = jsonAsset.text;
+
+        try
+        {
+            // Settings with converter for Vector2Int and error handling
+            JsonSerializerSettings settings = new JsonSerializerSettings
+            {
+                Error = (sender, args) => { args.ErrorContext.Handled = true; },  // Ignore conversion errors, use defaults
+                Converters = { new Vector2IntConverter() }  // Apply converter for List<Vector2Int>
+            };
+
+            List<CardData> tempCards = JsonConvert.DeserializeObject<List<CardData>>(json, settings) ?? new List<CardData>();
+
+            foreach (CardData card in tempCards)
+            {
+               
+                Cards.Add(card);
+                // Debug Range (fixed: iterate through all elements, use .x/.y instead of Item1/Item2)
+                if (card.Range != null)
+                {
+                    for (int i = 0; i < card.Range.Count; i++)
+                    {
+                            Debug.Log($"Card {card.Name}: Range[{i}] = ({card.Range[i].x}, {card.Range[i].y})");
+                    }
+                }
+                else 
+                {
+                    Debug.Log($"Card {card.Name}: Range is null");
+                }
+                
             }
             
             // Mark ScriptableObject as dirty (essential for range values to persist at runtime)

@@ -14,7 +14,7 @@ public class BoardManager : NetworkBehaviour
     public static BoardManager Instance;
     
     [Serializable]
-    struct PlayerBoard
+    public struct PlayerBoard
     {
 
         public GameObject[,] TileTransforms;
@@ -88,7 +88,7 @@ public class BoardManager : NetworkBehaviour
     private PlayerBoard player1Board;
     private PlayerBoard player2Board;
 
-    private PlayerBoard localBoard;
+    public PlayerBoard localBoard;
 
     [Header("Lists")]
     public List<Unit> unitsList;
@@ -283,6 +283,7 @@ public class BoardManager : NetworkBehaviour
         
         unitsList.Add(unit);
         
+        CardManager.instance.RemoveCard(cardVisual);
         CardManager.instance.playerHandVisuals.Remove(cardVisual);
         CardManager.instance.playerHand.Remove(cardData);
         
@@ -290,9 +291,20 @@ public class BoardManager : NetworkBehaviour
         
         cardVisual.transform.parent = tile.transform;
 
-        Vector3 position = new Vector3(0, tile.transform.localPosition.y + 1, 0);
+        Vector3 position; 
 
-        Quaternion rotation = Quaternion.Euler(new Vector3(90, 0, 0));
+        Quaternion rotation;
+
+        if (unit.ID == Player.PlayerId.Player1)
+        {
+            position = new Vector3(0, tile.transform.localPosition.y + 1, 0);
+            rotation = Quaternion.Euler(new Vector3(90, 0, 0));
+        }
+        else
+        {
+            position = new Vector3(0, tile.transform.localPosition.y - 1, 0);
+            rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
+        }
 
         Vector3 scale = new Vector3(1, 0.8f, 0);
 
@@ -319,6 +331,84 @@ public class BoardManager : NetworkBehaviour
 
         cardVisual.AddTween(positionTween, rotationTween, scaleTween);
 
+        cardVisual.GetComponent<CardDrag>().isPlaced = true;
+        
+        foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            if (clientIds == NetworkManager.LocalClientId) continue;
+            PlaceCardRpc(cardData.ID, unit.ID, unit.Position, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+        }
+        
+    }
+
+    [Rpc(SendTo.SpecifiedInParams)]
+    public void PlaceCardRpc(int ID, Player.PlayerId playerId, Vector2Int coordinates, RpcParams rpcParams = default)
+    {
+
+        CardDeck cardList = Resources.Load<CardDeck>("Data/MasterList");
+
+        CardDeck.CardData cardData = new CardDeck.CardData();
+        
+        foreach (CardDeck.CardData card in cardList.Cards)
+        {
+            if (card.ID == ID)
+            {
+                cardData = card;
+            }
+        }
+        
+        Unit unit = new Unit(
+            name: cardData.Name,
+            id: playerId,
+            health: cardData.Health,
+            damage: cardData.Damage,
+            movement: cardData.Speed,
+            attackPositions: cardData.Range,
+            position: coordinates
+        );
+        
+        unitsList.Add(unit);
+        
+        GameObject tile;
+        
+        if (unit.ID == Player.PlayerId.Player1)
+        {
+            tile = player1Board.TileTransforms[unit.Position.x, unit.Position.y];
+        }
+        else
+        {
+            tile = player2Board.TileTransforms[unit.Position.x, unit.Position.y];
+        }
+        
+        var cardVisual = Instantiate(CardManager.instance.cardVisualPrefab,
+            Vector3.zero,
+            Quaternion.identity,
+            tile.transform);
+
+        cardVisual.GetComponent<CardDrag>().isPlaced = true;
+        
+        Vector3 position; 
+        
+        Quaternion rotation;
+        
+        if (unit.ID == Player.PlayerId.Player1)
+        {
+            player1Board.Visuals[unit.Position.x, unit.Position.y] = cardVisual;
+            rotation = Quaternion.Euler(new Vector3(90, 0, 0));
+            position = new Vector3(0, tile.transform.localPosition.y + 1, 0);
+        }
+        else
+        {
+            player2Board.Visuals[unit.Position.x, unit.Position.y] = cardVisual;
+            rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
+            position = new Vector3(0, tile.transform.localPosition.y - 1, 0);
+        }
+        
+        Vector3 scale = new Vector3(1, 0.8f, 0);
+        
+        cardVisual.transform.localPosition = position;
+        cardVisual.transform.rotation = rotation;
+        cardVisual.transform.localScale = scale;
     }
     
     
@@ -327,7 +417,7 @@ public class BoardManager : NetworkBehaviour
     // Posted by Dan Tao
     // Retrieved 2026-01-29, License - CC BY-SA 2.5
 
-    public static Vector2Int CoordinatesOf<T>(T[,] matrix, T value)
+    public Vector2Int CoordinatesOf<T>(T[,] matrix, T value)
     {
         int w = matrix.GetLength(0); // width
         int h = matrix.GetLength(1); // height

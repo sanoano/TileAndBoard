@@ -42,6 +42,7 @@ public class ConnectionManager : MonoBehaviour
         sessionName.onValueChanged.AddListener(onSessionNameSet);
         startButton.onClick.AddListener(StartOrJoin);
         statusText.text = "";
+
     }
 
     private void StartOrJoin()
@@ -67,9 +68,9 @@ public class ConnectionManager : MonoBehaviour
     {
         if (clientId != m_NetworkManager.LocalClientId && SceneManager.GetActiveScene().name == "Battle")
         {
-            await _session.LeaveAsync();
-            AuthenticationService.Instance.SignOut();
-            SceneManager.LoadScene("Lobby");
+            // await _session.LeaveAsync();
+            // AuthenticationService.Instance.SignOut();
+            // SceneManager.LoadScene("Lobby");
         }
         
     }

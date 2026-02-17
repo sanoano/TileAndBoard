@@ -12,7 +12,7 @@ public class CardManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private CardDeck playerDeckSO;
-    [SerializeField] private GameObject cardVisualPrefab;
+    public GameObject cardVisualPrefab;
     public GameObject cardHoldPosition;
 
     public List<CardDeck.CardData> playerDeck;
@@ -25,6 +25,7 @@ public class CardManager : MonoBehaviour
     [SerializeField] private int initialDrawAmount;
     [SerializeField] private float cardDisplayOffset;
     [SerializeField] private float cardLayoutTime;
+    public bool cardDrawInProgress;
     
     
     private void Awake()
@@ -54,6 +55,9 @@ public class CardManager : MonoBehaviour
 
     public IEnumerator DrawCard(int amount)
     {
+
+        cardDrawInProgress = true;
+        
         for (int i = 0; i < amount; i++)
         {
             if (playerDeck.Count == 0) break;
@@ -74,6 +78,8 @@ public class CardManager : MonoBehaviour
             cardVisual.name = playerHand[playerHand.Count - 1].Name;
 
             playerDeck.RemoveAt(randInt);
+            
+            
             
 
             if (playerHand.Count != 1)
@@ -115,11 +121,56 @@ public class CardManager : MonoBehaviour
                 yield return instance.AwaitDecommission();
             }
 
-            yield return null;
+            else
+            {
+                yield return new WaitForSeconds(cardLayoutTime);
+            }
+            
+            
         }
+
+        cardDrawInProgress = false;
+        yield return null;
+        
     }
 
+    public void RemoveCard(GameObject cardVisual)
+    {
+        var index = playerHandVisuals.IndexOf(cardVisual);
 
+        if (playerHandVisuals.Count == 0) return;
+        foreach (GameObject card in playerHandVisuals)
+        {
+            if (playerHandVisuals.IndexOf(card) > index)
+            {
+                var tween = new LocalPositionTween()
+                {
+                    to = new Vector3(card.transform.localPosition.x + cardDisplayOffset,
+                        card.transform.localPosition.y,
+                        card.transform.localPosition.z),
+                    duration = cardLayoutTime,
+                    easeType = EaseType.ElasticOut
+                };
+
+                card.AddTween(tween);
+            }
+            else if (playerHandVisuals.IndexOf(card) < index)
+            {
+                var tween = new LocalPositionTween()
+                {
+                    to = new Vector3(card.transform.localPosition.x - cardDisplayOffset,
+                        card.transform.localPosition.y,
+                        card.transform.localPosition.z),
+                    duration = cardLayoutTime,
+                    easeType = EaseType.ElasticOut
+                };
+
+                card.AddTween(tween);
+            }
+            
+        }
+        
+    }
 
 
 }

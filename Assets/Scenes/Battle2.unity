@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 133347283e115d147a5fcce7f47a538f, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 6bfab16f387f95e4bb60f866299be241, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -2605,9 +2605,11 @@ MonoBehaviour:
   cardHoldPosition: {fileID: 1105000289}
   playerDeck: []
   playerHand: []
+  playerHandVisuals: []
   initialDrawAmount: 6
   cardDisplayOffset: 1.75
-  cardLayoutTime: 0.25
+  cardLayoutTime: 0.35
+  cardDrawInProgress: 0
 --- !u!1 &1526543903
 GameObject:
   m_ObjectHideFlags: 0
@@ -3641,6 +3643,10 @@ PrefabInstance:
       value: 64
       objectReference: {fileID: 0}
     - target: {fileID: 7599052890681973211, guid: bfe3c2c4d9e1e4302a1607207895dc64, type: 3}
+      propertyPath: placeAnimationTime
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7599052890681973211, guid: bfe3c2c4d9e1e4302a1607207895dc64, type: 3}
       propertyPath: player1BoardGameObject
       value: 
       objectReference: {fileID: 6364990325370542297}
@@ -3648,6 +3654,10 @@ PrefabInstance:
       propertyPath: player2BoardGameObject
       value: 
       objectReference: {fileID: 93108556}
+    - target: {fileID: 7599052890681973211, guid: bfe3c2c4d9e1e4302a1607207895dc64, type: 3}
+      propertyPath: playerSpecificLayer.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 8367442278593442123, guid: bfe3c2c4d9e1e4302a1607207895dc64, type: 3}
       propertyPath: m_Name
       value: BoardManager
