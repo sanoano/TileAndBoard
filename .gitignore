@@ -102,3 +102,4 @@ InitTestScene*.unity*
 
 /ProjectSettings/EditorBuildSettings.asset
 /ProjectSettings/ShaderGraphSettings.asset
+ProjectSettings/PackageManagerSettings.asset
