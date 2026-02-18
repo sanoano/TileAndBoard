@@ -12,13 +12,27 @@ public class CardDrag : MonoBehaviour
     private SpriteRenderer sr;
     private Collider collider;
 
+    private LocalScaleTween growTween;
+    private LocalScaleTween shrinkTween;
+
     public bool isPlaced;
+
+    private Vector3 normalScale;
+    private Vector3 bigScale;
+    private Vector3 smallScale;
+
+    [Header("Properties")] [SerializeField]
+    private float animTime;
 
     private void Awake()
     {
         cam = Camera.main;
         sr = GetComponent<SpriteRenderer>();
         collider = GetComponent<BoxCollider>();
+        animTime = 0.25f;
+        normalScale = transform.localScale;
+        bigScale = new Vector3(transform.localScale.x + 2, transform.localScale.y + 2, transform.localScale.z + 2);
+        smallScale = new Vector3(transform.localScale.x - 2, transform.localScale.y - 2, transform.localScale.z - 2);
     }
 
     private Vector3 GetMousePos()
@@ -33,6 +47,15 @@ public class CardDrag : MonoBehaviour
         mousePosition = Input.mousePosition - GetMousePos();
         isDragged = true;
         returnPosition = transform.position;
+
+        shrinkTween = new LocalScaleTween()
+        {
+            to = smallScale,
+            duration = animTime,
+            easeType = EaseType.ElasticOut
+        };
+
+        gameObject.AddTween(shrinkTween);
     }
 
     private void OnMouseDrag()
@@ -73,7 +96,15 @@ public class CardDrag : MonoBehaviour
                     duration = 0.5f,
                     easeType = EaseType.ElasticOut
                 };
+                print("balls");
+                growTween = new LocalScaleTween()
+                {
+                    to = normalScale,
+                    duration = animTime,
+                    easeType = EaseType.ElasticOut
+                };
 
+                gameObject.AddTween(growTween);
                 gameObject.AddTween(tween);
             }
         }
@@ -86,6 +117,15 @@ public class CardDrag : MonoBehaviour
                 duration = 0.5f,
                 easeType = EaseType.ElasticOut
             };
+            
+            growTween = new LocalScaleTween()
+            {
+                to = normalScale,
+                duration = animTime,
+                easeType = EaseType.ElasticOut
+            };
+
+            gameObject.AddTween(growTween);
 
             gameObject.AddTween(tween);
         }
@@ -102,6 +142,16 @@ public class CardDrag : MonoBehaviour
 
         sr.sortingOrder = 1;
         collider.layerOverridePriority = 1;
+
+        growTween = new LocalScaleTween
+        {
+            to = bigScale,
+            duration = animTime,
+            easeType = EaseType.ElasticOut
+        };
+        
+        gameObject.AddTween(growTween);
+
     }
     
 
@@ -115,5 +165,14 @@ public class CardDrag : MonoBehaviour
         
         sr.sortingOrder = 0;
         collider.layerOverridePriority = 0;
+
+        shrinkTween = new LocalScaleTween()
+        {
+            to = normalScale,
+            duration = animTime,
+            easeType = EaseType.ElasticOut
+        };
+
+        gameObject.AddTween(shrinkTween);
     }
 }
