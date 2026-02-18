@@ -12,10 +12,17 @@ public class UIManager : MonoBehaviour
 
     public static UIManager Instance;
     
-    [Header("Info Panel")]
+    [Header("Tile Info Panel")]
     [SerializeField] private GameObject uiInfoPrefab;
-    [SerializeField] private GameObject uiInfoPrefabInstance;
+    private GameObject uiInfoPrefabInstance;
+    
+    [Header("Canvas")]
     [SerializeField] private GameObject Canvas;
+
+    [Header("Card Info Panel")] 
+    [SerializeField] private GameObject cardInfoPrefab;
+    private GameObject cardInfoPrefabInstance;
+    
 
     [Header("Settings Menu")] 
     public GameObject settingsMenu;

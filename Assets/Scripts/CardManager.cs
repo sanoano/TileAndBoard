@@ -53,7 +53,7 @@ public class CardManager : MonoBehaviour
 
     }
 
-    public IEnumerator DrawCard(int amount)
+    private IEnumerator DrawCard(int amount)
     {
 
         cardDrawInProgress = true;
@@ -171,6 +171,5 @@ public class CardManager : MonoBehaviour
         }
         
     }
-
-
+    
 }

@@ -312,21 +312,21 @@ public class BoardManager : NetworkBehaviour
         {
             to = position,
             duration = placeAnimationTime,
-            easeType = EaseType.BounceInOut
+            easeType = EaseType.CubicInOut
         };
 
         var rotationTween = new RotationTween()
         {
             to = rotation,
             duration = placeAnimationTime,
-            easeType = EaseType.BounceInOut
+            easeType = EaseType.CubicInOut
         };
 
         var scaleTween = new LocalScaleTween()
         {
             to = scale,
             duration = placeAnimationTime,
-            easeType = EaseType.BounceInOut
+            easeType = EaseType.CubicInOut
         };
 
         cardVisual.AddTween(positionTween, rotationTween, scaleTween);
