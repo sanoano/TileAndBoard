@@ -56,7 +56,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void CreateInfoPanel(Vector2Int position)
+    public void CreateInfoPanel(Vector2Int position, Player.PlayerId playerId)
     {
         if (uiInfoPrefabInstance)
         {
@@ -80,6 +80,7 @@ public class UIManager : MonoBehaviour
         {
             foreach (BoardManager.DamageInstance thing in BoardManager.Instance.damageInstances)
             {
+                if(thing.ID == playerId) continue;
                 foreach (Vector2Int damagePosition in thing.Positions)
                 {
                     if (Equals(damagePosition, position))
@@ -99,6 +100,7 @@ public class UIManager : MonoBehaviour
         {
             foreach (BoardManager.DefenseInstance thing in BoardManager.Instance.defenseInstances)
             {
+                if(thing.ID != playerId) continue;
                 foreach (Vector2Int defensePosition in thing.Positions)
                 {
                     if (Equals(defensePosition, position))
@@ -122,11 +124,55 @@ public class UIManager : MonoBehaviour
 
     }
 
+    public void CreateCardInfoPanel(Vector2Int position, Player.PlayerId playerId)
+    {
+
+        BoardManager.Unit unitToDisplay = default;
+        print("neen");
+        if (cardInfoPrefabInstance)
+        {
+            DestroyImmediate(cardInfoPrefabInstance);
+        }
+
+        bool unitFound = false;
+        foreach (BoardManager.Unit unit in BoardManager.Instance.unitsList)
+        {
+            if (unit.ID == playerId && unit.Position == position)
+            {
+                unitToDisplay = unit;
+                unitFound = true;
+                break;
+            }
+        }
+
+        if (!unitFound) return;
+
+        Vector3 spawnPosition = new Vector3(Input.mousePosition.x + infoXOffset + 300 * 2, Input.mousePosition.y + infoYOffset);
+
+        cardInfoPrefabInstance = Instantiate(cardInfoPrefab, spawnPosition, Quaternion.identity, Canvas.transform);
+        
+        Transform[] children = cardInfoPrefabInstance.GetComponentsInChildren<Transform>();
+
+        TextMeshProUGUI cardInfoText = children[2].gameObject.GetComponent<TextMeshProUGUI>();
+
+        cardInfoText.text = "";
+        cardInfoText.text += $"Name: {unitToDisplay.Name}" + "\n";
+        cardInfoText.text += $"Health: {unitToDisplay.Health}" + "\n";
+        cardInfoText.text += $"Speed: {unitToDisplay.Movement}" + "\n";
+        cardInfoText.text += $"Defense: {unitToDisplay.Defense}" + "\n";
+        cardInfoText.text += $"Damage: {unitToDisplay.Damage}" + "\n";
+    }
+
     public void DestroyCurrentInfoInstance()
     {
         if (uiInfoPrefabInstance)
         {
             DestroyImmediate(uiInfoPrefabInstance);
+        }
+
+        if (cardInfoPrefabInstance)
+        {
+            DestroyImmediate(cardInfoPrefabInstance);
         }
         
     }

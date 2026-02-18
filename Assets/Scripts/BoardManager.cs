@@ -69,11 +69,12 @@ public class BoardManager : NetworkBehaviour
         public Player.PlayerId ID;
         public int Health;
         public int Damage;
+        public int Defense;
         public int Movement;
         public List<Vector2Int> AttackPositions;
         public Vector2Int Position;
 
-        public Unit(string name, Player.PlayerId id, int health, int damage, int movement, List<Vector2Int> attackPositions, Vector2Int position)
+        public Unit(string name, Player.PlayerId id, int health, int damage, int movement, List<Vector2Int> attackPositions, Vector2Int position, int defense)
         {
             Name = name;
             ID = id;
@@ -82,6 +83,7 @@ public class BoardManager : NetworkBehaviour
             Movement = movement;
             AttackPositions = attackPositions;
             Position = position;
+            Defense = defense;
         }
     }
 
@@ -231,12 +233,16 @@ public class BoardManager : NetworkBehaviour
                     currentSelectedTileGameObject = hit.transform.gameObject;
                 
                     CurrentSelectedTile = CoordinatesOf<GameObject>(player1Board.TileTransforms, hit.transform.gameObject);
+                    UIManager.Instance.CreateInfoPanel(CurrentSelectedTile, Player.PlayerId.Player1);
+                    UIManager.Instance.CreateCardInfoPanel(CurrentSelectedTile, Player.PlayerId.Player1);
                     if (Equals(CurrentSelectedTile, new Vector2Int(-1, -1)))
                     {
                         CurrentSelectedTile = CoordinatesOf<GameObject>(player2Board.TileTransforms, hit.transform.gameObject);
+                        UIManager.Instance.CreateInfoPanel(CurrentSelectedTile, Player.PlayerId.Player2);
+                        UIManager.Instance.CreateCardInfoPanel(CurrentSelectedTile, Player.PlayerId.Player2);
                     }
                     
-                    UIManager.Instance.CreateInfoPanel(CurrentSelectedTile);
+                    
 
                     if (!hit.transform.gameObject.GetComponent<Outline>())
                     {
@@ -276,9 +282,11 @@ public class BoardManager : NetworkBehaviour
             id: GameManager.instance.playerId,
             health: cardData.Health,
             damage: cardData.Damage,
+            defense: cardData.Defence,
             movement: cardData.Speed,
             attackPositions: cardData.Range,
             position: coordinates
+            
             );
         
         unitsList.Add(unit);
@@ -362,6 +370,7 @@ public class BoardManager : NetworkBehaviour
             id: playerId,
             health: cardData.Health,
             damage: cardData.Damage,
+            defense: cardData.Defence,
             movement: cardData.Speed,
             attackPositions: cardData.Range,
             position: coordinates
