@@ -125,4 +125,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3b0100b53f34914cb3a6c9f96aa0e82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::tileColor
-  state: 0
+  state: 1
+  mainRenderer: {fileID: 1404760980542186828}
