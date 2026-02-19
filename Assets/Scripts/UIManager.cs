@@ -5,12 +5,24 @@ using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine.Audio;
+using UnityEngine.UI;
 
 
 public class UIManager : MonoBehaviour
 {
 
     public static UIManager Instance;
+
+    public enum InteractionState : byte
+    {
+        None,
+        Attacking,
+        Defending,
+        Moving
+    }
+
+    [Header("Interaction State")] 
+    public InteractionState interactionState;
     
     [Header("Tile Info Panel")]
     [SerializeField] private GameObject uiInfoPrefab;
@@ -43,8 +55,8 @@ public class UIManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        
-        
+
+        interactionState = InteractionState.None;
     }
 
     private void Update()
@@ -60,7 +72,7 @@ public class UIManager : MonoBehaviour
     {
         if (uiInfoPrefabInstance)
         {
-            DestroyImmediate(uiInfoPrefabInstance);
+            Destroy(uiInfoPrefabInstance);
         }
 
         Vector3 spawnPosition = new Vector3(Input.mousePosition.x + infoXOffset, Input.mousePosition.y + infoYOffset);
@@ -70,8 +82,8 @@ public class UIManager : MonoBehaviour
         Transform[] children = uiInfoPrefabInstance.GetComponentsInChildren<Transform>();
 
         TextMeshProUGUI damageText = children[2].gameObject.GetComponent<TextMeshProUGUI>();
-        TextMeshProUGUI defenseText = children[4].gameObject.GetComponent<TextMeshProUGUI>();;
-        TextMeshProUGUI totalText = children[6].gameObject.GetComponent<TextMeshProUGUI>();;
+        TextMeshProUGUI defenseText = children[4].gameObject.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI totalText = children[6].gameObject.GetComponent<TextMeshProUGUI>();
 
         int damageTotal = 0;
         int defenseTotal = 0;
@@ -128,11 +140,11 @@ public class UIManager : MonoBehaviour
     {
 
         BoardManager.Unit unitToDisplay = default;
-        print("neen");
-        if (cardInfoPrefabInstance)
-        {
-            DestroyImmediate(cardInfoPrefabInstance);
-        }
+        
+        // if (cardInfoPrefabInstance)
+        // {
+        //     Destroy(cardInfoPrefabInstance);
+        // }
 
         bool unitFound = false;
         foreach (BoardManager.Unit unit in BoardManager.Instance.unitsList)
@@ -161,6 +173,11 @@ public class UIManager : MonoBehaviour
         cardInfoText.text += $"Speed: {unitToDisplay.Movement}" + "\n";
         cardInfoText.text += $"Defense: {unitToDisplay.Defense}" + "\n";
         cardInfoText.text += $"Damage: {unitToDisplay.Damage}" + "\n";
+
+        var panel = children[4].gameObject;
+        var buttons = panel.GetComponentsInChildren<Button>();
+        print(buttons[0].gameObject.name);
+        buttons[0].onClick.AddListener(BoardManager.Instance.PrepareAttack);
     }
 
     public void DestroyCurrentInfoInstance()
@@ -169,7 +186,7 @@ public class UIManager : MonoBehaviour
         {
             DestroyImmediate(uiInfoPrefabInstance);
         }
-
+        
         if (cardInfoPrefabInstance)
         {
             DestroyImmediate(cardInfoPrefabInstance);

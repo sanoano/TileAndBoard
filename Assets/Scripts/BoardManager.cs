@@ -91,6 +91,7 @@ public class BoardManager : NetworkBehaviour
     private PlayerBoard player2Board;
 
     public PlayerBoard localBoard;
+    public PlayerBoard enemyBoard;
 
     [Header("Lists")]
     public List<Unit> unitsList;
@@ -176,10 +177,12 @@ public class BoardManager : NetworkBehaviour
         if (GameManager.instance.playerId == Player.PlayerId.Player1)
         {
             localBoard = player1Board;
+            enemyBoard = player2Board;
         }
         else
         {
             localBoard = player2Board;
+            enemyBoard = player1Board;
         }
         
 
@@ -204,6 +207,7 @@ public class BoardManager : NetworkBehaviour
         if (Input.GetMouseButtonDown(0))
         {
 
+            if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
             if (UIManager.Instance.settingsMenu.activeSelf) return;
             if (cameraInfo.cameraState == OrbitCamera.CameraState.Free) return;
             
@@ -213,59 +217,49 @@ public class BoardManager : NetworkBehaviour
             //If we hit something.
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, interactionLayers))
             {
-                
-                //If there was a previously selected tile with an outline, remove it.
-                if(currentSelectedTileGameObject) 
+
+                if (currentSelectedTileGameObject != null)
                 {
-                    DestroyImmediate(currentSelectedTileGameObject.GetComponent<Outline>());
-                }
-                
-                //If the same tile was clicked again, deselect it.
-                if (currentSelectedTileGameObject == hit.transform.gameObject)
-                {
-                    currentSelectedTileGameObject = null;
-                    CurrentSelectedTile = new Vector2Int(-1, -1);
-                    UIManager.Instance.DestroyCurrentInfoInstance();
-                }
-                else
-                {
-                    //If the tile is different, do this.
-                    currentSelectedTileGameObject = hit.transform.gameObject;
-                
-                    CurrentSelectedTile = CoordinatesOf<GameObject>(player1Board.TileTransforms, hit.transform.gameObject);
-                    UIManager.Instance.CreateInfoPanel(CurrentSelectedTile, Player.PlayerId.Player1);
-                    UIManager.Instance.CreateCardInfoPanel(CurrentSelectedTile, Player.PlayerId.Player1);
-                    if (Equals(CurrentSelectedTile, new Vector2Int(-1, -1)))
+                    if (hit.transform.gameObject == currentSelectedTileGameObject)
                     {
-                        CurrentSelectedTile = CoordinatesOf<GameObject>(player2Board.TileTransforms, hit.transform.gameObject);
-                        UIManager.Instance.CreateInfoPanel(CurrentSelectedTile, Player.PlayerId.Player2);
-                        UIManager.Instance.CreateCardInfoPanel(CurrentSelectedTile, Player.PlayerId.Player2);
+                        currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
+                        currentSelectedTileGameObject = null;
+                        CurrentSelectedTile = new Vector2Int(-1, -1);
+                        UIManager.Instance.DestroyCurrentInfoInstance();
+                        return;
                     }
-                    
-                    
-
-                    if (!hit.transform.gameObject.GetComponent<Outline>())
+                    else
                     {
-
-                        Outline outline = hit.transform.gameObject.AddComponent<Outline>();
-                        outline.OutlineColor = Color.limeGreen;
-                        outline.OutlineWidth = 6;
-
+                        return;
                     }
                 }
-
                 
+                currentSelectedTileGameObject = hit.transform.gameObject;
+                
+                CurrentSelectedTile = CoordinatesOf<GameObject>(player1Board.TileTransforms, hit.transform.gameObject);
+                UIManager.Instance.CreateInfoPanel(CurrentSelectedTile, Player.PlayerId.Player1);
+                UIManager.Instance.CreateCardInfoPanel(CurrentSelectedTile, Player.PlayerId.Player1);
+                if (Equals(CurrentSelectedTile, new Vector2Int(-1, -1)))
+                {
+                    CurrentSelectedTile = CoordinatesOf<GameObject>(player2Board.TileTransforms, hit.transform.gameObject);
+                    UIManager.Instance.CreateInfoPanel(CurrentSelectedTile, Player.PlayerId.Player2);
+                    UIManager.Instance.CreateCardInfoPanel(CurrentSelectedTile, Player.PlayerId.Player2);
+                }
+
+                currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.green;
+
+
             }
             else
             {
-                //If the raycast hit nothing at all.
-                UIManager.Instance.DestroyCurrentInfoInstance();
-                if (currentSelectedTileGameObject)
-                {
-                    DestroyImmediate(currentSelectedTileGameObject.GetComponent<Outline>());
-                    currentSelectedTileGameObject = null;
-                    CurrentSelectedTile = new Vector2Int(-1, -1);
-                }
+                // //If the raycast hit nothing at all.
+                // UIManager.Instance.DestroyCurrentInfoInstance();
+                // if (currentSelectedTileGameObject)
+                // {
+                //     DestroyImmediate(currentSelectedTileGameObject.GetComponent<Outline>());
+                //     currentSelectedTileGameObject = null;
+                //     CurrentSelectedTile = new Vector2Int(-1, -1);
+                // }
                 
             }
             
@@ -418,6 +412,41 @@ public class BoardManager : NetworkBehaviour
         cardVisual.transform.localPosition = position;
         cardVisual.transform.rotation = rotation;
         cardVisual.transform.localScale = scale;
+    }
+
+    public void PrepareAttack()
+    {
+        
+        print("balls");
+        UIManager.Instance.DestroyCurrentInfoInstance();
+        UIManager.Instance.interactionState = UIManager.InteractionState.Attacking;
+
+        List<Vector2Int> initialPositions = null;
+        
+        foreach (Unit unit in unitsList)
+        {
+            if (unit.Position == CurrentSelectedTile && unit.ID == GameManager.instance.playerId)
+            {
+                // DamageInstance instance = new DamageInstance(
+                //     name: unit.Name,
+                //     id: GameManager.instance.playerId,
+                //     damage: unit.Damage,
+                //     positions: unit.AttackPositions
+                // );
+                //
+                // damageInstances.Add(instance);
+
+                initialPositions = unit.AttackPositions;
+            }
+        }
+
+        if (initialPositions == null) return;
+
+        foreach (Vector2Int position in initialPositions)
+        {
+            enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(1);
+        }
+        
     }
     
     

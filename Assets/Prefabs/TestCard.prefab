@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.13052599, y: -0, z: -0.000000014901161, w: 0.99144495}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -105,7 +105,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 525be33362cef4a09ae89be786cc7b9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardDrag
-  isDragged: 0
+  isPlaced: 0
+  animTime: 0
 --- !u!65 &8749378690169204665
 BoxCollider:
   m_ObjectHideFlags: 0

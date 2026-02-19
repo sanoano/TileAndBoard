@@ -5,7 +5,7 @@ using UnityEngine;
 public class CardDrag : MonoBehaviour
 {
 
-    public bool isDragged;
+    public static bool isDragged;
     private Vector3 mousePosition;
     private Vector3 returnPosition;
     private Camera cam;
@@ -33,6 +33,7 @@ public class CardDrag : MonoBehaviour
         normalScale = transform.localScale;
         bigScale = new Vector3(transform.localScale.x + 2, transform.localScale.y + 2, transform.localScale.z + 2);
         smallScale = new Vector3(transform.localScale.x - 2, transform.localScale.y - 2, transform.localScale.z - 2);
+        isDragged = false;
     }
 
     private Vector3 GetMousePos()
@@ -42,6 +43,8 @@ public class CardDrag : MonoBehaviour
 
     private void OnMouseDown()
     {
+        
+        
         if (isPlaced) return;
         if (CardManager.instance.cardDrawInProgress) return;
         mousePosition = Input.mousePosition - GetMousePos();
