@@ -3619,6 +3619,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7599052890681973211, guid: bfe3c2c4d9e1e4302a1607207895dc64, type: 3}
+      propertyPath: angle
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 7599052890681973211, guid: bfe3c2c4d9e1e4302a1607207895dc64, type: 3}
       propertyPath: tileLayer.m_Bits
       value: 64
       objectReference: {fileID: 0}

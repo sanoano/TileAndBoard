@@ -86,3 +86,4 @@ MonoBehaviour:
     Damage: 1
   populateDeck: 0
   clearDeck: 0
+  addAll: 0

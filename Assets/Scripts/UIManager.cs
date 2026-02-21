@@ -61,7 +61,7 @@ public class UIManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && interactionState == InteractionState.None)
         {
             settingsMenu.SetActive(!settingsMenu.activeSelf);
             DestroyCurrentInfoInstance();
@@ -123,10 +123,7 @@ public class UIManager : MonoBehaviour
                 }
             }
         }
-        else
-        {
-            defenseText.text = "None";
-        }
+        
 
         int total = damageTotal - defenseTotal;
         if (total < 0) total = 0;
@@ -175,9 +172,19 @@ public class UIManager : MonoBehaviour
         cardInfoText.text += $"Damage: {unitToDisplay.Damage}" + "\n";
 
         var panel = children[4].gameObject;
-        var buttons = panel.GetComponentsInChildren<Button>();
-        print(buttons[0].gameObject.name);
-        buttons[0].onClick.AddListener(BoardManager.Instance.PrepareAttack);
+
+        if (unitToDisplay.ID == GameManager.instance.playerId)
+        {
+            var buttons = panel.GetComponentsInChildren<Button>();
+            print(buttons[0].gameObject.name);
+            buttons[0].onClick.AddListener(BoardManager.Instance.PrepareAttack);
+        }
+        else
+        {
+            panel.SetActive(false);
+        }
+        
+        
     }
 
     public void DestroyCurrentInfoInstance()

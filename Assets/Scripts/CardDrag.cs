@@ -43,8 +43,7 @@ public class CardDrag : MonoBehaviour
 
     private void OnMouseDown()
     {
-        
-        
+        if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
         if (isPlaced) return;
         if (CardManager.instance.cardDrawInProgress) return;
         mousePosition = Input.mousePosition - GetMousePos();
@@ -63,6 +62,7 @@ public class CardDrag : MonoBehaviour
 
     private void OnMouseDrag()
     {
+        if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
         if (isPlaced) return;
         if (CardManager.instance.cardDrawInProgress) return;
         transform.position = Vector3.Slerp(transform.position, cam.ScreenToWorldPoint(Input.mousePosition - mousePosition), 0.18f);
@@ -70,6 +70,7 @@ public class CardDrag : MonoBehaviour
 
     private void OnMouseUp()
     {
+        if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
         if (isPlaced) return;
         if (CardManager.instance.cardDrawInProgress) return;
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
@@ -137,6 +138,7 @@ public class CardDrag : MonoBehaviour
 
     private void OnMouseEnter()
     {
+        if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
         if (isPlaced) return;
         if (isDragged) return;
         if (CardManager.instance.cardDrawInProgress) return;
@@ -160,6 +162,7 @@ public class CardDrag : MonoBehaviour
 
     private void OnMouseExit()
     {
+        if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
         if (isPlaced) return;
         if (isDragged) return;
         if (CardManager.instance.cardDrawInProgress) return;
