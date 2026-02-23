@@ -1,820 +1,762 @@
 [
   {
     "ID": 0,
+    "Name": "TEST0",
+    "Health": 10,
+    "Cost": 0,
+    "Speed": 4,
+    "Defence": 0,
+    "Range": [
+      [
+        1,
+        1
+      ]
+    ],
+    "Damage": 0,
+    "": ""
+  },
+  {
+    "ID": 1,
     "Name": "TEST1",
     "Health": 1,
+    "Cost": 0,
+    "Speed": 3,
+    "Defence": 5,
+    "Range": [
+      [
+        1,
+        1
+      ]
+    ],
+    "Damage": 5,
+    "": ""
+  },
+  {
+    "ID": 2,
+    "Name": "TEST2",
+    "Health": 4,
+    "Cost": 0,
+    "Speed": 3,
+    "Defence": 3,
+    "Range": [
+      [
+        1,
+        0
+      ]
+    ],
+    "Damage": 4,
+    "": ""
+  },
+  {
+    "ID": 3,
+    "Name": "TEST3",
+    "Health": 4,
+    "Cost": 0,
+    "Speed": 3,
+    "Defence": 4,
+    "Range": [
+      [
+        0,
+        0
+      ]
+    ],
+    "Damage": 3,
+    "": ""
+  },
+  {
+    "ID": 4,
+    "Name": "TEST4",
+    "Health": 2,
+    "Cost": 0,
+    "Speed": 4,
+    "Defence": 4,
+    "Range": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        2
+      ]
+    ],
+    "Damage": 2,
+    "": ""
+  },
+  {
+    "ID": 5,
+    "Name": "TEST5",
+    "Health": 2,
+    "Cost": 0,
+    "Speed": 4,
+    "Defence": 2,
+    "Range": [
+      [
+        0,
+        0
+      ],
+      [
+        2,
+        2
+      ]
+    ],
+    "Damage": 4,
+    "": ""
+  },
+  {
+    "ID": 6,
+    "Name": "TEST6",
+    "Health": 5,
+    "Cost": 0,
+    "Speed": 3,
+    "Defence": 1,
+    "Range": [
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ],
+    "Damage": 4,
+    "": ""
+  },
+  {
+    "ID": 7,
+    "Name": "TEST7",
+    "Health": 5,
+    "Cost": 0,
+    "Speed": 3,
+    "Defence": 3,
+    "Range": [
+      [
+        0,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "Damage": 2,
+    "": ""
+  },
+  {
+    "ID": 8,
+    "Name": "TEST8",
+    "Health": 6,
+    "Cost": 0,
+    "Speed": 2,
+    "Defence": 4,
+    "Range": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "Damage": 1,
+    "": ""
+  },
+  {
+    "ID": 9,
+    "Name": "TEST9",
+    "Health": 6,
+    "Cost": 0,
+    "Speed": 2,
+    "Defence": 2,
+    "Range": [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "Damage": 3,
+    "": ""
+  },
+  {
+    "ID": 10,
+    "Name": "TEST10",
+    "Health": 4,
+    "Cost": 0,
+    "Speed": 3,
+    "Defence": 2,
+    "Range": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ]
+    ],
+    "Damage": 2,
+    "": ""
+  },
+  {
+    "ID": 11,
+    "Name": "TEST11",
+    "Health": 4,
+    "Cost": 0,
+    "Speed": 3,
+    "Defence": 0,
+    "Range": [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        2
+      ]
+    ],
+    "Damage": 4,
+    "": ""
+  },
+  {
+    "ID": 12,
+    "Name": "TEST12",
+    "Health": 6,
+    "Cost": 0,
+    "Speed": 2,
+    "Defence": 3,
+    "Range": [
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        2,
+        1
+      ]
+    ],
+    "Damage": 1,
+    "": ""
+  },
+  {
+    "ID": 13,
+    "Name": "TEST13",
+    "Health": 6,
+    "Cost": 0,
+    "Speed": 2,
+    "Defence": 2,
+    "Range": [
+      [
+        0,
+        0
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        0,
+        2
+      ]
+    ],
+    "Damage": 2,
+    "": ""
+  },
+  {
+    "ID": 14,
+    "Name": "TEST14",
+    "Health": 5,
+    "Cost": 0,
+    "Speed": 2,
+    "Defence": 4,
+    "Range": [
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "Damage": 0,
+    "": ""
+  },
+  {
+    "ID": 15,
+    "Name": "TEST15",
+    "Health": 5,
+    "Cost": 0,
+    "Speed": 2,
+    "Defence": 1,
+    "Range": [
+      [
+        0,
+        0
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "Damage": 3,
+    "": ""
+  },
+  {
+    "ID": 16,
+    "Name": "TEST16",
+    "Health": 8,
+    "Cost": 0,
+    "Speed": 2,
+    "Defence": 1,
+    "Range": [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ],
+    "Damage": 2,
+    "": ""
+  },
+  {
+    "ID": 17,
+    "Name": "TEST17",
+    "Health": 8,
+    "Cost": 0,
+    "Speed": 2,
+    "Defence": 3,
+    "Range": [
+      [
+        0,
+        0
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        2,
+        0
+      ]
+    ],
+    "Damage": 0,
+    "": ""
+  },
+  {
+    "ID": 18,
+    "Name": "TEST18",
+    "Health": 5,
+    "Cost": 0,
+    "Speed": 3,
+    "Defence": 0,
+    "Range": [
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        2,
+        2
+      ]
+    ],
+    "Damage": 3,
+    "": ""
+  },
+  {
+    "ID": 19,
+    "Name": "TEST19",
+    "Health": 5,
+    "Cost": 0,
+    "Speed": 3,
+    "Defence": 2,
+    "Range": [
+      [
+        0,
+        0
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        1,
+        2
+      ]
+    ],
+    "Damage": 1,
+    "": ""
+  },
+  {
+    "ID": 20,
+    "Name": "TEST20",
+    "Health": 1,
+    "Cost": 0,
+    "Speed": 4,
+    "Defence": 0,
+    "Range": [
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        1,
+        2
+      ]
+    ],
+    "Damage": 3,
+    "": ""
+  },
+  {
+    "ID": 21,
+    "Name": "TEST21",
+    "Health": 1,
+    "Cost": 0,
+    "Speed": 4,
+    "Defence": 3,
+    "Range": [
+      [
+        0,
+        0
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        2,
+        2
+      ]
+    ],
+    "Damage": 0,
+    "": ""
+  },
+  {
+    "ID": 22,
+    "Name": "TEST22",
+    "Health": 4,
+    "Cost": 0,
+    "Speed": 1,
+    "Defence": 2,
+    "Range": [
+      [
+        0,
+        0
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        2,
+        1
+      ]
+    ],
+    "Damage": 1,
+    "": ""
+  },
+  {
+    "ID": 23,
+    "Name": "TEST23",
+    "Health": 4,
+    "Cost": 0,
+    "Speed": 1,
+    "Defence": 0,
+    "Range": [
+      [
+        1,
+        0
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        2
+      ]
+    ],
+    "Damage": 3,
+    "": ""
+  },
+  {
+    "ID": 24,
+    "Name": "TEST24",
+    "Health": 8,
     "Cost": 0,
     "Speed": 0,
     "Defence": 1,
     "Range": [
       [
         0,
-        2
+        0
+      ],
+      [
+        1,
+        0
       ],
       [
         2,
         0
-      ]
-    ],
-    "Damage": 1
-  },
-  {
-    "ID": 1,
-    "Name": "TEST2",
-    "Health": 1,
-    "Cost": 1,
-    "Speed": 1,
-    "Defence": 1,
-    "Range": [
-      [
-        0,
-        2
       ],
       [
-        2,
-        0
-      ]
-    ],
-    "Damage": 1
-  },
-  {
-    "ID": 2,
-    "Name": "TEST3",
-    "Health": 1,
-    "Cost": 1,
-    "Speed": 1,
-    "Defence": 1,
-    "Range": [
-      [
-        0,
+        1,
         2
-      ],
-      [
-        2,
-        0
       ]
     ],
-    "Damage": 1
-  },
-  {
-    "ID": 3,
-    "Name": "TEST4",
-    "Health": 1,
-    "Cost": 1,
-    "Speed": 1,
-    "Defence": 1,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 2
-  },
-  {
-    "ID": 4,
-    "Name": "TEST5",
-    "Health": 1,
-    "Cost": 1,
-    "Speed": 1,
-    "Defence": 2,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 1
-  },
-  {
-    "ID": 5,
-    "Name": "TEST6",
-    "Health": 1,
-    "Cost": 1,
-    "Speed": 1,
-    "Defence": 1,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 1
-  },
-  {
-    "ID": 6,
-    "Name": "TEST7",
-    "Health": 3,
-    "Cost": 2,
-    "Speed": 1,
-    "Defence": 1,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 2
-  },
-  {
-    "ID": 7,
-    "Name": "TEST8",
-    "Health": 2,
-    "Cost": 2,
-    "Speed": 2,
-    "Defence": 2,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 1
-  },
-  {
-    "ID": 8,
-    "Name": "TEST9",
-    "Health": 2,
-    "Cost": 2,
-    "Speed": 2,
-    "Defence": 1,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 2
-  },
-  {
-    "ID": 9,
-    "Name": "TEST10",
-    "Health": 3,
-    "Cost": 2,
-    "Speed": 1,
-    "Defence": 2,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 1
-  },
-  {
-    "ID": 10,
-    "Name": "TEST11",
-    "Health": 3,
-    "Cost": 2,
-    "Speed": 1,
-    "Defence": 1,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 3
-  },
-  {
-    "ID": 11,
-    "Name": "TEST12",
-    "Health": 2,
-    "Cost": 2,
-    "Speed": 2,
-    "Defence": 3,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 1
-  },
-  {
-    "ID": 12,
-    "Name": "TEST13",
-    "Health": 2,
-    "Cost": 2,
-    "Speed": 2,
-    "Defence": 1,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 2
-  },
-  {
-    "ID": 13,
-    "Name": "TEST14",
-    "Health": 3,
-    "Cost": 2,
-    "Speed": 1,
-    "Defence": 2,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 1
-  },
-  {
-    "ID": 14,
-    "Name": "TEST15",
-    "Health": 3,
-    "Cost": 3,
-    "Speed": 2,
-    "Defence": 2,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 2
-  },
-  {
-    "ID": 15,
-    "Name": "TEST16",
-    "Health": 4,
-    "Cost": 3,
-    "Speed": 1,
-    "Defence": 1,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 3
-  },
-  {
-    "ID": 16,
-    "Name": "TEST17",
-    "Health": 2,
-    "Cost": 3,
-    "Speed": 3,
-    "Defence": 3,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 1
-  },
-  {
-    "ID": 17,
-    "Name": "TEST18",
-    "Health": 2,
-    "Cost": 3,
-    "Speed": 2,
-    "Defence": 1,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 1
-  },
-  {
-    "ID": 18,
-    "Name": "TEST19",
-    "Health": 3,
-    "Cost": 3,
-    "Speed": 3,
-    "Defence": 1,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 2
-  },
-  {
-    "ID": 19,
-    "Name": "TEST20",
-    "Health": 5,
-    "Cost": 3,
-    "Speed": 1,
-    "Defence": 2,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 1
-  },
-  {
-    "ID": 20,
-    "Name": "TEST21",
-    "Health": 4,
-    "Cost": 3,
-    "Speed": 2,
-    "Defence": 2,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 2
-  },
-  {
-    "ID": 21,
-    "Name": "TEST22",
-    "Health": 5,
-    "Cost": 3,
-    "Speed": 1,
-    "Defence": 1,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 3
-  },
-  {
-    "ID": 22,
-    "Name": "TEST23",
-    "Health": 3,
-    "Cost": 3,
-    "Speed": 3,
-    "Defence": 3,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 1
-  },
-  {
-    "ID": 23,
-    "Name": "TEST24",
-    "Health": 3,
-    "Cost": 3,
-    "Speed": 3,
-    "Defence": 2,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 3
-  },
-  {
-    "ID": 24,
-    "Name": "TEST25",
-    "Health": 5,
-    "Cost": 3,
-    "Speed": 1,
-    "Defence": 3,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 2
+    "Damage": 2,
+    "": ""
   },
   {
     "ID": 25,
-    "Name": "TEST26",
-    "Health": 4,
-    "Cost": 3,
-    "Speed": 2,
-    "Defence": 1,
+    "Name": "TEST25",
+    "Health": 8,
+    "Cost": 0,
+    "Speed": 0,
+    "Defence": 3,
     "Range": [
       [
         0,
-        2
+        0
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        1
       ],
       [
         2,
-        0
+        2
       ]
     ],
-    "Damage": 1
+    "Damage": 0,
+    "": ""
   },
   {
     "ID": 26,
-    "Name": "TEST27",
-    "Health": 5,
-    "Cost": 3,
+    "Name": "TEST26",
+    "Health": 8,
+    "Cost": 0,
     "Speed": 1,
-    "Defence": 1,
+    "Defence": 2,
     "Range": [
       [
+        1,
+        0
+      ],
+      [
         0,
-        2
+        1
+      ],
+      [
+        1,
+        1
       ],
       [
         2,
-        0
+        1
       ]
     ],
-    "Damage": 2
+    "Damage": 0,
+    "": ""
   },
   {
     "ID": 27,
-    "Name": "TEST28",
-    "Health": 3,
-    "Cost": 3,
-    "Speed": 3,
-    "Defence": 2,
+    "Name": "TEST27",
+    "Health": 8,
+    "Cost": 0,
+    "Speed": 1,
+    "Defence": 0,
     "Range": [
       [
         0,
-        2
+        0
       ],
       [
         2,
         0
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        0,
+        2
       ]
     ],
-    "Damage": 1
+    "Damage": 2,
+    "": ""
   },
   {
     "ID": 28,
-    "Name": "TEST29",
-    "Health": 4,
-    "Cost": 3,
-    "Speed": 2,
-    "Defence": 2,
+    "Name": "TEST28",
+    "Health": 10,
+    "Cost": 0,
+    "Speed": 0,
+    "Defence": 1,
     "Range": [
       [
         0,
-        2
+        0
+      ],
+      [
+        1,
+        0
       ],
       [
         2,
         0
+      ],
+      [
+        1,
+        1
       ]
     ],
-    "Damage": 2
+    "Damage": 1,
+    "": ""
   },
   {
     "ID": 29,
-    "Name": "TEST30",
-    "Health": 2,
-    "Cost": 4,
-    "Speed": 4,
-    "Defence": 1,
+    "Name": "TEST29",
+    "Health": 10,
+    "Cost": 0,
+    "Speed": 0,
+    "Defence": 2,
     "Range": [
       [
         0,
-        2
+        0
       ],
       [
-        2,
+        1,
         0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        1
       ]
     ],
-    "Damage": 4
+    "Damage": 0,
+    "": ""
   },
   {
     "ID": 30,
-    "Name": "TEST31",
-    "Health": 4,
-    "Cost": 4,
-    "Speed": 2,
-    "Defence": 2,
+    "Name": "TEST30",
+    "Health": 6,
+    "Cost": 0,
+    "Speed": 1,
+    "Defence": 1,
     "Range": [
       [
+        1,
+        0
+      ],
+      [
         0,
-        2
+        1
+      ],
+      [
+        1,
+        1
       ],
       [
         2,
-        0
+        2
       ]
     ],
-    "Damage": 3
+    "Damage": 1,
+    "": ""
   },
   {
     "ID": 31,
-    "Name": "TEST32",
-    "Health": 3,
-    "Cost": 4,
-    "Speed": 3,
-    "Defence": 3,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 2
-  },
-  {
-    "ID": 32,
-    "Name": "TEST33",
-    "Health": 5,
-    "Cost": 4,
-    "Speed": 1,
-    "Defence": 4,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 1
-  },
-  {
-    "ID": 33,
-    "Name": "TEST34",
-    "Health": 1,
-    "Cost": 4,
-    "Speed": 4,
-    "Defence": 1,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 2
-  },
-  {
-    "ID": 34,
-    "Name": "TEST35",
-    "Health": 4,
-    "Cost": 4,
-    "Speed": 1,
-    "Defence": 2,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 1
-  },
-  {
-    "ID": 35,
-    "Name": "TEST36",
-    "Health": 5,
-    "Cost": 4,
-    "Speed": 2,
-    "Defence": 1,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 3
-  },
-  {
-    "ID": 36,
-    "Name": "TEST37",
-    "Health": 4,
-    "Cost": 4,
-    "Speed": 3,
-    "Defence": 3,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 1
-  },
-  {
-    "ID": 37,
-    "Name": "TEST38",
-    "Health": 5,
-    "Cost": 4,
-    "Speed": 3,
-    "Defence": 2,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 3
-  },
-  {
-    "ID": 38,
-    "Name": "TEST39",
+    "Name": "TEST31",
     "Health": 6,
-    "Cost": 4,
-    "Speed": 2,
-    "Defence": 3,
-    "Range": [
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 2
-  },
-  {
-    "ID": 39,
-    "Name": "TEST40",
-    "Health": 7,
-    "Cost": 4,
+    "Cost": 0,
     "Speed": 1,
-    "Defence": 1,
+    "Defence": 0,
     "Range": [
       [
         0,
-        2
+        0
       ],
       [
         2,
         0
-      ]
-    ],
-    "Damage": 2
-  },
-  {
-    "ID": 40,
-    "Name": "TEST41",
-    "Health": 4,
-    "Cost": 4,
-    "Speed": 4,
-    "Defence": 2,
-    "Range": [
-      [
-        0,
-        2
       ],
       [
-        2,
-        0
-      ]
-    ],
-    "Damage": 1
-  },
-  {
-    "ID": 41,
-    "Name": "TEST42",
-    "Health": 4,
-    "Cost": 4,
-    "Speed": 4,
-    "Defence": 1,
-    "Range": [
-      [
-        0,
-        2
+        1,
+        1
       ],
       [
-        2,
-        0
-      ]
-    ],
-    "Damage": 1
-  },
-  {
-    "ID": 42,
-    "Name": "TEST43",
-    "Health": 7,
-    "Cost": 4,
-    "Speed": 1,
-    "Defence": 1,
-    "Range": [
-      [
-        0,
+        1,
         2
-      ],
-      [
-        2,
-        0
       ]
     ],
-    "Damage": 1
+    "Damage": 2,
+    "": ""
   }
 ]
-  

@@ -103,10 +103,7 @@ public class UIManager : MonoBehaviour
                 }
             }
         }
-        else
-        {
-            damageText.text = "None";
-        }
+       
         
         if (BoardManager.Instance.defenseInstances.Count != 0)
         {
@@ -177,7 +174,32 @@ public class UIManager : MonoBehaviour
         {
             var buttons = panel.GetComponentsInChildren<Button>();
             print(buttons[0].gameObject.name);
-            buttons[0].onClick.AddListener(BoardManager.Instance.PrepareAttack);
+            if (unitToDisplay.Damage > 0)
+            {
+                buttons[0].onClick.AddListener(BoardManager.Instance.PrepareAttack);
+            }
+            else
+            {
+                buttons[0].gameObject.SetActive(false);
+            }
+
+            if (unitToDisplay.Defense > 0)
+            {
+                //placeholder
+            }
+            else
+            {
+                buttons[1].gameObject.SetActive(false);
+            }
+
+            if (unitToDisplay.Movement > 0)
+            { 
+                //placeholder
+            }
+            else
+            {
+                buttons[2].gameObject.SetActive(false);
+            }
         }
         else
         {

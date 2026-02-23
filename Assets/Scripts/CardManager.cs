@@ -18,10 +18,11 @@ public class CardManager : MonoBehaviour
     public List<CardDeck.CardData> playerDeck;
     public List<CardDeck.CardData> playerHand;
     public List<GameObject> playerHandVisuals;
-    
-    
+
+
 
     [Header("Properties")] 
+    [SerializeField] private int maxCards;
     [SerializeField] private int initialDrawAmount;
     [SerializeField] private float cardDisplayOffset;
     [SerializeField] private float cardLayoutTime;
@@ -53,6 +54,11 @@ public class CardManager : MonoBehaviour
 
     }
 
+    public void DrawCardBruh(int amount)
+    {
+        StartCoroutine(DrawCard(amount));
+    }
+
     private IEnumerator DrawCard(int amount)
     {
 
@@ -61,6 +67,7 @@ public class CardManager : MonoBehaviour
         for (int i = 0; i < amount; i++)
         {
             if (playerDeck.Count == 0) break;
+            if (playerHand.Count >= maxCards) break;
 
             var randInt = Random.Range(0, playerDeck.Count);
 

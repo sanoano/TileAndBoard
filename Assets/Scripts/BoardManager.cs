@@ -330,16 +330,16 @@ public class BoardManager : NetworkBehaviour
                     print(positions[i]);
                 }
                 
-                foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
-                {
-                    AddDamageInstanceRpc(name, GameManager.instance.playerId, damage, positions, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
-                }
-
                 currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
                 
                 currentSelectedTileGameObject = null;
                 CurrentSelectedTile = new Vector2Int(-1, 1);
-
+                
+                foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+                {
+                    AddDamageInstanceRpc(name, GameManager.instance.playerId, damage, positions, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                }
+                
             }
             
         }

@@ -15,75 +15,355 @@ MonoBehaviour:
   cardIds: 00000000020000000300000004000000050000000600000007000000
   Cards:
   - ID: 0
+    Name: TEST0
+    Health: 10
+    Cost: 0
+    Speed: 4
+    Defence: 0
+    Range:
+    - {x: 1, y: 1}
+    Damage: 0
+  - ID: 1
     Name: TEST1
     Health: 1
+    Cost: 0
+    Speed: 3
+    Defence: 5
+    Range:
+    - {x: 1, y: 1}
+    Damage: 5
+  - ID: 2
+    Name: TEST2
+    Health: 4
+    Cost: 0
+    Speed: 3
+    Defence: 3
+    Range:
+    - {x: 1, y: 0}
+    Damage: 4
+  - ID: 3
+    Name: TEST3
+    Health: 4
+    Cost: 0
+    Speed: 3
+    Defence: 4
+    Range:
+    - {x: 0, y: 0}
+    Damage: 3
+  - ID: 4
+    Name: TEST4
+    Health: 2
+    Cost: 0
+    Speed: 4
+    Defence: 4
+    Range:
+    - {x: 1, y: 0}
+    - {x: 1, y: 2}
+    Damage: 2
+  - ID: 5
+    Name: TEST5
+    Health: 2
+    Cost: 0
+    Speed: 4
+    Defence: 2
+    Range:
+    - {x: 0, y: 0}
+    - {x: 2, y: 2}
+    Damage: 4
+  - ID: 6
+    Name: TEST6
+    Health: 5
+    Cost: 0
+    Speed: 3
+    Defence: 1
+    Range:
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    Damage: 4
+  - ID: 7
+    Name: TEST7
+    Health: 5
+    Cost: 0
+    Speed: 3
+    Defence: 3
+    Range:
+    - {x: 0, y: 0}
+    - {x: 2, y: 0}
+    Damage: 2
+  - ID: 8
+    Name: TEST8
+    Health: 6
+    Cost: 0
+    Speed: 2
+    Defence: 4
+    Range:
+    - {x: 1, y: 0}
+    - {x: 1, y: 1}
+    Damage: 1
+  - ID: 9
+    Name: TEST9
+    Health: 6
+    Cost: 0
+    Speed: 2
+    Defence: 2
+    Range:
+    - {x: 0, y: 0}
+    - {x: 1, y: 1}
+    Damage: 3
+  - ID: 10
+    Name: TEST10
+    Health: 4
+    Cost: 0
+    Speed: 3
+    Defence: 2
+    Range:
+    - {x: 1, y: 0}
+    - {x: 1, y: 1}
+    - {x: 1, y: 2}
+    Damage: 2
+  - ID: 11
+    Name: TEST11
+    Health: 4
+    Cost: 0
+    Speed: 3
+    Defence: 0
+    Range:
+    - {x: 0, y: 0}
+    - {x: 1, y: 1}
+    - {x: 2, y: 2}
+    Damage: 4
+  - ID: 12
+    Name: TEST12
+    Health: 6
+    Cost: 0
+    Speed: 2
+    Defence: 3
+    Range:
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    - {x: 2, y: 1}
+    Damage: 1
+  - ID: 13
+    Name: TEST13
+    Health: 6
+    Cost: 0
+    Speed: 2
+    Defence: 2
+    Range:
+    - {x: 0, y: 0}
+    - {x: 2, y: 0}
+    - {x: 0, y: 2}
+    Damage: 2
+  - ID: 14
+    Name: TEST14
+    Health: 5
+    Cost: 0
+    Speed: 2
+    Defence: 4
+    Range:
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    Damage: 0
+  - ID: 15
+    Name: TEST15
+    Health: 5
+    Cost: 0
+    Speed: 2
+    Defence: 1
+    Range:
+    - {x: 0, y: 0}
+    - {x: 2, y: 0}
+    - {x: 1, y: 1}
+    Damage: 3
+  - ID: 16
+    Name: TEST16
+    Health: 8
+    Cost: 0
+    Speed: 2
+    Defence: 1
+    Range:
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    Damage: 2
+  - ID: 17
+    Name: TEST17
+    Health: 8
+    Cost: 0
+    Speed: 2
+    Defence: 3
+    Range:
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 2, y: 0}
+    Damage: 0
+  - ID: 18
+    Name: TEST18
+    Health: 5
+    Cost: 0
+    Speed: 3
+    Defence: 0
+    Range:
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    - {x: 2, y: 2}
+    Damage: 3
+  - ID: 19
+    Name: TEST19
+    Health: 5
+    Cost: 0
+    Speed: 3
+    Defence: 2
+    Range:
+    - {x: 0, y: 0}
+    - {x: 2, y: 0}
+    - {x: 1, y: 2}
+    Damage: 1
+  - ID: 20
+    Name: TEST20
+    Health: 1
+    Cost: 0
+    Speed: 4
+    Defence: 0
+    Range:
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    - {x: 2, y: 1}
+    - {x: 1, y: 2}
+    Damage: 3
+  - ID: 21
+    Name: TEST21
+    Health: 1
+    Cost: 0
+    Speed: 4
+    Defence: 3
+    Range:
+    - {x: 0, y: 0}
+    - {x: 2, y: 0}
+    - {x: 0, y: 2}
+    - {x: 2, y: 2}
+    Damage: 0
+  - ID: 22
+    Name: TEST22
+    Health: 4
+    Cost: 0
+    Speed: 1
+    Defence: 2
+    Range:
+    - {x: 0, y: 0}
+    - {x: 2, y: 0}
+    - {x: 0, y: 1}
+    - {x: 2, y: 1}
+    Damage: 1
+  - ID: 23
+    Name: TEST23
+    Health: 4
+    Cost: 0
+    Speed: 1
+    Defence: 0
+    Range:
+    - {x: 1, y: 0}
+    - {x: 2, y: 0}
+    - {x: 0, y: 1}
+    - {x: 0, y: 2}
+    Damage: 3
+  - ID: 24
+    Name: TEST24
+    Health: 8
     Cost: 0
     Speed: 0
     Defence: 1
     Range:
-    - {x: 0, y: 2}
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
     - {x: 2, y: 0}
-    Damage: 1
-  - ID: 2
-    Name: TEST3
-    Health: 1
-    Cost: 1
-    Speed: 1
-    Defence: 1
-    Range:
-    - {x: 0, y: 2}
-    - {x: 2, y: 0}
-    Damage: 1
-  - ID: 3
-    Name: TEST4
-    Health: 1
-    Cost: 1
-    Speed: 1
-    Defence: 1
-    Range:
-    - {x: 0, y: 2}
-    - {x: 2, y: 0}
+    - {x: 1, y: 2}
     Damage: 2
-  - ID: 4
-    Name: TEST5
-    Health: 1
-    Cost: 1
+  - ID: 25
+    Name: TEST25
+    Health: 8
+    Cost: 0
+    Speed: 0
+    Defence: 3
+    Range:
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    - {x: 2, y: 2}
+    Damage: 0
+  - ID: 26
+    Name: TEST26
+    Health: 8
+    Cost: 0
     Speed: 1
     Defence: 2
     Range:
-    - {x: 0, y: 2}
-    - {x: 2, y: 0}
-    Damage: 1
-  - ID: 5
-    Name: TEST6
-    Health: 1
-    Cost: 1
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 2, y: 1}
+    Damage: 0
+  - ID: 27
+    Name: TEST27
+    Health: 8
+    Cost: 0
     Speed: 1
-    Defence: 1
+    Defence: 0
     Range:
-    - {x: 0, y: 2}
+    - {x: 0, y: 0}
     - {x: 2, y: 0}
-    Damage: 1
-  - ID: 6
-    Name: TEST7
-    Health: 3
-    Cost: 2
-    Speed: 1
-    Defence: 1
-    Range:
+    - {x: 1, y: 1}
     - {x: 0, y: 2}
-    - {x: 2, y: 0}
     Damage: 2
-  - ID: 7
-    Name: TEST8
-    Health: 2
-    Cost: 2
-    Speed: 2
+  - ID: 28
+    Name: TEST28
+    Health: 10
+    Cost: 0
+    Speed: 0
+    Defence: 1
+    Range:
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 2, y: 0}
+    - {x: 1, y: 1}
+    Damage: 1
+  - ID: 29
+    Name: TEST29
+    Health: 10
+    Cost: 0
+    Speed: 0
     Defence: 2
     Range:
-    - {x: 0, y: 2}
-    - {x: 2, y: 0}
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    Damage: 0
+  - ID: 30
+    Name: TEST30
+    Health: 6
+    Cost: 0
+    Speed: 1
+    Defence: 1
+    Range:
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 2, y: 2}
     Damage: 1
+  - ID: 31
+    Name: TEST31
+    Health: 6
+    Cost: 0
+    Speed: 1
+    Defence: 0
+    Range:
+    - {x: 0, y: 0}
+    - {x: 2, y: 0}
+    - {x: 1, y: 1}
+    - {x: 1, y: 2}
+    Damage: 2
   populateDeck: 0
   clearDeck: 0
   addAll: 0
