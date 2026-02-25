@@ -68,9 +68,9 @@ public class ConnectionManager : MonoBehaviour
     {
         if (clientId != m_NetworkManager.LocalClientId && SceneManager.GetActiveScene().name == "Battle")
         {
-            // await _session.LeaveAsync();
-            // AuthenticationService.Instance.SignOut();
-            // SceneManager.LoadScene("Lobby");
+            await _session.LeaveAsync();
+            AuthenticationService.Instance.SignOut();
+            SceneManager.LoadScene("Lobby");
         }
         
     }

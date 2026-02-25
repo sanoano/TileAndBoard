@@ -27,23 +27,27 @@ public class UIManager : MonoBehaviour
     [Header("Tile Info Panel")]
     [SerializeField] private GameObject uiInfoPrefab;
     private GameObject uiInfoPrefabInstance;
+    [SerializeField] private GameObject InfoPanelPos;
     
     [Header("Canvas")]
     [SerializeField] private GameObject Canvas;
+    
 
     [Header("Card Info Panel")] 
     [SerializeField] private GameObject cardInfoPrefab;
     private GameObject cardInfoPrefabInstance;
-    
+    [SerializeField] private GameObject CardInfoPanelPos;
+
+    [Header("Actions Info Panel")]
+    [SerializeField] private GameObject actionsInfoPrefab;
+    private GameObject actionsInfoPrefabInstance;
+    [SerializeField] private GameObject actionsInfoPanelPos;
 
     [Header("Settings Menu")] 
     public GameObject settingsMenu;
 
     public AudioMixer mixer;
     
-    [Header("UI Element Offsets")]
-    [SerializeField] private int infoXOffset;
-    [SerializeField] private int infoYOffset;
 
     private void Awake()
     {
@@ -74,10 +78,8 @@ public class UIManager : MonoBehaviour
         {
             Destroy(uiInfoPrefabInstance);
         }
-
-        Vector3 spawnPosition = new Vector3(Input.mousePosition.x + infoXOffset, Input.mousePosition.y + infoYOffset);
         
-        uiInfoPrefabInstance = Instantiate(uiInfoPrefab, spawnPosition, Quaternion.identity, Canvas.transform);
+        uiInfoPrefabInstance = Instantiate(uiInfoPrefab, Vector3.zero, Quaternion.identity, InfoPanelPos.transform);
 
         Transform[] children = uiInfoPrefabInstance.GetComponentsInChildren<Transform>();
 
@@ -153,13 +155,15 @@ public class UIManager : MonoBehaviour
 
         if (!unitFound) return;
 
-        Vector3 spawnPosition = new Vector3(Input.mousePosition.x + infoXOffset + 300 * 2, Input.mousePosition.y + infoYOffset);
+        cardInfoPrefabInstance = Instantiate(cardInfoPrefab, Vector3.zero, Quaternion.identity, CardInfoPanelPos.transform);
 
-        cardInfoPrefabInstance = Instantiate(cardInfoPrefab, spawnPosition, Quaternion.identity, Canvas.transform);
+        actionsInfoPrefabInstance = Instantiate(actionsInfoPrefab, Vector3.zero, Quaternion.identity,
+            actionsInfoPanelPos.transform);
         
-        Transform[] children = cardInfoPrefabInstance.GetComponentsInChildren<Transform>();
+        Transform[] actionChildren = actionsInfoPrefabInstance.GetComponentsInChildren<Transform>();
+        Transform[] cardChildren = cardInfoPrefabInstance.GetComponentsInChildren<Transform>();
 
-        TextMeshProUGUI cardInfoText = children[2].gameObject.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI cardInfoText = cardChildren[2].gameObject.GetComponent<TextMeshProUGUI>();
 
         cardInfoText.text = "";
         cardInfoText.text += $"Name: {unitToDisplay.Name}" + "\n";
@@ -167,14 +171,14 @@ public class UIManager : MonoBehaviour
         cardInfoText.text += $"Speed: {unitToDisplay.Movement}" + "\n";
         cardInfoText.text += $"Defense: {unitToDisplay.Defense}" + "\n";
         cardInfoText.text += $"Damage: {unitToDisplay.Damage}" + "\n";
-
-        var panel = children[4].gameObject;
+        
+        var panel = actionChildren[2].gameObject;
 
         if (unitToDisplay.ID == GameManager.instance.playerId)
         {
             var buttons = panel.GetComponentsInChildren<Button>();
             print(buttons[0].gameObject.name);
-            if (unitToDisplay.Damage > 0)
+            if (unitToDisplay.Damage > 0 && TurnManager.instance.isYourTurn)
             {
                 buttons[0].onClick.AddListener(BoardManager.Instance.PrepareAttack);
             }
@@ -183,16 +187,16 @@ public class UIManager : MonoBehaviour
                 buttons[0].gameObject.SetActive(false);
             }
 
-            if (unitToDisplay.Defense > 0)
+            if (unitToDisplay.Defense > 0 && TurnManager.instance.isYourTurn)
             {
-                //placeholder
+                buttons[1].onClick.AddListener(BoardManager.Instance.PrepareDefense);
             }
             else
             {
                 buttons[1].gameObject.SetActive(false);
             }
 
-            if (unitToDisplay.Movement > 0)
+            if (unitToDisplay.Movement > 0 && TurnManager.instance.isYourTurn)
             { 
                 //placeholder
             }
@@ -219,6 +223,11 @@ public class UIManager : MonoBehaviour
         if (cardInfoPrefabInstance)
         {
             DestroyImmediate(cardInfoPrefabInstance);
+        }
+
+        if (actionsInfoPrefabInstance)
+        {
+            DestroyImmediate(actionsInfoPrefabInstance);
         }
         
     }

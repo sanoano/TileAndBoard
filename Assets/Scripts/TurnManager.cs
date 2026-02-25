@@ -13,6 +13,8 @@ public class TurnManager : NetworkBehaviour
 
     public TurnState currentTurn;
 
+    public bool isYourTurn;
+
     [Header("UI References")] 
     [SerializeField]
     private TextMeshProUGUI turnText;
@@ -30,7 +32,8 @@ public class TurnManager : NetworkBehaviour
         {
             Destroy(this);
         }
-            
+        
+        
     }
 
     public override void OnNetworkSpawn()
@@ -42,6 +45,11 @@ public class TurnManager : NetworkBehaviour
         if (!HasAuthority)
         {
             turnButton.gameObject.SetActive(false);
+        }
+
+        if (HasAuthority)
+        {
+            isYourTurn = true;
         }
         
     }
@@ -104,6 +112,7 @@ public class TurnManager : NetworkBehaviour
         UpdateTurnText(currentTurn);
         OnTurnChanged(currentTurn);
         AudioManager.singleton.PlaySound(Resources.Load<AudioClip>("Audio/SFX/peg falling"));
+        isYourTurn = !isYourTurn;
     }
     
 }

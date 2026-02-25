@@ -85,7 +85,7 @@ public class CardDrag : MonoBehaviour
                 BoardManager.Instance.CoordinatesOf<GameObject>(BoardManager.Instance.localBoard.TileTransforms,
                     hit.transform.gameObject);
 
-            if (BoardManager.Instance.localBoard.Visuals[tileCoords.x, tileCoords.y] == null)
+            if (BoardManager.Instance.localBoard.Visuals[tileCoords.x, tileCoords.y] == null && TurnManager.instance.isYourTurn)
             {
                 isDragged = false;
                 BoardManager.Instance.PlaceCard(this.gameObject,
