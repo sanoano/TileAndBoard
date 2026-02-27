@@ -64,7 +64,7 @@ public class BoardManager : NetworkBehaviour
     }
 
     [Serializable]
-    public struct Unit
+    public class Unit
     {
         public String Name;
         public Player.PlayerId ID;
@@ -74,9 +74,10 @@ public class BoardManager : NetworkBehaviour
         public int Movement;
         public List<Vector2Int> AttackPositions;
         public Vector2Int Position;
+        public bool HasActed;
 
         public Unit(string name, Player.PlayerId id, int health, int damage, int movement,
-            List<Vector2Int> attackPositions, Vector2Int position, int defense)
+            List<Vector2Int> attackPositions, Vector2Int position, int defense, bool hasActed)
         {
             Name = name;
             ID = id;
@@ -86,6 +87,7 @@ public class BoardManager : NetworkBehaviour
             AttackPositions = attackPositions;
             Position = position;
             Defense = defense;
+            HasActed = hasActed;
         }
     }
 
@@ -445,6 +447,9 @@ public class BoardManager : NetworkBehaviour
 
                 if (Input.GetKeyDown(KeyCode.Return))
                 {
+                    
+                    TacticsManager.instance.RemoveTacticsPoints(1);
+                    
                     UIManager.Instance.interactionState = UIManager.InteractionState.None;
                     foreach (Vector2Int position in workingPositions)
                     {
@@ -455,6 +460,9 @@ public class BoardManager : NetworkBehaviour
                     string name = currentlySelectedUnit.Name;
                     int damage = currentlySelectedUnit.Damage;
                     Vector2Int[] positions = new Vector2Int[workingPositions.Count];
+
+                    currentlySelectedUnit.HasActed = true;
+                    
                     for (int i = 0; i < workingPositions.Count; i++)
                     {
                         positions[i] = workingPositions[i];
@@ -484,6 +492,8 @@ public class BoardManager : NetworkBehaviour
                         localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
                             .TileRecieveSignal(0);
                     }
+                    
+                    
 
                     for (int i = 0; i < workingPositions.Count; i++)
                     {
@@ -538,6 +548,9 @@ public class BoardManager : NetworkBehaviour
 
                 if (Input.GetKeyDown(KeyCode.Return))
                 {
+                    
+                    TacticsManager.instance.RemoveTacticsPoints(1);
+                    
                     UIManager.Instance.interactionState = UIManager.InteractionState.None;
                     foreach (Vector2Int position in workingPositions)
                     {
@@ -548,6 +561,9 @@ public class BoardManager : NetworkBehaviour
                     string name = currentlySelectedUnit.Name;
                     int defense = currentlySelectedUnit.Defense;
                     Vector2Int[] positions = new Vector2Int[workingPositions.Count];
+                    
+                    currentlySelectedUnit.HasActed = true;
+                    
                     for (int i = 0; i < workingPositions.Count; i++)
                     {
                         positions[i] = workingPositions[i];
@@ -672,7 +688,8 @@ public class BoardManager : NetworkBehaviour
             defense: cardData.Defence,
             movement: cardData.Speed,
             attackPositions: new List<Vector2Int>(cardData.Range),
-            position: coordinates
+            position: coordinates,
+            hasActed: false
 
         );
 
@@ -684,7 +701,7 @@ public class BoardManager : NetworkBehaviour
 
         localBoard.Visuals[coordinates.x, coordinates.y] = cardVisual;
 
-        cardVisual.transform.parent = tile.transform;
+        // cardVisual.transform.parent = tile.transform;
 
         Vector3 position;
 
@@ -692,18 +709,18 @@ public class BoardManager : NetworkBehaviour
 
         if (unit.ID == Player.PlayerId.Player1)
         {
-            position = new Vector3(0, tile.transform.localPosition.y + 1, 0);
+            position = new Vector3(tile.transform.position.x, tile.transform.position.y + 0.5f, tile.transform.position.z);
             rotation = Quaternion.Euler(new Vector3(90, 0, 0));
         }
         else
         {
-            position = new Vector3(0, tile.transform.localPosition.y - 1, 0);
+            position = new Vector3(tile.transform.position.x, tile.transform.position.y - 0.5f, tile.transform.position.z);
             rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
         }
 
-        Vector3 scale = new Vector3(1, 0.8f, 0);
+        Vector3 scale = new Vector3(5, 6, 4);
 
-        var positionTween = new LocalPositionTween()
+        var positionTween = new PositionTween()
         {
             to = position,
             duration = placeAnimationTime,
@@ -760,7 +777,8 @@ public class BoardManager : NetworkBehaviour
             defense: cardData.Defence,
             movement: cardData.Speed,
             attackPositions: new List<Vector2Int>(cardData.Range),
-            position: coordinates
+            position: coordinates,
+            hasActed: false
         );
 
         unitsList.Add(unit);
@@ -809,6 +827,8 @@ public class BoardManager : NetworkBehaviour
 
     public void PrepareAttack()
     {
+        
+        if (!TacticsManager.instance.CanAfford(1)) return;
 
         UIManager.Instance.DestroyCurrentInfoInstance();
         
@@ -841,6 +861,9 @@ public class BoardManager : NetworkBehaviour
 
     public void PrepareDefense()
     {
+        
+        if (!TacticsManager.instance.CanAfford(1)) return;
+        
         UIManager.Instance.DestroyCurrentInfoInstance();
         
         foreach (Unit unit in unitsList)

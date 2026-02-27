@@ -7,7 +7,7 @@ using UnityEngine.Scripting;
 
 // You guys are going to have to excuse the AI gen code in here. I would literally only use it as a last resort
 // because honestly getting this shit to serialize properly was an odyssey. Unity's support for serialization
-// from JSON and honestly serialization is just terrible and not even documented that well. Pray God this is the
+// from JSON and honestly serialization in general is just terrible and not even documented that well. Pray God this is the
 // only bit of LLM code we have in here. Really annoying how it leaves superfluous comments everywhere too.
 
 

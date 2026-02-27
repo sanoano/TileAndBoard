@@ -85,9 +85,11 @@ public class CardDrag : MonoBehaviour
                 BoardManager.Instance.CoordinatesOf<GameObject>(BoardManager.Instance.localBoard.TileTransforms,
                     hit.transform.gameObject);
 
-            if (BoardManager.Instance.localBoard.Visuals[tileCoords.x, tileCoords.y] == null && TurnManager.instance.isYourTurn)
+            if (BoardManager.Instance.localBoard.Visuals[tileCoords.x, tileCoords.y] == null && TurnManager.instance.isYourTurn &&
+                TacticsManager.instance.CanAfford(1))
             {
                 isDragged = false;
+                TacticsManager.instance.RemoveTacticsPoints(1);
                 BoardManager.Instance.PlaceCard(this.gameObject,
                     CardManager.instance.playerHand[position],
                     hit.transform.gameObject);

@@ -42,12 +42,12 @@ public class TurnManager : NetworkBehaviour
         currentTurn = TurnState.Player1Turn;
         UpdateTurnText(currentTurn);
 
-        if (!HasAuthority)
+        if (GameManager.instance.playerId == Player.PlayerId.Player2)
         {
             turnButton.gameObject.SetActive(false);
         }
 
-        if (HasAuthority)
+        if (GameManager.instance.playerId == Player.PlayerId.Player1)
         {
             isYourTurn = true;
         }
@@ -77,6 +77,33 @@ public class TurnManager : NetworkBehaviour
     public void OnTurnChanged(TurnState current)
     {
         Debug.Log("Turn changed to " + current);
+
+        if (GameManager.instance.playerId == Player.PlayerId.Player1 && current == TurnState.Player1Turn)
+        {
+            foreach (var unit in BoardManager.Instance.unitsList)
+            {
+                if (unit.ID == Player.PlayerId.Player1)
+                {
+                    unit.HasActed = false;
+                }
+            }
+            
+            TacticsManager.instance.AddTacticsPoints(1);
+        }
+        
+        if (GameManager.instance.playerId == Player.PlayerId.Player2 && current == TurnState.Player2Turn)
+        {
+            foreach (var unit in BoardManager.Instance.unitsList)
+            {
+                if (unit.ID == Player.PlayerId.Player2)
+                {
+                    unit.HasActed = false;
+                }
+            }
+            
+            TacticsManager.instance.AddTacticsPoints(1);
+        }
+        
     }
 
     public void ChangeTurn()

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Tweens;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -56,7 +57,12 @@ public class CardManager : MonoBehaviour
 
     public void DrawCardBruh(int amount)
     {
-        StartCoroutine(DrawCard(amount));
+        if (TacticsManager.instance.CanAfford(1))
+        {
+            TacticsManager.instance.RemoveTacticsPoints(1);
+            StartCoroutine(DrawCard(amount));
+        }
+        
     }
 
     private IEnumerator DrawCard(int amount)
@@ -72,22 +78,14 @@ public class CardManager : MonoBehaviour
             var randInt = Random.Range(0, playerDeck.Count);
 
             playerHand.Add(playerDeck[randInt]);
-
             
-            //Need to replace with card builder method later on.
-            var cardVisual = Instantiate(cardVisualPrefab,
-                cardHoldPosition.transform.position,
-                cardHoldPosition.transform.rotation,
-                cardHoldPosition.transform);
+            var cardVisual = BuildCard(playerDeck[randInt]);
 
             playerHandVisuals.Add(cardVisual);
 
             cardVisual.name = playerHand[playerHand.Count - 1].Name;
 
             playerDeck.RemoveAt(randInt);
-            
-            
-            
 
             if (playerHand.Count != 1)
             {
@@ -177,6 +175,64 @@ public class CardManager : MonoBehaviour
             
         }
         
+    }
+    
+    public GameObject BuildCard(CardDeck.CardData cardData)
+    {// Probably a nicer way to do this... Oh well...
+        
+        
+        var cardVisual = Instantiate(cardVisualPrefab,
+            cardHoldPosition.transform.position,
+            cardHoldPosition.transform.rotation,
+            cardHoldPosition.transform);
+
+        var textFields = cardVisual.GetComponentsInChildren<TextMeshProUGUI>();
+        var gridSquares = cardVisual.GetComponentsInChildren<SpriteRenderer>(true);
+        
+        textFields[0].text = cardData.Name;
+        textFields[1].text = cardData.Health.ToString();
+        textFields[2].text = cardData.Speed.ToString();
+        textFields[3].text = cardData.Damage.ToString();
+        textFields[4].text = cardData.Defence.ToString();
+
+        //I'm not arsed to do something smart rn...will fix this later...maybe...
+        //Just wakes up the right squares. Make sure they're all inactive in the prefab before running the game...
+        
+        foreach (Vector2Int coord in cardData.Range)
+        {// Simple logic tree to find out which squares should show up...inelegant but robust enough...
+            int x = coord.x;
+            int y = coord.y;
+
+            if (y == 0)
+            {
+                if (x == 0)
+                    gridSquares[1].gameObject.SetActive(true);
+                else if (x == 1)
+                    gridSquares[2].gameObject.SetActive(true);
+                else if (x == 2)
+                    gridSquares[3].gameObject.SetActive(true);
+            }
+            else if (y == 1)
+            {
+                if (x == 0)
+                    gridSquares[4].gameObject.SetActive(true);
+                else if (x == 1)
+                    gridSquares[5].gameObject.SetActive(true);
+                else if (x == 2)
+                    gridSquares[6].gameObject.SetActive(true);
+            }
+            else if (y == 2)
+            {
+                if (x == 0)
+                    gridSquares[7].gameObject.SetActive(true);
+                else if (x == 1)
+                    gridSquares[8].gameObject.SetActive(true);
+                else if (x == 2)
+                    gridSquares[9].gameObject.SetActive(true);
+            }
+        }
+
+        return cardVisual;
     }
     
 }

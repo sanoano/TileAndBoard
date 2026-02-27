@@ -174,7 +174,7 @@ public class UIManager : MonoBehaviour
         
         var panel = actionChildren[2].gameObject;
 
-        if (unitToDisplay.ID == GameManager.instance.playerId)
+        if (unitToDisplay.ID == GameManager.instance.playerId && unitToDisplay.HasActed == false)
         {
             var buttons = panel.GetComponentsInChildren<Button>();
             print(buttons[0].gameObject.name);

@@ -83,7 +83,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 055d3e04ec2ecbf4e8ec32e6b737b6de, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -178,7 +178,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 055d3e04ec2ecbf4e8ec32e6b737b6de, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -547,7 +547,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 055d3e04ec2ecbf4e8ec32e6b737b6de, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -642,7 +642,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 055d3e04ec2ecbf4e8ec32e6b737b6de, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -874,7 +874,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 055d3e04ec2ecbf4e8ec32e6b737b6de, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1035,7 +1035,6 @@ GameObject:
   - component: {fileID: 2404776279793271808}
   - component: {fileID: 8749378690169204665}
   - component: {fileID: 1040818080629107612}
-  - component: {fileID: 2379454122721773808}
   m_Layer: 0
   m_Name: cardTemplate
   m_TagString: Untagged
@@ -1152,34 +1151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardDrag
   isPlaced: 0
-  animTime: 0
---- !u!114 &2379454122721773808
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7011985744931520955}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05d5e34013de96e45a14732495c45678, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CardBuilder
-  stringName: {fileID: 5022107277700064191}
-  stringHealth: {fileID: 3989568140864459390}
-  stringSpeed: {fileID: 2124976645003651248}
-  stringDamage: {fileID: 9183682042037893913}
-  stringDefence: {fileID: 2508578148551796276}
-  gridSquares:
-  - {fileID: 4974059543088402382}
-  - {fileID: 4520176887998505704}
-  - {fileID: 6636886246587537690}
-  - {fileID: 1273743922982458911}
-  - {fileID: 8901157414461278714}
-  - {fileID: 7351135553420104459}
-  - {fileID: 8118853368007036739}
-  - {fileID: 976061864012926967}
-  - {fileID: 7471809753943057432}
+  animTime: 0.5
 --- !u!1 &7060330029808066208
 GameObject:
   m_ObjectHideFlags: 0
@@ -1400,7 +1372,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 055d3e04ec2ecbf4e8ec32e6b737b6de, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1495,7 +1467,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 055d3e04ec2ecbf4e8ec32e6b737b6de, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1590,7 +1562,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 055d3e04ec2ecbf4e8ec32e6b737b6de, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1675,7 +1647,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_TargetDisplay: 0
 --- !u!114 &5273166920690805177
 MonoBehaviour:
@@ -1800,7 +1772,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 055d3e04ec2ecbf4e8ec32e6b737b6de, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
