@@ -43,6 +43,9 @@ public class UIManager : MonoBehaviour
     private GameObject actionsInfoPrefabInstance;
     [SerializeField] private GameObject actionsInfoPanelPos;
 
+    [Header("Tactics Display")] 
+    [SerializeField] private TextMeshProUGUI tacticsText;
+
     [Header("Settings Menu")] 
     public GameObject settingsMenu;
 
@@ -70,6 +73,8 @@ public class UIManager : MonoBehaviour
             settingsMenu.SetActive(!settingsMenu.activeSelf);
             DestroyCurrentInfoInstance();
         }
+
+        tacticsText.text = $"Tactics Points: {TacticsManager.instance.currentTacticsPoints}";
     }
 
     public void CreateInfoPanel(Vector2Int position, Player.PlayerId playerId)

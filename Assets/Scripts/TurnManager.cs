@@ -45,6 +45,7 @@ public class TurnManager : NetworkBehaviour
         if (GameManager.instance.playerId == Player.PlayerId.Player2)
         {
             turnButton.gameObject.SetActive(false);
+            isYourTurn = false;
         }
 
         if (GameManager.instance.playerId == Player.PlayerId.Player1)
@@ -65,11 +66,11 @@ public class TurnManager : NetworkBehaviour
 
         if (turnState == TurnState.Player1Turn)
         {
-            turnText.text = GameManager.instance.playerId == Player.PlayerId.Player1 ? "Make Your Move!" : "Waiting...";
+            turnText.text = GameManager.instance.playerId == Player.PlayerId.Player1 ? "Your Turn" : "Waiting...";
         }
         else
         {
-            turnText.text = GameManager.instance.playerId == Player.PlayerId.Player2 ? "Make Your Move!" : "Waiting...";
+            turnText.text = GameManager.instance.playerId == Player.PlayerId.Player2 ? "Your Turn" : "Waiting...";
         }
         
     }

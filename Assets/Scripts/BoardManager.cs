@@ -689,7 +689,7 @@ public class BoardManager : NetworkBehaviour
             movement: cardData.Speed,
             attackPositions: new List<Vector2Int>(cardData.Range),
             position: coordinates,
-            hasActed: false
+            hasActed: true
 
         );
 
@@ -714,7 +714,7 @@ public class BoardManager : NetworkBehaviour
         }
         else
         {
-            position = new Vector3(tile.transform.position.x, tile.transform.position.y - 0.5f, tile.transform.position.z);
+            position = new Vector3(tile.transform.position.x, tile.transform.position.y + 0.5f, tile.transform.position.z);
             rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
         }
 
@@ -778,7 +778,7 @@ public class BoardManager : NetworkBehaviour
             movement: cardData.Speed,
             attackPositions: new List<Vector2Int>(cardData.Range),
             position: coordinates,
-            hasActed: false
+            hasActed: true
         );
 
         unitsList.Add(unit);
@@ -794,10 +794,7 @@ public class BoardManager : NetworkBehaviour
             tile = player2Board.TileTransforms[unit.Position.x, unit.Position.y];
         }
 
-        var cardVisual = Instantiate(CardManager.instance.cardVisualPrefab,
-            Vector3.zero,
-            Quaternion.identity,
-            tile.transform);
+        var cardVisual = CardManager.instance.BuildCard(cardData);
 
         cardVisual.GetComponent<CardDrag>().isPlaced = true;
 
@@ -809,18 +806,18 @@ public class BoardManager : NetworkBehaviour
         {
             player1Board.Visuals[unit.Position.x, unit.Position.y] = cardVisual;
             rotation = Quaternion.Euler(new Vector3(90, 0, 0));
-            position = new Vector3(0, tile.transform.localPosition.y + 1, 0);
+            position = new Vector3(tile.transform.position.x, tile.transform.position.y + 0.5f, tile.transform.position.z);
         }
         else
         {
             player2Board.Visuals[unit.Position.x, unit.Position.y] = cardVisual;
             rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
-            position = new Vector3(0, tile.transform.localPosition.y - 1, 0);
+            position = new Vector3(tile.transform.position.x, tile.transform.position.y + 0.5f, tile.transform.position.z);
         }
 
-        Vector3 scale = new Vector3(1, 0.8f, 0);
+        Vector3 scale = new Vector3(5, 6, 4);
 
-        cardVisual.transform.localPosition = position;
+        cardVisual.transform.position = position;
         cardVisual.transform.rotation = rotation;
         cardVisual.transform.localScale = scale;
     }
