@@ -173,7 +173,7 @@ public class UIManager : MonoBehaviour
         cardInfoText.text = "";
         cardInfoText.text += $"Name: {unitToDisplay.Name}" + "\n";
         cardInfoText.text += $"Health: {unitToDisplay.Health}" + "\n";
-        cardInfoText.text += $"Speed: {unitToDisplay.Movement}" + "\n";
+        cardInfoText.text += $"Movement: {unitToDisplay.Movement}" + "\n";
         cardInfoText.text += $"Defense: {unitToDisplay.Defense}" + "\n";
         cardInfoText.text += $"Damage: {unitToDisplay.Damage}" + "\n";
         
@@ -203,7 +203,7 @@ public class UIManager : MonoBehaviour
 
             if (unitToDisplay.Movement > 0 && TurnManager.instance.isYourTurn)
             { 
-                //placeholder
+                buttons[2].onClick.AddListener(BoardManager.Instance.PrepareMovement);
             }
             else
             {

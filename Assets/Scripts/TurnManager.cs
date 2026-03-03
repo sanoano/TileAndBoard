@@ -20,6 +20,9 @@ public class TurnManager : NetworkBehaviour
     private TextMeshProUGUI turnText;
     [SerializeField]
     private Button turnButton;
+
+    [Header("Master Deck")] 
+    [SerializeField] private CardDeck cardList;
     
     
     private void Awake()
@@ -86,6 +89,8 @@ public class TurnManager : NetworkBehaviour
                 if (unit.ID == Player.PlayerId.Player1)
                 {
                     unit.HasActed = false;
+                    CardDeck.CardData data =  cardList.Cards.Find(card => card.Name == unit.Name);
+                    unit.Movement = data.Speed;
                 }
             }
             
@@ -99,6 +104,8 @@ public class TurnManager : NetworkBehaviour
                 if (unit.ID == Player.PlayerId.Player2)
                 {
                     unit.HasActed = false;
+                    CardDeck.CardData data =  cardList.Cards.Find(card => card.Name == unit.Name);
+                    unit.Movement = data.Speed;
                 }
             }
             

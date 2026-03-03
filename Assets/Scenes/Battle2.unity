@@ -507,7 +507,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b250be9d9440e4c4b9b0f673b418f1a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TacticsManager
-  currentTacticsPoints: 0
+  currentTacticsPoints: 10
   maxTacticPoints: 10
   startingTacticPoints: 1
   tacticsPointsPerTurn: 1
@@ -1872,6 +1872,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TurnManager
       objectReference: {fileID: 0}
+    - target: {fileID: 2673322661631672235, guid: 464cbf80ddad54f67b2765e00d3aa9e6, type: 3}
+      propertyPath: cardList
+      value: 
+      objectReference: {fileID: 11400000, guid: 8fe5afae502c647b59bfdc6733095b93, type: 2}
     - target: {fileID: 2673322661631672235, guid: 464cbf80ddad54f67b2765e00d3aa9e6, type: 3}
       propertyPath: turnText
       value: 
@@ -4180,6 +4184,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7599052890681973211, guid: bfe3c2c4d9e1e4302a1607207895dc64, type: 3}
       propertyPath: placeAnimationTime
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7599052890681973211, guid: bfe3c2c4d9e1e4302a1607207895dc64, type: 3}
+      propertyPath: cardMoveAnimationTime
       value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 7599052890681973211, guid: bfe3c2c4d9e1e4302a1607207895dc64, type: 3}

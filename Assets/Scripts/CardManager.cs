@@ -57,7 +57,7 @@ public class CardManager : MonoBehaviour
 
     public void DrawCardBruh(int amount)
     {
-        if (TacticsManager.instance.CanAfford(1))
+        if (TacticsManager.instance.CanAfford(1) && TurnManager.instance.isYourTurn)
         {
             TacticsManager.instance.RemoveTacticsPoints(1);
             StartCoroutine(DrawCard(amount));
