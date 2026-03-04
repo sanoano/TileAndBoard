@@ -476,11 +476,15 @@ public class BoardManager : NetworkBehaviour
                     currentSelectedTileGameObject = null;
                     CurrentSelectedTile = new Vector2Int(-1, 1);
 
-                    foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+                    if (NetworkManager.Singleton)
                     {
-                        AddDamageInstanceRpc(name, GameManager.instance.playerId, damage, positions,
-                            RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                        foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+                        {
+                            AddDamageInstanceRpc(name, GameManager.instance.playerId, damage, positions,
+                                RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                        }
                     }
+                    
                 }
 
                 break;
@@ -577,11 +581,15 @@ public class BoardManager : NetworkBehaviour
                     currentSelectedTileGameObject = null;
                     CurrentSelectedTile = new Vector2Int(-1, 1);
 
-                    foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+                    if (NetworkManager.Singleton)
                     {
-                        AddDefenseInstanceRpc(name, GameManager.instance.playerId, defense, positions,
-                            RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                        foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+                        {
+                            AddDefenseInstanceRpc(name, GameManager.instance.playerId, defense, positions,
+                                RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                        }
                     }
+                    
                 }
                 
                 
@@ -683,13 +691,17 @@ public class BoardManager : NetworkBehaviour
 
             currentlySelectedUnit.Movement -= 1;
             CurrentSelectedTile = currentAdjacentPositions[direction];
-            
-            foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+
+            if (NetworkManager.Singleton)
             {
-                if (clientIds == NetworkManager.LocalClientId) continue;
-                MoveCardRpc(unitsList.IndexOf(currentlySelectedUnit), currentAdjacentPositions[direction],
-                    RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+                {
+                    if (clientIds == NetworkManager.LocalClientId) continue;
+                    MoveCardRpc(unitsList.IndexOf(currentlySelectedUnit), currentAdjacentPositions[direction],
+                        RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                }
             }
+            
             
             foreach (var tile in localBoard.TileTransforms)
             {

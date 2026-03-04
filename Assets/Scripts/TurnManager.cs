@@ -82,34 +82,50 @@ public class TurnManager : NetworkBehaviour
     {
         Debug.Log("Turn changed to " + current);
 
-        if (GameManager.instance.playerId == Player.PlayerId.Player1 && current == TurnState.Player1Turn)
+        switch (current)
         {
-            foreach (var unit in BoardManager.Instance.unitsList)
-            {
-                if (unit.ID == Player.PlayerId.Player1)
+            case TurnState.Player1Turn:
+                
+                if (GameManager.instance.playerId == Player.PlayerId.Player1)
                 {
-                    unit.HasActed = false;
-                    CardDeck.CardData data =  cardList.Cards.Find(card => card.Name == unit.Name);
-                    unit.Movement = data.Speed;
-                }
-            }
+                    foreach (var unit in BoardManager.Instance.unitsList)
+                    {
+                        if (unit.ID == Player.PlayerId.Player1)
+                        {
+                            unit.HasActed = false;
+                            CardDeck.CardData data =  cardList.Cards.Find(card => card.Name == unit.Name);
+                            unit.Movement = data.Speed;
+                        }
+                    }
             
-            TacticsManager.instance.AddTacticsPoints(1);
-        }
-        
-        if (GameManager.instance.playerId == Player.PlayerId.Player2 && current == TurnState.Player2Turn)
-        {
-            foreach (var unit in BoardManager.Instance.unitsList)
-            {
-                if (unit.ID == Player.PlayerId.Player2)
+                    TacticsManager.instance.AddTacticsPoints(1);
+                }
+                
+                BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player2);
+
+                break;
+            
+            
+            case TurnState.Player2Turn:
+                
+                if (GameManager.instance.playerId == Player.PlayerId.Player2)
                 {
-                    unit.HasActed = false;
-                    CardDeck.CardData data =  cardList.Cards.Find(card => card.Name == unit.Name);
-                    unit.Movement = data.Speed;
-                }
-            }
+                    foreach (var unit in BoardManager.Instance.unitsList)
+                    {
+                        if (unit.ID == Player.PlayerId.Player2)
+                        {
+                            unit.HasActed = false;
+                            CardDeck.CardData data =  cardList.Cards.Find(card => card.Name == unit.Name);
+                            unit.Movement = data.Speed;
+                        }
+                    }
             
-            TacticsManager.instance.AddTacticsPoints(1);
+                    TacticsManager.instance.AddTacticsPoints(1);
+                }
+                
+                BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player1);
+
+                break;
         }
         
     }
