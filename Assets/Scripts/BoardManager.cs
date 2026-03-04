@@ -450,7 +450,7 @@ public class BoardManager : NetworkBehaviour
                 if (Input.GetKeyDown(KeyCode.Return))
                 {
                     
-                    TacticsManager.instance.RemoveTacticsPoints(1);
+                    //TacticsManager.instance.RemoveTacticsPoints(1);
                     
                     UIManager.Instance.interactionState = UIManager.InteractionState.None;
                     foreach (Vector2Int position in workingPositions)
@@ -555,7 +555,7 @@ public class BoardManager : NetworkBehaviour
                 if (Input.GetKeyDown(KeyCode.Return))
                 {
                     
-                    TacticsManager.instance.RemoveTacticsPoints(1);
+                    //TacticsManager.instance.RemoveTacticsPoints(1);
                     
                     UIManager.Instance.interactionState = UIManager.InteractionState.None;
                     foreach (Vector2Int position in workingPositions)
@@ -842,7 +842,7 @@ public class BoardManager : NetworkBehaviour
             movement: cardData.Speed,
             attackPositions: new List<Vector2Int>(cardData.Range),
             position: coordinates,
-            hasActed: false
+            hasActed: true
 
         );
 
