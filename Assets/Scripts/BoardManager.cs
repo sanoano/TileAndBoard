@@ -1171,6 +1171,35 @@ public class BoardManager : NetworkBehaviour
                     unit.Health -= workingDamage;
                 }
             }
+
+            List<DamageInstance> toRemove = new List<DamageInstance>();
+            foreach (var damageInstance in damageInstances)
+            {
+                if (damageInstance.ID == Player.PlayerId.Player2)
+                {
+                    toRemove.Add(damageInstance);
+                }
+            }
+
+            foreach (var damageInstance in toRemove)
+            {
+                damageInstances.Remove(damageInstance);
+            }
+            
+            List<DefenseInstance> toRemoveDefense = new List<DefenseInstance>();
+            foreach (var defenseInstance in defenseInstances)
+            {
+                if (defenseInstance.ID == Player.PlayerId.Player2)
+                {
+                    toRemoveDefense.Add(defenseInstance);
+                }
+            }
+
+            foreach (var defenseInstance in toRemoveDefense)
+            {
+                defenseInstances.Remove(defenseInstance);
+            }
+            
         }
         else
         {
@@ -1203,8 +1232,40 @@ public class BoardManager : NetworkBehaviour
                     unit.Health -= workingDamage;
                 }
             }
+            
+            List<DamageInstance> toRemove = new List<DamageInstance>();
+            foreach (var damageInstance in damageInstances)
+            {
+                if (damageInstance.ID == Player.PlayerId.Player1)
+                {
+                    toRemove.Add(damageInstance);
+                }
+            }
+
+            foreach (var damageInstance in toRemove)
+            {
+                damageInstances.Remove(damageInstance);
+            }
+            
+            List<DefenseInstance> toRemoveDefense = new List<DefenseInstance>();
+            foreach (var defenseInstance in defenseInstances)
+            {
+                if (defenseInstance.ID == Player.PlayerId.Player1)
+                {
+                    toRemoveDefense.Add(defenseInstance);
+                }
+            }
+
+            foreach (var defenseInstance in toRemoveDefense)
+            {
+                defenseInstances.Remove(defenseInstance);
+            }
+            
+            
+            
         }
         
+        UpdateTileVisuals();
         PruneUnitList();
     }
 
