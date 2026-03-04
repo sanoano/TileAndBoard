@@ -2849,7 +2849,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7485443447226310714, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
       propertyPath: m_text
-      value: Draw Card
+      value: Draw Card (-1 TP)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7485443447226310714, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
+      propertyPath: m_fontSize
+      value: 27
       objectReference: {fileID: 0}
     - target: {fileID: 7485443447226310714, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
       propertyPath: m_fontAsset
@@ -2870,6 +2874,10 @@ PrefabInstance:
     - target: {fileID: 7485443447226310714, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
       propertyPath: m_fontColor.r
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7485443447226310714, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 27
       objectReference: {fileID: 0}
     - target: {fileID: 7485443447226310714, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
       propertyPath: m_sharedMaterial
