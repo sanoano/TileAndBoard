@@ -241,12 +241,12 @@ public class BoardManager : NetworkBehaviour
                                 
                                 foreach (var tile in player1Board.TileTransforms)
                                 {
-                                    tile.GetComponent<tileColour>().TileRecieveSignal(0);
+                                    tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
                                 }
                                 
                                 foreach (var tile in player2Board.TileTransforms)
                                 {
-                                    tile.GetComponent<tileColour>().TileRecieveSignal(0);
+                                    tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
                                 }
                                 
                                 UpdateTileVisuals();
@@ -257,12 +257,12 @@ public class BoardManager : NetworkBehaviour
                             {
                                 foreach (var tile in player1Board.TileTransforms)
                                 {
-                                    tile.GetComponent<tileColour>().TileRecieveSignal(0);
+                                    tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
                                 }
 
                                 foreach (var tile in player2Board.TileTransforms)
                                 {
-                                    tile.GetComponent<tileColour>().TileRecieveSignal(0);
+                                    tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
                                 }
 
                                 currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
@@ -288,13 +288,13 @@ public class BoardManager : NetworkBehaviour
                                         {
                                             foreach (var tile in player1Board.TileTransforms)
                                             {
-                                                tile.GetComponent<tileColour>().TileRecieveSignal(0);
+                                                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
                                             }
 
                                             foreach (var position in unit.AttackPositions)
                                             {
                                                 player1Board.TileTransforms[position.x, position.y]
-                                                    .GetComponent<tileColour>().TileRecieveSignal(1);
+                                                    .GetComponent<tileColour>().TileRecieveSignal(1, false);
                                             }
                                         }
                                     }
@@ -311,13 +311,13 @@ public class BoardManager : NetworkBehaviour
                                         {
                                             foreach (var tile in player2Board.TileTransforms)
                                             {
-                                                tile.GetComponent<tileColour>().TileRecieveSignal(0);
+                                                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
                                             }
 
                                             foreach (var position in unit.AttackPositions)
                                             {
                                                 player2Board.TileTransforms[position.x, position.y]
-                                                    .GetComponent<tileColour>().TileRecieveSignal(1);
+                                                    .GetComponent<tileColour>().TileRecieveSignal(1, false);
                                             }
                                         }
                                     }
@@ -345,13 +345,13 @@ public class BoardManager : NetworkBehaviour
                                 {
                                     foreach (var tile in player1Board.TileTransforms)
                                     {
-                                        tile.GetComponent<tileColour>().TileRecieveSignal(0);
+                                        tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
                                     }
 
                                     foreach (var position in unit.AttackPositions)
                                     {
                                         player1Board.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                                            .TileRecieveSignal(1);
+                                            .TileRecieveSignal(1, false);
                                     }
                                 }
                             }
@@ -367,13 +367,13 @@ public class BoardManager : NetworkBehaviour
                                 {
                                     foreach (var tile in player2Board.TileTransforms)
                                     {
-                                        tile.GetComponent<tileColour>().TileRecieveSignal(0);
+                                        tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
                                     }
 
                                     foreach (var position in unit.AttackPositions)
                                     {
                                         player2Board.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                                            .TileRecieveSignal(1);
+                                            .TileRecieveSignal(1, false);
                                     }
                                 }
                             }
@@ -393,7 +393,7 @@ public class BoardManager : NetworkBehaviour
                     foreach (Vector2Int position in workingPositions)
                     {
                         enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                            .TileRecieveSignal(0);
+                            .TileRecieveSignal(0, false);
                     }
 
                     for (int i = 0; i < workingPositions.Count; i++)
@@ -423,7 +423,7 @@ public class BoardManager : NetworkBehaviour
                     foreach (Vector2Int position in workingPositions)
                     {
                         enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                            .TileRecieveSignal(1);
+                            .TileRecieveSignal(1, false);
                     }
                 }
 
@@ -433,7 +433,7 @@ public class BoardManager : NetworkBehaviour
                     foreach (Vector2Int position in workingPositions)
                     {
                         enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                            .TileRecieveSignal(0);
+                            .TileRecieveSignal(0, false);
                     }
 
                     workingPositions = null;
@@ -456,7 +456,7 @@ public class BoardManager : NetworkBehaviour
                     foreach (Vector2Int position in workingPositions)
                     {
                         enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                            .TileRecieveSignal(0);
+                            .TileRecieveSignal(0, false);
                     }
 
                     string name = currentlySelectedUnit.Name;
@@ -496,7 +496,7 @@ public class BoardManager : NetworkBehaviour
                     foreach (Vector2Int position in workingPositions)
                     {
                         localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                            .TileRecieveSignal(0);
+                            .TileRecieveSignal(0, false);
                     }
                     
                     
@@ -528,7 +528,7 @@ public class BoardManager : NetworkBehaviour
                     foreach (Vector2Int position in workingPositions)
                     {
                         localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                            .TileRecieveSignal(2);
+                            .TileRecieveSignal(2, false);
                     }
                 }
 
@@ -538,7 +538,7 @@ public class BoardManager : NetworkBehaviour
                     foreach (Vector2Int position in workingPositions)
                     {
                         localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                            .TileRecieveSignal(0);
+                            .TileRecieveSignal(0, false);
                     }
 
                     workingPositions = null;
@@ -561,7 +561,7 @@ public class BoardManager : NetworkBehaviour
                     foreach (Vector2Int position in workingPositions)
                     {
                         localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                            .TileRecieveSignal(0);
+                            .TileRecieveSignal(0, false);
                     }
 
                     string name = currentlySelectedUnit.Name;
@@ -603,7 +603,7 @@ public class BoardManager : NetworkBehaviour
                     
                     foreach (var tile in localBoard.TileTransforms)
                     {
-                        tile.GetComponent<tileColour>().TileRecieveSignal(0);
+                        tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
                     }
                     
                     UpdateTileVisuals();
@@ -649,7 +649,7 @@ public class BoardManager : NetworkBehaviour
                     
                     foreach (var tile in localBoard.TileTransforms)
                     {
-                        tile.GetComponent<tileColour>().TileRecieveSignal(0);
+                        tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
                     }
                     
                     UpdateTileVisuals();
@@ -705,7 +705,7 @@ public class BoardManager : NetworkBehaviour
             
             foreach (var tile in localBoard.TileTransforms)
             {
-                tile.GetComponent<tileColour>().TileRecieveSignal(0);
+                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
             }
 
             currentAdjacentPositions = GetAdjacentTiles(CurrentSelectedTile);
@@ -713,7 +713,7 @@ public class BoardManager : NetworkBehaviour
             foreach (var pos in currentAdjacentPositions)
             {
                 if (pos.Equals(new Vector2Int(-1, -1))) continue;
-                localBoard.TileTransforms[pos.x, pos.y].GetComponent<tileColour>().TileRecieveSignal(3);
+                localBoard.TileTransforms[pos.x, pos.y].GetComponent<tileColour>().TileRecieveSignal(3, false);
             }
 
            
@@ -801,11 +801,11 @@ public class BoardManager : NetworkBehaviour
             {
                 if (instance.ID == Player.PlayerId.Player1)
                 {
-                    player2Board.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(1);
+                    player2Board.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(1, false);
                 }
                 else
                 {
-                    player1Board.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(1);
+                    player1Board.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(1, false);
                 }
             }
         }
@@ -816,11 +816,11 @@ public class BoardManager : NetworkBehaviour
             {
                 if (instance.ID == Player.PlayerId.Player2)
                 {
-                    player2Board.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(2);
+                    player2Board.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(2, false);
                 }
                 else
                 {
-                    player1Board.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(2);
+                    player1Board.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(2, false);
                 }
             }
         }
@@ -996,13 +996,13 @@ public class BoardManager : NetworkBehaviour
 
         foreach (var tile in enemyBoard.TileTransforms)
         {
-            tile.GetComponent<tileColour>().TileRecieveSignal(0);
+            tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
         }
         
 
         foreach (Vector2Int position in workingPositions)
         {
-            enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(1);
+            enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(1, false);
         }
         
         UIManager.Instance.interactionState = UIManager.InteractionState.Attacking;
@@ -1030,17 +1030,17 @@ public class BoardManager : NetworkBehaviour
 
         foreach (var tile in enemyBoard.TileTransforms)
         {
-            tile.GetComponent<tileColour>().TileRecieveSignal(0);
+            tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
         }
         
         foreach (var tile in localBoard.TileTransforms)
         {
-            tile.GetComponent<tileColour>().TileRecieveSignal(0);
+            tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
         }
 
         foreach (Vector2Int position in workingPositions)
         {
-            localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(2);
+            localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(2, false);
         }
         
         UIManager.Instance.interactionState = UIManager.InteractionState.Defending;
@@ -1067,12 +1067,12 @@ public class BoardManager : NetworkBehaviour
 
         foreach (var tile in enemyBoard.TileTransforms)
         {
-            tile.GetComponent<tileColour>().TileRecieveSignal(0);
+            tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
         }
         
         foreach (var tile in localBoard.TileTransforms)
         {
-            tile.GetComponent<tileColour>().TileRecieveSignal(0);
+            tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
         }
 
         currentAdjacentPositions = GetAdjacentTiles(CurrentSelectedTile);
@@ -1080,7 +1080,7 @@ public class BoardManager : NetworkBehaviour
         foreach (var pos in currentAdjacentPositions)
         {
             if (pos.Equals(new Vector2Int(-1, -1))) continue;
-            localBoard.TileTransforms[pos.x, pos.y].GetComponent<tileColour>().TileRecieveSignal(3);
+            localBoard.TileTransforms[pos.x, pos.y].GetComponent<tileColour>().TileRecieveSignal(3, false);
         }
 
         UIManager.Instance.interactionState = UIManager.InteractionState.Moving;
