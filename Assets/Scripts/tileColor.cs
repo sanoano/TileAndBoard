@@ -20,6 +20,18 @@ public class tileColour : MonoBehaviour
 
         if (mainRenderer != null)
             mainRenderer.material.SetFloat("_Mode", 0);
+        
+        if (gameObject.layer == LayerMask.NameToLayer("Player2Tile"))
+        {
+            grossDamageGO.gameObject.transform.localPosition = new Vector3(grossDamageGO.gameObject.transform.localPosition.x,
+                -grossDamageGO.gameObject.transform.localPosition.y,
+                grossDamageGO.gameObject.transform.localPosition.z);
+            
+            netDamageGO.gameObject.transform.localPosition = new Vector3(netDamageGO.gameObject.transform.localPosition.x,
+                -netDamageGO.gameObject.transform.localPosition.y,
+                netDamageGO.gameObject.transform.localPosition.z);
+        }
+        
     }
 
     void Update()
@@ -27,7 +39,7 @@ public class tileColour : MonoBehaviour
         grossDamageGO.transform.LookAt(mainCamera.transform);
         netDamageGO.transform.LookAt(mainCamera.transform);
 
-        /*if (grossDamageTMP.text == "0" && netDamageTMP.text == "0") commented out so we can see the numbers in action......
+        if (grossDamageTMP.text == "0" && netDamageTMP.text == "0") 
         {
             grossDamageGO.SetActive(false);
             netDamageGO.SetActive(false);
@@ -36,7 +48,7 @@ public class tileColour : MonoBehaviour
         {
             grossDamageGO.SetActive(true);
             netDamageGO.SetActive(true);
-        }*/
+        }
     }
 
     public void TileRecieveSignal(int newState, bool preview)

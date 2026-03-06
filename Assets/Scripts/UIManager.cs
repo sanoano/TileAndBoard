@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
@@ -46,6 +47,11 @@ public class UIManager : MonoBehaviour
     [Header("Tactics Display")] 
     [SerializeField] private TextMeshProUGUI tacticsText;
 
+    [Header("Health Display")] [SerializeField]
+    private TextMeshProUGUI player1HealthDisplay;
+    [SerializeField] private TextMeshProUGUI player2HealthDisplay;
+    
+    
     [Header("Settings Menu")] 
     public GameObject settingsMenu;
 
@@ -75,6 +81,13 @@ public class UIManager : MonoBehaviour
         }
 
         tacticsText.text = $"Tactics Points: {TacticsManager.instance.currentTacticsPoints}";
+
+        player1HealthDisplay.text =
+            $"{BoardManager.Instance.player1Health} / {BoardManager.Instance.startingPlayerHealth}";
+        
+        player2HealthDisplay.text =
+            $"{BoardManager.Instance.player2Health} / {BoardManager.Instance.startingPlayerHealth}";
+
     }
 
     public void CreateInfoPanel(Vector2Int position, Player.PlayerId playerId)

@@ -112,19 +112,26 @@ public class BoardManager : NetworkBehaviour
 
     [Header("Selected Tile")] public Vector2Int CurrentSelectedTile;
     public GameObject currentSelectedTileGameObject;
+    private Unit currentlySelectedUnit;
 
     [Header("Parameters")] 
     [SerializeField] private float placeAnimationTime;
     [SerializeField] private float cardMoveAnimationTime;
-
     [SerializeField] private float angle = 90.0f;
+    public int startingPlayerHealth;
 
+    [Header("Player Health")] 
+    public int player1Health;
+    public int player2Health;
+    
+    
+    
     private InputAction select;
 
     private OrbitCamera cameraInfo;
 
     private List<Vector2Int> workingPositions = null;
-    private Unit currentlySelectedUnit;
+    
     private Vector2Int[] currentAdjacentPositions;
     
     
@@ -160,18 +167,18 @@ public class BoardManager : NetworkBehaviour
         );
 
 
-        int childIndex = 1;
+        int childIndex = 0;
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 3; j++)
             {
                 player1Board.TileTransforms[i, j] =
-                    player1BoardGameObject.GetComponentsInChildren<Transform>()[childIndex].gameObject;
+                    player1BoardGameObject.GetComponentsInChildren<BoxCollider>()[childIndex].gameObject;
 
                 player2Board.TileTransforms[i, j] =
-                    player2BoardGameObject.GetComponentsInChildren<Transform>()[childIndex].gameObject;
+                    player2BoardGameObject.GetComponentsInChildren<BoxCollider>()[childIndex].gameObject;
 
-                Debug.Log(player1BoardGameObject.GetComponentsInChildren<Transform>()[childIndex]);
+                Debug.Log(player1BoardGameObject.GetComponentsInChildren<BoxCollider>()[childIndex]);
 
                 childIndex++;
             }
@@ -194,6 +201,8 @@ public class BoardManager : NetworkBehaviour
             enemyBoard = player1Board;
         }
 
+        player1Health = startingPlayerHealth;
+        player2Health = startingPlayerHealth;
 
     }
 
@@ -211,449 +220,467 @@ public class BoardManager : NetworkBehaviour
         print(GameManager.instance.playerId);
     }
 
+    private void TileSelect()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (UIManager.Instance.settingsMenu.activeSelf) return;
+            if (cameraInfo.cameraState == OrbitCamera.CameraState.Free) return;
+
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            //If we hit something.
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, interactionLayers))
+            {
+                //If we already have something selected
+                if (currentSelectedTileGameObject != null)
+                {
+                    
+                    //If we are selecting the same tile again, we deselect
+                    if (hit.transform.gameObject == currentSelectedTileGameObject)
+                    {
+                        currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
+                        currentSelectedTileGameObject = null;
+                        CurrentSelectedTile = new Vector2Int(-1, -1);
+                        UIManager.Instance.DestroyCurrentInfoInstance();
+
+                        foreach (var tile in player1Board.TileTransforms)
+                        {
+                            tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+                        }
+
+                        foreach (var tile in player2Board.TileTransforms)
+                        {
+                            tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+                        }
+
+                        UpdateTileVisuals();
+
+                        return;
+                    }
+                    
+                    //If its a different tile
+                    foreach (var tile in player1Board.TileTransforms)
+                    {
+                        tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+                    }
+
+                    foreach (var tile in player2Board.TileTransforms)
+                    {
+                        tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+                    }
+
+                    currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
+                    UIManager.Instance.DestroyCurrentInfoInstance();
+
+                    currentSelectedTileGameObject = hit.transform.gameObject;
+
+                    CurrentSelectedTile =
+                        CoordinatesOf<GameObject>(player1Board.TileTransforms, hit.transform.gameObject);
+                    //If the tile is not on the players board
+                    if (Equals(CurrentSelectedTile, new Vector2Int(-1, -1)))
+                    {
+                        CurrentSelectedTile =
+                            CoordinatesOf<GameObject>(player2Board.TileTransforms,
+                                hit.transform.gameObject);
+                        UIManager.Instance.CreateInfoPanel(CurrentSelectedTile, Player.PlayerId.Player2);
+                        UIManager.Instance.CreateCardInfoPanel(CurrentSelectedTile,
+                            Player.PlayerId.Player2);
+
+                        foreach (Unit unit in unitsList)
+                        {
+                            if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player2)
+                            {
+                                foreach (var tile in player1Board.TileTransforms)
+                                {
+                                    tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+                                }
+
+                                foreach (var position in unit.AttackPositions)
+                                {
+                                    player1Board.TileTransforms[position.x, position.y]
+                                        .GetComponent<tileColour>().TileRecieveSignal(1, false);
+                                }
+                            }
+                        }
+                    }
+                    //If the tile is on the player board
+                    else
+                    {
+                        UIManager.Instance.CreateInfoPanel(CurrentSelectedTile, Player.PlayerId.Player1);
+                        UIManager.Instance.CreateCardInfoPanel(CurrentSelectedTile,
+                            Player.PlayerId.Player1);
+
+                        foreach (Unit unit in unitsList)
+                        {
+                            if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player1)
+                            {
+                                foreach (var tile in player2Board.TileTransforms)
+                                {
+                                    tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+                                }
+
+                                foreach (var position in unit.AttackPositions)
+                                {
+                                    player2Board.TileTransforms[position.x, position.y]
+                                        .GetComponent<tileColour>().TileRecieveSignal(1, false);
+                                }
+                            }
+                        }
+                    }
+
+                    return;
+                }
+            }
+            
+            //If we don't already have something selected.
+            currentSelectedTileGameObject = hit.transform.gameObject;
+
+            CurrentSelectedTile =
+                CoordinatesOf<GameObject>(player1Board.TileTransforms, hit.transform.gameObject);
+            
+            //If tile is not on our board
+            if (Equals(CurrentSelectedTile, new Vector2Int(-1, -1)))
+            {
+                CurrentSelectedTile =
+                    CoordinatesOf<GameObject>(player2Board.TileTransforms, hit.transform.gameObject);
+                UIManager.Instance.CreateInfoPanel(CurrentSelectedTile, Player.PlayerId.Player2);
+                UIManager.Instance.CreateCardInfoPanel(CurrentSelectedTile, Player.PlayerId.Player2);
+
+                foreach (Unit unit in unitsList)
+                {
+                    if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player2)
+                    {
+                        foreach (var tile in player1Board.TileTransforms)
+                        {
+                            tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+                        }
+
+                        foreach (var position in unit.AttackPositions)
+                        {
+                            player1Board.TileTransforms[position.x, position.y].GetComponent<tileColour>()
+                                .TileRecieveSignal(1, false);
+                        }
+                    }
+                }
+            }
+            //If tile is on our board
+            else
+            {
+                UIManager.Instance.CreateInfoPanel(CurrentSelectedTile, Player.PlayerId.Player1);
+                UIManager.Instance.CreateCardInfoPanel(CurrentSelectedTile, Player.PlayerId.Player1);
+
+                foreach (Unit unit in unitsList)
+                {
+                    if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player1)
+                    {
+                        foreach (var tile in player2Board.TileTransforms)
+                        {
+                            tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+                        }
+
+                        foreach (var position in unit.AttackPositions)
+                        {
+                            player2Board.TileTransforms[position.x, position.y].GetComponent<tileColour>()
+                                .TileRecieveSignal(1, false);
+                        }
+                    }
+                }
+            }
+
+            currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.green;
+        }
+    }
+
+    void Attacking()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            foreach (Vector2Int position in workingPositions)
+            {
+                enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
+                    .TileRecieveSignal(0, false);
+            }
+
+            for (int i = 0; i < workingPositions.Count; i++)
+            {
+                print(workingPositions[i]);
+                float xpos = workingPositions[i].x;
+                float ypos = workingPositions[i].y;
+
+                float angleRad = angle * Mathf.Deg2Rad;
+
+                float rotY;
+                float rotX;
+                rotX = (xpos - 1) * Mathf.Cos(angleRad) - (ypos - 1) * Mathf.Sin(angleRad) + 1;
+                rotY = (xpos - 1) * Mathf.Sin(angleRad) + (ypos - 1) * Mathf.Cos(angleRad) + 1;
+
+                print(rotX);
+                print(rotY);
+
+                // rotX = Mathf.Clamp(rotX, 0f, 2.0f);
+                // rotY = Mathf.Clamp(rotY, 0f, 2.0f);
+
+                Vector2Int newCoords = new Vector2Int(Mathf.RoundToInt(rotX), Mathf.RoundToInt(rotY));
+                print(newCoords);
+                workingPositions[i] = newCoords;
+            }
+
+            foreach (Vector2Int position in workingPositions)
+            {
+                enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
+                    .TileRecieveSignal(1, false);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            UIManager.Instance.interactionState = UIManager.InteractionState.None;
+            foreach (Vector2Int position in workingPositions)
+            {
+                enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
+                    .TileRecieveSignal(0, false);
+            }
+
+            workingPositions = null;
+            currentlySelectedUnit = default;
+
+            currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
+
+            currentSelectedTileGameObject = null;
+            CurrentSelectedTile = new Vector2Int(-1, 1);
+
+            UpdateTileVisuals();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            //TacticsManager.instance.RemoveTacticsPoints(1);
+
+            UIManager.Instance.interactionState = UIManager.InteractionState.None;
+            foreach (Vector2Int position in workingPositions)
+            {
+                enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
+                    .TileRecieveSignal(0, false);
+            }
+
+            string name = currentlySelectedUnit.Name;
+            int damage = currentlySelectedUnit.Damage;
+            Vector2Int[] positions = new Vector2Int[workingPositions.Count];
+
+            currentlySelectedUnit.HasActed = true;
+
+            for (int i = 0; i < workingPositions.Count; i++)
+            {
+                positions[i] = workingPositions[i];
+                print(positions[i]);
+            }
+
+            currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
+
+            currentSelectedTileGameObject = null;
+            CurrentSelectedTile = new Vector2Int(-1, 1);
+
+            if (NetworkManager.Singleton)
+            {
+                foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+                {
+                    AddDamageInstanceRpc(name, GameManager.instance.playerId, damage, positions,
+                        RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                }
+            }
+        }
+    }
+
+    public void Defending()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            foreach (Vector2Int position in workingPositions)
+            {
+                localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
+                    .TileRecieveSignal(0, false);
+            }
+
+
+            for (int i = 0; i < workingPositions.Count; i++)
+            {
+                print(workingPositions[i]);
+                float xpos = workingPositions[i].x;
+                float ypos = workingPositions[i].y;
+
+                float angleRad = angle * Mathf.Deg2Rad;
+
+                float rotY;
+                float rotX;
+                rotX = (xpos - 1) * Mathf.Cos(angleRad) - (ypos - 1) * Mathf.Sin(angleRad) + 1;
+                rotY = (xpos - 1) * Mathf.Sin(angleRad) + (ypos - 1) * Mathf.Cos(angleRad) + 1;
+
+                print(rotX);
+                print(rotY);
+
+                // rotX = Mathf.Clamp(rotX, 0f, 2.0f);
+                // rotY = Mathf.Clamp(rotY, 0f, 2.0f);
+
+                Vector2Int newCoords = new Vector2Int(Mathf.RoundToInt(rotX), Mathf.RoundToInt(rotY));
+                print(newCoords);
+                workingPositions[i] = newCoords;
+            }
+
+            foreach (Vector2Int position in workingPositions)
+            {
+                localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
+                    .TileRecieveSignal(2, false);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            UIManager.Instance.interactionState = UIManager.InteractionState.None;
+            foreach (Vector2Int position in workingPositions)
+            {
+                localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
+                    .TileRecieveSignal(0, false);
+            }
+
+            workingPositions = null;
+            currentlySelectedUnit = default;
+
+            currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
+
+            currentSelectedTileGameObject = null;
+            CurrentSelectedTile = new Vector2Int(-1, 1);
+
+            UpdateTileVisuals();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            //TacticsManager.instance.RemoveTacticsPoints(1);
+
+            UIManager.Instance.interactionState = UIManager.InteractionState.None;
+            foreach (Vector2Int position in workingPositions)
+            {
+                localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
+                    .TileRecieveSignal(0, false);
+            }
+
+            string name = currentlySelectedUnit.Name;
+            int defense = currentlySelectedUnit.Defense;
+            Vector2Int[] positions = new Vector2Int[workingPositions.Count];
+
+            currentlySelectedUnit.HasActed = true;
+
+            for (int i = 0; i < workingPositions.Count; i++)
+            {
+                positions[i] = workingPositions[i];
+                print(positions[i]);
+            }
+
+            currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
+
+            currentSelectedTileGameObject = null;
+            CurrentSelectedTile = new Vector2Int(-1, 1);
+
+            if (NetworkManager.Singleton)
+            {
+                foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+                {
+                    AddDefenseInstanceRpc(name, GameManager.instance.playerId, defense, positions,
+                        RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                }
+            }
+        }
+    }
+
+    void Moving()
+    {
+        if (currentlySelectedUnit.Movement == 0)
+        {
+            UIManager.Instance.interactionState = UIManager.InteractionState.None;
+
+            foreach (var tile in localBoard.TileTransforms)
+            {
+                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+            }
+
+            UpdateTileVisuals();
+        }
+
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            MoveCard(3);
+        }
+
+        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            if (GameManager.instance.playerId == Player.PlayerId.Player1)
+            {
+                MoveCard(0);
+            }
+            else
+            {
+                MoveCard(1);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            MoveCard(2);
+        }
+
+        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            if (GameManager.instance.playerId == Player.PlayerId.Player1)
+            {
+                MoveCard(1);
+            }
+            else
+            {
+                MoveCard(0);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            UIManager.Instance.interactionState = UIManager.InteractionState.None;
+
+            foreach (var tile in localBoard.TileTransforms)
+            {
+                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+            }
+
+            UpdateTileVisuals();
+        }
+    }
+
     public void LateUpdate()
     {
-
-
         switch (UIManager.Instance.interactionState)
         {
             case UIManager.InteractionState.None:
 
-                if (Input.GetMouseButtonDown(0))
-                {
-                    if (UIManager.Instance.settingsMenu.activeSelf) return;
-                    if (cameraInfo.cameraState == OrbitCamera.CameraState.Free) return;
-
-                    Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-                    RaycastHit hit;
-
-                    //If we hit something.
-                    if (Physics.Raycast(ray, out hit, Mathf.Infinity, interactionLayers))
-                    {
-                        if (currentSelectedTileGameObject != null)
-                        {
-                            if (hit.transform.gameObject == currentSelectedTileGameObject)
-                            {
-                                currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
-                                currentSelectedTileGameObject = null;
-                                CurrentSelectedTile = new Vector2Int(-1, -1);
-                                UIManager.Instance.DestroyCurrentInfoInstance();
-                                
-                                foreach (var tile in player1Board.TileTransforms)
-                                {
-                                    tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                                }
-                                
-                                foreach (var tile in player2Board.TileTransforms)
-                                {
-                                    tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                                }
-                                
-                                UpdateTileVisuals();
-                                
-                                return;
-                            }
-                            else
-                            {
-                                foreach (var tile in player1Board.TileTransforms)
-                                {
-                                    tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                                }
-
-                                foreach (var tile in player2Board.TileTransforms)
-                                {
-                                    tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                                }
-
-                                currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
-                                UIManager.Instance.DestroyCurrentInfoInstance();
-
-                                currentSelectedTileGameObject = hit.transform.gameObject;
-
-                                CurrentSelectedTile =
-                                    CoordinatesOf<GameObject>(player1Board.TileTransforms, hit.transform.gameObject);
-
-                                if (Equals(CurrentSelectedTile, new Vector2Int(-1, -1)))
-                                {
-                                    CurrentSelectedTile =
-                                        CoordinatesOf<GameObject>(player2Board.TileTransforms,
-                                            hit.transform.gameObject);
-                                    UIManager.Instance.CreateInfoPanel(CurrentSelectedTile, Player.PlayerId.Player2);
-                                    UIManager.Instance.CreateCardInfoPanel(CurrentSelectedTile,
-                                        Player.PlayerId.Player2);
-
-                                    foreach (Unit unit in unitsList)
-                                    {
-                                        if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player2)
-                                        {
-                                            foreach (var tile in player1Board.TileTransforms)
-                                            {
-                                                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                                            }
-
-                                            foreach (var position in unit.AttackPositions)
-                                            {
-                                                player1Board.TileTransforms[position.x, position.y]
-                                                    .GetComponent<tileColour>().TileRecieveSignal(1, false);
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    UIManager.Instance.CreateInfoPanel(CurrentSelectedTile, Player.PlayerId.Player1);
-                                    UIManager.Instance.CreateCardInfoPanel(CurrentSelectedTile,
-                                        Player.PlayerId.Player1);
-
-                                    foreach (Unit unit in unitsList)
-                                    {
-                                        if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player1)
-                                        {
-                                            foreach (var tile in player2Board.TileTransforms)
-                                            {
-                                                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                                            }
-
-                                            foreach (var position in unit.AttackPositions)
-                                            {
-                                                player2Board.TileTransforms[position.x, position.y]
-                                                    .GetComponent<tileColour>().TileRecieveSignal(1, false);
-                                            }
-                                        }
-                                    }
-                                }
-
-                                return;
-                            }
-                        }
-
-                        currentSelectedTileGameObject = hit.transform.gameObject;
-
-                        CurrentSelectedTile =
-                            CoordinatesOf<GameObject>(player1Board.TileTransforms, hit.transform.gameObject);
-
-                        if (Equals(CurrentSelectedTile, new Vector2Int(-1, -1)))
-                        {
-                            CurrentSelectedTile =
-                                CoordinatesOf<GameObject>(player2Board.TileTransforms, hit.transform.gameObject);
-                            UIManager.Instance.CreateInfoPanel(CurrentSelectedTile, Player.PlayerId.Player2);
-                            UIManager.Instance.CreateCardInfoPanel(CurrentSelectedTile, Player.PlayerId.Player2);
-
-                            foreach (Unit unit in unitsList)
-                            {
-                                if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player2)
-                                {
-                                    foreach (var tile in player1Board.TileTransforms)
-                                    {
-                                        tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                                    }
-
-                                    foreach (var position in unit.AttackPositions)
-                                    {
-                                        player1Board.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                                            .TileRecieveSignal(1, false);
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            UIManager.Instance.CreateInfoPanel(CurrentSelectedTile, Player.PlayerId.Player1);
-                            UIManager.Instance.CreateCardInfoPanel(CurrentSelectedTile, Player.PlayerId.Player1);
-
-                            foreach (Unit unit in unitsList)
-                            {
-                                if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player1)
-                                {
-                                    foreach (var tile in player2Board.TileTransforms)
-                                    {
-                                        tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                                    }
-
-                                    foreach (var position in unit.AttackPositions)
-                                    {
-                                        player2Board.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                                            .TileRecieveSignal(1, false);
-                                    }
-                                }
-                            }
-                        }
-
-                        currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.green;
-                    }
-                }
-
+                TileSelect();
+                
                 break;
             
             
             case UIManager.InteractionState.Attacking:
 
-                if (Input.GetKeyDown(KeyCode.R))
-                {
-                    foreach (Vector2Int position in workingPositions)
-                    {
-                        enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                            .TileRecieveSignal(0, false);
-                    }
-
-                    for (int i = 0; i < workingPositions.Count; i++)
-                    {
-                        print(workingPositions[i]);
-                        float xpos = workingPositions[i].x;
-                        float ypos = workingPositions[i].y;
-
-                        float angleRad = angle * Mathf.Deg2Rad;
-
-                        float rotY;
-                        float rotX;
-                        rotX = (xpos - 1) * Mathf.Cos(angleRad) - (ypos - 1) * Mathf.Sin(angleRad) + 1;
-                        rotY = (xpos - 1) * Mathf.Sin(angleRad) + (ypos - 1) * Mathf.Cos(angleRad) + 1;
-
-                        print(rotX);
-                        print(rotY);
-
-                        // rotX = Mathf.Clamp(rotX, 0f, 2.0f);
-                        // rotY = Mathf.Clamp(rotY, 0f, 2.0f);
-
-                        Vector2Int newCoords = new Vector2Int(Mathf.RoundToInt(rotX), Mathf.RoundToInt(rotY));
-                        print(newCoords);
-                        workingPositions[i] = newCoords;
-                    }
-
-                    foreach (Vector2Int position in workingPositions)
-                    {
-                        enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                            .TileRecieveSignal(1, false);
-                    }
-                }
-
-                if (Input.GetKeyDown(KeyCode.Escape))
-                {
-                    UIManager.Instance.interactionState = UIManager.InteractionState.None;
-                    foreach (Vector2Int position in workingPositions)
-                    {
-                        enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                            .TileRecieveSignal(0, false);
-                    }
-
-                    workingPositions = null;
-                    currentlySelectedUnit = default;
-                    
-                    currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
-
-                    currentSelectedTileGameObject = null;
-                    CurrentSelectedTile = new Vector2Int(-1, 1);
-                    
-                    UpdateTileVisuals();
-                }
-
-                if (Input.GetKeyDown(KeyCode.Return))
-                {
-                    
-                    //TacticsManager.instance.RemoveTacticsPoints(1);
-                    
-                    UIManager.Instance.interactionState = UIManager.InteractionState.None;
-                    foreach (Vector2Int position in workingPositions)
-                    {
-                        enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                            .TileRecieveSignal(0, false);
-                    }
-
-                    string name = currentlySelectedUnit.Name;
-                    int damage = currentlySelectedUnit.Damage;
-                    Vector2Int[] positions = new Vector2Int[workingPositions.Count];
-
-                    currentlySelectedUnit.HasActed = true;
-                    
-                    for (int i = 0; i < workingPositions.Count; i++)
-                    {
-                        positions[i] = workingPositions[i];
-                        print(positions[i]);
-                    }
-
-                    currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
-
-                    currentSelectedTileGameObject = null;
-                    CurrentSelectedTile = new Vector2Int(-1, 1);
-
-                    if (NetworkManager.Singleton)
-                    {
-                        foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
-                        {
-                            AddDamageInstanceRpc(name, GameManager.instance.playerId, damage, positions,
-                                RpcTarget.Single(clientIds, RpcTargetUse.Temp));
-                        }
-                    }
-                    
-                }
+                Attacking();
 
                 break;
             
             case UIManager.InteractionState.Defending:
                 
-                if (Input.GetKeyDown(KeyCode.R))
-                {
-                    foreach (Vector2Int position in workingPositions)
-                    {
-                        localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                            .TileRecieveSignal(0, false);
-                    }
-                    
-                    
-
-                    for (int i = 0; i < workingPositions.Count; i++)
-                    {
-                        print(workingPositions[i]);
-                        float xpos = workingPositions[i].x;
-                        float ypos = workingPositions[i].y;
-
-                        float angleRad = angle * Mathf.Deg2Rad;
-
-                        float rotY;
-                        float rotX;
-                        rotX = (xpos - 1) * Mathf.Cos(angleRad) - (ypos - 1) * Mathf.Sin(angleRad) + 1;
-                        rotY = (xpos - 1) * Mathf.Sin(angleRad) + (ypos - 1) * Mathf.Cos(angleRad) + 1;
-
-                        print(rotX);
-                        print(rotY);
-
-                        // rotX = Mathf.Clamp(rotX, 0f, 2.0f);
-                        // rotY = Mathf.Clamp(rotY, 0f, 2.0f);
-
-                        Vector2Int newCoords = new Vector2Int(Mathf.RoundToInt(rotX), Mathf.RoundToInt(rotY));
-                        print(newCoords);
-                        workingPositions[i] = newCoords;
-                    }
-
-                    foreach (Vector2Int position in workingPositions)
-                    {
-                        localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                            .TileRecieveSignal(2, false);
-                    }
-                }
-
-                if (Input.GetKeyDown(KeyCode.Escape))
-                {
-                    UIManager.Instance.interactionState = UIManager.InteractionState.None;
-                    foreach (Vector2Int position in workingPositions)
-                    {
-                        localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                            .TileRecieveSignal(0, false);
-                    }
-
-                    workingPositions = null;
-                    currentlySelectedUnit = default;
-                    
-                    currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
-
-                    currentSelectedTileGameObject = null;
-                    CurrentSelectedTile = new Vector2Int(-1, 1);
-                    
-                    UpdateTileVisuals();
-                }
-
-                if (Input.GetKeyDown(KeyCode.Return))
-                {
-                    
-                    //TacticsManager.instance.RemoveTacticsPoints(1);
-                    
-                    UIManager.Instance.interactionState = UIManager.InteractionState.None;
-                    foreach (Vector2Int position in workingPositions)
-                    {
-                        localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                            .TileRecieveSignal(0, false);
-                    }
-
-                    string name = currentlySelectedUnit.Name;
-                    int defense = currentlySelectedUnit.Defense;
-                    Vector2Int[] positions = new Vector2Int[workingPositions.Count];
-                    
-                    currentlySelectedUnit.HasActed = true;
-                    
-                    for (int i = 0; i < workingPositions.Count; i++)
-                    {
-                        positions[i] = workingPositions[i];
-                        print(positions[i]);
-                    }
-
-                    currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
-
-                    currentSelectedTileGameObject = null;
-                    CurrentSelectedTile = new Vector2Int(-1, 1);
-
-                    if (NetworkManager.Singleton)
-                    {
-                        foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
-                        {
-                            AddDefenseInstanceRpc(name, GameManager.instance.playerId, defense, positions,
-                                RpcTarget.Single(clientIds, RpcTargetUse.Temp));
-                        }
-                    }
-                    
-                }
-                
+                Defending();
                 
                 break;
             
             case UIManager.InteractionState.Moving:
 
-                if (currentlySelectedUnit.Movement == 0)
-                {
-                    UIManager.Instance.interactionState = UIManager.InteractionState.None;
-                    
-                    foreach (var tile in localBoard.TileTransforms)
-                    {
-                        tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                    }
-                    
-                    UpdateTileVisuals();
-                }
-
-                if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
-                {
-                    MoveCard(3);
-                }
-                
-                if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
-                {
-                    if (GameManager.instance.playerId == Player.PlayerId.Player1)
-                    {
-                        MoveCard(0);
-                    }
-                    else
-                    {
-                        MoveCard(1);
-                    }
-                }
-                
-                if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
-                {
-                   MoveCard(2);
-                }
-
-                if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
-                {
-                    if (GameManager.instance.playerId == Player.PlayerId.Player1)
-                    {
-                        MoveCard(1);
-                    }
-                    else
-                    {
-                        MoveCard(0);
-                    }
-                }
-
-                if (Input.GetKeyDown(KeyCode.Escape))
-                {
-                    UIManager.Instance.interactionState = UIManager.InteractionState.None;
-                    
-                    foreach (var tile in localBoard.TileTransforms)
-                    {
-                        tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                    }
-                    
-                    UpdateTileVisuals();
-                }
+                Moving();
                 
                 break;
         }
@@ -842,7 +869,7 @@ public class BoardManager : NetworkBehaviour
             movement: cardData.Speed,
             attackPositions: new List<Vector2Int>(cardData.Range),
             position: coordinates,
-            hasActed: true
+            hasActed: false
 
         );
 
@@ -1140,32 +1167,59 @@ public class BoardManager : NetworkBehaviour
         
         if (playerId == Player.PlayerId.Player1)
         {
-
+            
+            int workingDamage = 0;
+            int workingDamageToPlayer = 0;
+            
             foreach (var unit in unitsList)
             {
                 
                 if (unit.ID == Player.PlayerId.Player2) continue;
                 
-                int workingDamage = 0;
+                
                 
                 foreach (var damageInstance in damageInstances)
                 {
                     if (damageInstance.ID == Player.PlayerId.Player1) continue;
                     
-                    if (damageInstance.Positions.Contains(unit.Position))
-                    {
-                        workingDamage += damageInstance.Damage;
-                    } 
-                }
+                    // if (damageInstance.Positions.Contains(unit.Position))
+                    // {
+                    //     workingDamage += damageInstance.Damage;
+                    // } 
 
-                foreach (var defenseInstance in defenseInstances)
-                {
-                    if (defenseInstance.Positions.Contains(unit.Position))
+                    foreach (var position in damageInstance.Positions)
                     {
-                        workingDamage -= defenseInstance.Defense;
+                        if (Equals(position, unit.Position))
+                        {
+                            workingDamage += damageInstance.Damage;
+                            
+                            foreach (var defenseInstance in defenseInstances)
+                            {
+                                if (defenseInstance.ID == Player.PlayerId.Player2) continue;
+
+                                if (defenseInstance.Positions.Contains(position))
+                                {
+                                    workingDamage -= defenseInstance.Defense;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            workingDamageToPlayer += damageInstance.Damage;
+                            
+                            foreach (var defenseInstance in defenseInstances)
+                            {
+                                if (defenseInstance.ID == Player.PlayerId.Player2) continue;
+
+                                if (defenseInstance.Positions.Contains(position))
+                                {
+                                    workingDamageToPlayer -= defenseInstance.Defense;
+                                }
+                            }
+                        }
                     }
+                    
                 }
-
                 if (workingDamage > 0)
                 {
                     unit.Health -= workingDamage;
@@ -1200,39 +1254,69 @@ public class BoardManager : NetworkBehaviour
                 defenseInstances.Remove(defenseInstance);
             }
             
+            BoardTakeDamage(workingDamageToPlayer, Player.PlayerId.Player1);
+            
         }
         else
         {
+            int workingDamage = 0;
+            int workingDamageToPlayer = 0;
+            
             foreach (var unit in unitsList)
             {
-                int workingDamage = 0;
                 
                 if (unit.ID == Player.PlayerId.Player1) continue;
+                
+                
                 
                 foreach (var damageInstance in damageInstances)
                 {
                     if (damageInstance.ID == Player.PlayerId.Player2) continue;
                     
-                    if (damageInstance.Positions.Contains(unit.Position))
-                    {
-                        workingDamage += damageInstance.Damage;
-                    } 
-                }
+                    // if (damageInstance.Positions.Contains(unit.Position))
+                    // {
+                    //     workingDamage += damageInstance.Damage;
+                    // } 
 
-                foreach (var defenseInstance in defenseInstances)
-                {
-                    if (defenseInstance.Positions.Contains(unit.Position))
+                    foreach (var position in damageInstance.Positions)
                     {
-                        workingDamage -= defenseInstance.Defense;
+                        if (Equals(position, unit.Position))
+                        {
+                            workingDamage += damageInstance.Damage;
+                            
+                            foreach (var defenseInstance in defenseInstances)
+                            {
+                                if (defenseInstance.ID == Player.PlayerId.Player1) continue;
+
+                                if (defenseInstance.Positions.Contains(position))
+                                {
+                                    workingDamage -= defenseInstance.Defense;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            workingDamageToPlayer += damageInstance.Damage;
+                            
+                            foreach (var defenseInstance in defenseInstances)
+                            {
+                                if (defenseInstance.ID == Player.PlayerId.Player1) continue;
+
+                                if (defenseInstance.Positions.Contains(position))
+                                {
+                                    workingDamageToPlayer -= defenseInstance.Defense;
+                                }
+                            }
+                        }
                     }
+                    
                 }
-
                 if (workingDamage > 0)
                 {
                     unit.Health -= workingDamage;
                 }
             }
-            
+
             List<DamageInstance> toRemove = new List<DamageInstance>();
             foreach (var damageInstance in damageInstances)
             {
@@ -1261,9 +1345,11 @@ public class BoardManager : NetworkBehaviour
                 defenseInstances.Remove(defenseInstance);
             }
             
-            
+            BoardTakeDamage(workingDamageToPlayer, Player.PlayerId.Player2);
             
         }
+        
+        
         
         UpdateTileVisuals();
         PruneUnitList();
@@ -1294,6 +1380,30 @@ public class BoardManager : NetworkBehaviour
         foreach (var unit in unitsToDelete)
         {
             unitsList.Remove(unit);
+        }
+        
+    }
+
+    void BoardTakeDamage(int damage, Player.PlayerId id)
+    {
+        if (id == Player.PlayerId.Player1)
+        {
+            player1Health -= damage;
+
+            if (player1Health <= 0)
+            {
+                //do stuff
+            }
+        }
+        else
+        {
+            player2Health -= damage;
+
+            if (player2Health <= 0)
+            {
+                //do stuff
+            }
+            
         }
         
     }

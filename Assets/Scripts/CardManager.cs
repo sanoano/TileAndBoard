@@ -55,7 +55,7 @@ public class CardManager : MonoBehaviour
 
     }
 
-    public void DrawCardBruh(int amount)
+    public void DrawCardHandler(int amount)
     {
         if (TacticsManager.instance.CanAfford(1) && TurnManager.instance.isYourTurn)
         {

@@ -25,7 +25,7 @@ public class TacticsManager : MonoBehaviour
             Destroy(this);
         }
 
-        currentTacticsPoints = 1;
+        currentTacticsPoints = startingTacticPoints;
         
     }
 
