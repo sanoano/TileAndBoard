@@ -414,30 +414,30 @@ public class BoardManager : NetworkBehaviour
                     currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.green;
                 }
             }
-            else
-            {
-                if (currentSelectedTileGameObject != null)
-                {
-                    currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
-                    currentSelectedTileGameObject = null;
-                    CurrentSelectedTile = new Vector2Int(-1, -1);
-                    UIManager.Instance.DestroyCurrentInfoInstance();
-
-                    foreach (var tile in player1Board.TileTransforms)
-                    {
-                        tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                    }
-
-                    foreach (var tile in player2Board.TileTransforms)
-                    {
-                        tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                    }
-
-                    UpdateTileVisuals();
-                }
-                
-                
-            }
+            // else
+            // {
+            //     if (currentSelectedTileGameObject != null)
+            //     {
+            //         currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
+            //         currentSelectedTileGameObject = null;
+            //         CurrentSelectedTile = new Vector2Int(-1, -1);
+            //         UIManager.Instance.DestroyCurrentInfoInstance();
+            //
+            //         foreach (var tile in player1Board.TileTransforms)
+            //         {
+            //             tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+            //         }
+            //
+            //         foreach (var tile in player2Board.TileTransforms)
+            //         {
+            //             tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+            //         }
+            //
+            //         UpdateTileVisuals();
+            //     }
+            //     
+            //     
+            // }
 
         }
         
@@ -919,7 +919,7 @@ public class BoardManager : NetworkBehaviour
                 movement: cardData.Speed,
                 attackPositions: new List<Vector2Int>(cardData.Range),
                 position: coordinates,
-                hasActed: false
+                hasActed: true
 
             );
 
@@ -1056,7 +1056,8 @@ public class BoardManager : NetworkBehaviour
         {
         
             // if (!TacticsManager.instance.CanAfford(1)) return;
-
+            
+            print("balls");
             UIManager.Instance.DestroyCurrentInfoInstance();
         
             foreach (Unit unit in unitsList)
@@ -1070,7 +1071,7 @@ public class BoardManager : NetworkBehaviour
             }
 
             if (workingPositions == null) return;
-
+            print("balls2");
             foreach (var tile in enemyBoard.TileTransforms)
             {
                 tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
@@ -1079,7 +1080,7 @@ public class BoardManager : NetworkBehaviour
 
             foreach (Vector2Int position in workingPositions)
             {
-                enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(1, false);
+                enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(1, true);
             }
         
             UIManager.Instance.interactionState = UIManager.InteractionState.Attacking;
@@ -1117,7 +1118,7 @@ public class BoardManager : NetworkBehaviour
 
             foreach (Vector2Int position in workingPositions)
             {
-                localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(2, false);
+                localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(2, true);
             }
         
             UIManager.Instance.interactionState = UIManager.InteractionState.Defending;
