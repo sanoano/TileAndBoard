@@ -50,6 +50,9 @@ public class UIManager : MonoBehaviour
     [Header("Health Display")] [SerializeField]
     private TextMeshProUGUI player1HealthDisplay;
     [SerializeField] private TextMeshProUGUI player2HealthDisplay;
+
+    [Header("Controls Display")]
+    [SerializeField] private TextMeshProUGUI controlsText;
     
     
     [Header("Settings Menu")] 
@@ -70,6 +73,7 @@ public class UIManager : MonoBehaviour
         }
 
         interactionState = InteractionState.None;
+        EnableControlsText();
     }
 
     private void Update()
@@ -87,6 +91,8 @@ public class UIManager : MonoBehaviour
         
         player2HealthDisplay.text =
             $"{BoardManager.Instance.player2Health} / {BoardManager.Instance.startingPlayerHealth}";
+        
+        
 
     }
 
@@ -248,6 +254,41 @@ public class UIManager : MonoBehaviour
             DestroyImmediate(actionsInfoPrefabInstance);
         }
         
+    }
+
+    public void EnableControlsText()
+    {
+        switch (interactionState)
+        {
+            case InteractionState.Attacking:
+                
+                controlsText.gameObject.SetActive(true);
+                controlsText.text = "R to Rotate\nEnter to Confirm\nEsc to Cancel";
+
+
+                break;
+            
+            case InteractionState.Defending:
+
+                controlsText.gameObject.SetActive(true);
+                controlsText.text = "R to Rotate\nEnter to Confirm\nEsc to Cancel";
+
+                break;
+            
+            
+            case InteractionState.Moving:
+
+                controlsText.gameObject.SetActive(true);
+                controlsText.text = "WASD/Arrows to Move\nEsc to Cancel";
+
+                break;
+            
+            case InteractionState.None:
+
+                controlsText.gameObject.SetActive(false);
+
+                break;
+        }
     }
     
 }

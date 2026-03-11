@@ -3241,7 +3241,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7890865934588215580, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: DrawCardBruh
+      value: DrawCardHandler
       objectReference: {fileID: 0}
     - target: {fileID: 7890865934588215580, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName

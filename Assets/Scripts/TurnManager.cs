@@ -86,6 +86,8 @@ public class TurnManager : NetworkBehaviour
         {
             case TurnState.Player1Turn:
                 
+                TacticsManager.instance.AddTacticsPoints(1);
+                
                 if (GameManager.instance.playerId == Player.PlayerId.Player1)
                 {
                     foreach (var unit in BoardManager.Instance.unitsList)
@@ -97,8 +99,6 @@ public class TurnManager : NetworkBehaviour
                             unit.Movement = data.Speed;
                         }
                     }
-            
-                    TacticsManager.instance.AddTacticsPoints(1);
                 }
                 
                 BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player2);
@@ -119,8 +119,6 @@ public class TurnManager : NetworkBehaviour
                             unit.Movement = data.Speed;
                         }
                     }
-            
-                    TacticsManager.instance.AddTacticsPoints(1);
                 }
                 
                 BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player1);
@@ -132,6 +130,9 @@ public class TurnManager : NetworkBehaviour
 
     public void ChangeTurn()
     {
+
+        if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
+        
         if (currentTurn == TurnState.Player1Turn && GameManager.instance.playerId == Player.PlayerId.Player1)
         {
             foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)

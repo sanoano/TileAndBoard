@@ -7,7 +7,6 @@ using UnityEngine.Serialization;
 using System.Collections.Generic;
 using Tweens;
 using Unity.Mathematics;
-using UnityEditor.Experimental.GraphView;
 
 public class BoardManager : NetworkBehaviour
 {
@@ -487,6 +486,7 @@ public class BoardManager : NetworkBehaviour
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 UIManager.Instance.interactionState = UIManager.InteractionState.None;
+                UIManager.Instance.EnableControlsText();
                 foreach (Vector2Int position in workingPositions)
                 {
                     enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
@@ -509,6 +509,7 @@ public class BoardManager : NetworkBehaviour
                 //TacticsManager.instance.RemoveTacticsPoints(1);
 
                 UIManager.Instance.interactionState = UIManager.InteractionState.None;
+                UIManager.Instance.EnableControlsText();
                 foreach (Vector2Int position in workingPositions)
                 {
                     enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
@@ -588,6 +589,7 @@ public class BoardManager : NetworkBehaviour
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 UIManager.Instance.interactionState = UIManager.InteractionState.None;
+                UIManager.Instance.EnableControlsText();
                 foreach (Vector2Int position in workingPositions)
                 {
                     localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
@@ -610,6 +612,7 @@ public class BoardManager : NetworkBehaviour
                 //TacticsManager.instance.RemoveTacticsPoints(1);
 
                 UIManager.Instance.interactionState = UIManager.InteractionState.None;
+                UIManager.Instance.EnableControlsText();
                 foreach (Vector2Int position in workingPositions)
                 {
                     localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
@@ -649,6 +652,7 @@ public class BoardManager : NetworkBehaviour
             if (currentlySelectedUnit.Movement == 0)
             {
                 UIManager.Instance.interactionState = UIManager.InteractionState.None;
+                UIManager.Instance.EnableControlsText();
 
                 foreach (var tile in localBoard.TileTransforms)
                 {
@@ -695,6 +699,7 @@ public class BoardManager : NetworkBehaviour
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 UIManager.Instance.interactionState = UIManager.InteractionState.None;
+                UIManager.Instance.EnableControlsText();
 
                 foreach (var tile in localBoard.TileTransforms)
                 {
@@ -1084,6 +1089,8 @@ public class BoardManager : NetworkBehaviour
             }
         
             UIManager.Instance.interactionState = UIManager.InteractionState.Attacking;
+            
+            UIManager.Instance.EnableControlsText();
         
         }
 
@@ -1122,6 +1129,8 @@ public class BoardManager : NetworkBehaviour
             }
         
             UIManager.Instance.interactionState = UIManager.InteractionState.Defending;
+            
+            UIManager.Instance.EnableControlsText();
         }
 
         public void PrepareMovement()
@@ -1162,6 +1171,8 @@ public class BoardManager : NetworkBehaviour
             }
 
             UIManager.Instance.interactionState = UIManager.InteractionState.Moving;
+            
+            UIManager.Instance.EnableControlsText();
 
             currentlySelectedUnit.HasActed = true;
 
@@ -1221,7 +1232,7 @@ public class BoardManager : NetworkBehaviour
 
                 for (int i = 0; i < 3; i++)
                 {
-                    for (int j = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
                     {
 
                         int workingDamage = 0;
@@ -1243,8 +1254,11 @@ public class BoardManager : NetworkBehaviour
                                 workingDamage -= defenseInstance.Defense;
                             }
                         }
-                    
-                        if (workingDamage <= 0) continue;
+
+                        if (workingDamage < 0)
+                        {
+                            workingDamage = 0;
+                        }
 
                         bool attackBlocked = false;
                         foreach (var unit in unitsList)
@@ -1258,7 +1272,7 @@ public class BoardManager : NetworkBehaviour
                             }
                         }
 
-                        if (!attackBlocked)
+                        if (!attackBlocked && workingDamage > 0)
                         {
                             BoardTakeDamage(1, Player.PlayerId.Player1);
                         }
@@ -1305,7 +1319,7 @@ public class BoardManager : NetworkBehaviour
             
                 for (int i = 0; i < 3; i++)
                 {
-                    for (int j = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
                     {
 
                         int workingDamage = 0;
@@ -1327,8 +1341,11 @@ public class BoardManager : NetworkBehaviour
                                 workingDamage -= defenseInstance.Defense;
                             }
                         }
-                    
-                        if (workingDamage <= 0) continue;
+
+                        if (workingDamage < 0)
+                        {
+                            workingDamage = 0;
+                        }
 
                         bool attackBlocked = false;
                         foreach (var unit in unitsList)
@@ -1342,7 +1359,7 @@ public class BoardManager : NetworkBehaviour
                             }
                         }
 
-                        if (!attackBlocked)
+                        if (!attackBlocked && workingDamage > 0)
                         {
                             BoardTakeDamage(1, Player.PlayerId.Player2);
                         }
@@ -1380,8 +1397,16 @@ public class BoardManager : NetworkBehaviour
                 }
             
             }
-        
-        
+
+            foreach (var tile in player1Board.TileTransforms)
+            {
+                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+            }
+            
+            foreach (var tile in player2Board.TileTransforms)
+            {
+                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+            }
         
             UpdateTileVisuals();
             PruneUnitList();
