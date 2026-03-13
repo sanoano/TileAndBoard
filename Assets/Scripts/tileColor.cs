@@ -5,8 +5,8 @@ public class tileColour : MonoBehaviour
 {// For use with materials that use _shaderTileSelection. Script assigned to the tile itself to receive signals.
     //[SerializeField] private int state = 0; //0 is no vfx, 1 is attack (red), 2 is defend (blue), 3 is move (yellow)
     private Renderer mainRenderer;
-    private float defaultEmmission = .75f;
-    private float previewEmmission = .05f;
+    private float defaultEmmission = 1.0f;
+    private float previewEmmission = 0f;
 
     [Header("Damage Numbers")]
     private Camera mainCamera;

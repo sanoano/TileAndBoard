@@ -87,7 +87,7 @@ public class UIManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape) && interactionState == InteractionState.None)
         {
-            settingsMenu.SetActive(!settingsMenu.activeSelf);
+            //settingsMenu.SetActive(!settingsMenu.activeSelf);
             DestroyCurrentInfoInstance();
         }
 
