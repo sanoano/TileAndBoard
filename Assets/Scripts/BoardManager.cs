@@ -7,6 +7,7 @@ using UnityEngine.Serialization;
 using System.Collections.Generic;
 using Tweens;
 using Unity.Mathematics;
+using UnityEngine.Events;
 
 public class BoardManager : NetworkBehaviour
 {
@@ -117,13 +118,17 @@ public class BoardManager : NetworkBehaviour
     [SerializeField] private float placeAnimationTime;
     [SerializeField] private float cardMoveAnimationTime;
     [SerializeField] private float angle = 90.0f;
+    public int maxCardsPerPlayer;
     public int startingPlayerHealth;
 
     [Header("Player Health")] 
     public int player1Health;
     public int player2Health;
-    
-    
+
+    [Header("Events")]
+    public UnityEvent cardPlaced;
+    public UnityEvent damageTaken;
+    public UnityEvent cardDied;
     
     private InputAction select;
 
@@ -153,6 +158,8 @@ public class BoardManager : NetworkBehaviour
         cameraInfo = cam.GetComponent<OrbitCamera>();
 
         interactionLayers = LayerMask.GetMask("Player1Tile", "Player2Tile");
+        
+        
     }
 
     private void Start()
@@ -202,6 +209,9 @@ public class BoardManager : NetworkBehaviour
 
         player1Health = startingPlayerHealth;
         player2Health = startingPlayerHealth;
+        
+        cardPlaced.Invoke();
+        damageTaken.Invoke();
 
     }
 
@@ -287,6 +297,7 @@ public class BoardManager : NetworkBehaviour
                         UIManager.Instance.CreateCardInfoPanel(CurrentSelectedTile,
                             Player.PlayerId.Player2);
 
+                        bool cardFound = false;
                         foreach (Unit unit in unitsList)
                         {
                             if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player2)
@@ -307,7 +318,25 @@ public class BoardManager : NetworkBehaviour
                                     player1Board.TileTransforms[position.x, position.y]
                                         .GetComponent<tileColour>().TileRecieveSignal(1, true);
                                 }
+
+                                cardFound = true;
+                                break;
                             }
+                        }
+                        //If the new tile selected has no card on it, show the live board status again.
+                        if (cardFound == false)
+                        {
+                            foreach (var tile in player1Board.TileTransforms)
+                            {
+                                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+                            }
+
+                            foreach (var tile in player2Board.TileTransforms)
+                            {
+                                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+                            }
+                            
+                            UpdateTileVisuals();
                         }
                     }
                     //If the tile is on the player board
@@ -317,26 +346,46 @@ public class BoardManager : NetworkBehaviour
                         UIManager.Instance.CreateCardInfoPanel(CurrentSelectedTile,
                             Player.PlayerId.Player1);
 
+                        bool cardFound = false;
                         foreach (Unit unit in unitsList)
                         {
                             if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player1)
                             {
+                                foreach (var tile in player1Board.TileTransforms)
+                                {
+                                    tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+                                }
+
                                 foreach (var tile in player2Board.TileTransforms)
                                 {
                                     tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
                                 }
 
-                                foreach (var tile in player1Board.TileTransforms)
-                                {
-                                    tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                                }
 
                                 foreach (var position in unit.AttackPositions)
                                 {
                                     player2Board.TileTransforms[position.x, position.y]
                                         .GetComponent<tileColour>().TileRecieveSignal(1, true);
                                 }
+
+                                cardFound = true;
+                                break;
                             }
+                        }
+                        //If the new tile selected has no card on it, show the live board status again.
+                        if (cardFound == false)
+                        {
+                            foreach (var tile in player1Board.TileTransforms)
+                            {
+                                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+                            }
+
+                            foreach (var tile in player2Board.TileTransforms)
+                            {
+                                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+                            }
+                            
+                            UpdateTileVisuals();
                         }
                     }
 
@@ -748,6 +797,8 @@ public class BoardManager : NetworkBehaviour
             if (currentlySelectedUnit.Movement > 0 &&
                 !currentAdjacentPositions[direction].Equals(new Vector2Int(-1, -1)))
             {
+                currentlySelectedUnit.HasActed = true;
+                
                 Vector3 position = new Vector3(
                     localBoard.TileTransforms[currentAdjacentPositions[direction].x, currentAdjacentPositions[direction].y]
                         .transform.position.x,
@@ -945,12 +996,12 @@ public class BoardManager : NetworkBehaviour
             if (unit.ID == Player.PlayerId.Player1)
             {
                 position = new Vector3(tile.transform.position.x, tile.transform.position.y + 0.5f, tile.transform.position.z);
-                rotation = Quaternion.Euler(new Vector3(90, 0, 0));
+                rotation = Quaternion.Euler(new Vector3(45, 0, -90));
             }
             else
             {
                 position = new Vector3(tile.transform.position.x, tile.transform.position.y + 0.5f, tile.transform.position.z);
-                rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
+                rotation = Quaternion.Euler(new Vector3(45, 0, 90));
             }
 
             Vector3 scale = new Vector3(5, 6, 4);
@@ -962,7 +1013,7 @@ public class BoardManager : NetworkBehaviour
                 easeType = EaseType.CubicInOut
             };
 
-            var rotationTween = new RotationTween()
+            var rotationTween = new LocalRotationTween()
             {
                 to = rotation,
                 duration = placeAnimationTime,
@@ -979,12 +1030,16 @@ public class BoardManager : NetworkBehaviour
             cardVisual.AddTween(positionTween, rotationTween, scaleTween);
 
             cardVisual.GetComponent<CardDrag>().isPlaced = true;
+            
+            cardPlaced.Invoke();
 
             foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
             {
                 if (clientIds == NetworkManager.LocalClientId) continue;
                 PlaceCardRpc(cardData.ID, unit.ID, unit.Position, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
             }
+            
+            
 
         }
 
@@ -1040,21 +1095,23 @@ public class BoardManager : NetworkBehaviour
             if (unit.ID == Player.PlayerId.Player1)
             {
                 player1Board.Visuals[unit.Position.x, unit.Position.y] = cardVisual;
-                rotation = Quaternion.Euler(new Vector3(90, 0, 0));
+                rotation = Quaternion.Euler(new Vector3(45, 0, -90));
                 position = new Vector3(tile.transform.position.x, tile.transform.position.y + 0.5f, tile.transform.position.z);
             }
             else
             {
                 player2Board.Visuals[unit.Position.x, unit.Position.y] = cardVisual;
-                rotation = Quaternion.Euler(new Vector3(-90, 0, 0));
+                rotation = Quaternion.Euler(new Vector3(45, 0, 90));
                 position = new Vector3(tile.transform.position.x, tile.transform.position.y + 0.5f, tile.transform.position.z);
             }
 
             Vector3 scale = new Vector3(5, 6, 4);
 
             cardVisual.transform.position = position;
-            cardVisual.transform.rotation = rotation;
+            cardVisual.transform.localRotation = rotation;
             cardVisual.transform.localScale = scale;
+            
+            cardPlaced.Invoke();
         }
 
         public void PrepareAttack()
@@ -1174,7 +1231,7 @@ public class BoardManager : NetworkBehaviour
             
             UIManager.Instance.EnableControlsText();
 
-            currentlySelectedUnit.HasActed = true;
+            
 
 
         }
@@ -1433,11 +1490,17 @@ public class BoardManager : NetworkBehaviour
                     unitsToDelete.Add(unit);
                 }
             }
+            
 
             foreach (var unit in unitsToDelete)
             {
                 unitsList.Remove(unit);
+                
             }
+            
+            cardDied.Invoke();
+
+            
         
         }
 
@@ -1462,7 +1525,25 @@ public class BoardManager : NetworkBehaviour
                 }
             
             }
+            
+            damageTaken.Invoke();
         
+        }
+
+        public int GetCardAmount(Player.PlayerId id)
+        {
+            int totalCards = 0;
+
+            foreach (var unit in unitsList)
+            {
+                if (unit.ID == id)
+                {
+                    totalCards++;
+                }
+            }
+
+            return totalCards;
+            
         }
     
     

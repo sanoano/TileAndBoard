@@ -56,12 +56,14 @@ public class ConnectionManager : MonoBehaviour
 
     private void onUsernameSet(string value)
     {
+        string cleanedValue = value.Replace(" ", String.Empty);
         _profileName = value;
     }
     
     private void onSessionNameSet(string value)
     {
-        _sessionName = value;
+        string cleanedValue = value.Replace(" ", String.Empty);
+        _sessionName = cleanedValue;
     }
     
     private async void OnClientDisconnect(ulong clientId)

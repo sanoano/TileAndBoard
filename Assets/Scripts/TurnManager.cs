@@ -86,7 +86,7 @@ public class TurnManager : NetworkBehaviour
         {
             case TurnState.Player1Turn:
                 
-                TacticsManager.instance.AddTacticsPoints(1);
+                TacticsManager.instance.AddTacticsPoints(TacticsManager.instance.tacticsPointsPerTurn);
                 
                 if (GameManager.instance.playerId == Player.PlayerId.Player1)
                 {

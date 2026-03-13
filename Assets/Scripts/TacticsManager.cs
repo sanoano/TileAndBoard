@@ -10,7 +10,7 @@ public class TacticsManager : MonoBehaviour
     [Header("Parameters")] 
     [SerializeField] private int maxTacticPoints;
     [SerializeField] private int startingTacticPoints;
-    [SerializeField] private int tacticsPointsPerTurn;
+    public int tacticsPointsPerTurn;
     
     
     

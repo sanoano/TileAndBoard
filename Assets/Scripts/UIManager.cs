@@ -53,7 +53,10 @@ public class UIManager : MonoBehaviour
 
     [Header("Controls Display")]
     [SerializeField] private TextMeshProUGUI controlsText;
-    
+
+    [Header("Card Amount Display")]
+    [SerializeField] private TextMeshProUGUI player1CardAmount;
+    [SerializeField] private TextMeshProUGUI player2CardAmount;
     
     [Header("Settings Menu")] 
     public GameObject settingsMenu;
@@ -74,6 +77,10 @@ public class UIManager : MonoBehaviour
 
         interactionState = InteractionState.None;
         EnableControlsText();
+        
+        BoardManager.Instance.cardPlaced.AddListener(UpdateCardAmountDisplay);
+        BoardManager.Instance.damageTaken.AddListener(UpdateHealthDisplay);
+        BoardManager.Instance.cardDied.AddListener(UpdateCardAmountDisplay);
     }
 
     private void Update()
@@ -85,15 +92,28 @@ public class UIManager : MonoBehaviour
         }
 
         tacticsText.text = $"Tactics Points: {TacticsManager.instance.currentTacticsPoints}";
+        
 
+    }
+
+    void UpdateHealthDisplay()
+    {
         player1HealthDisplay.text =
-            $"{BoardManager.Instance.player1Health} / {BoardManager.Instance.startingPlayerHealth}";
+            $"Health: {BoardManager.Instance.player1Health} / {BoardManager.Instance.startingPlayerHealth}";
         
         player2HealthDisplay.text =
-            $"{BoardManager.Instance.player2Health} / {BoardManager.Instance.startingPlayerHealth}";
-        
-        
+            $"Health: {BoardManager.Instance.player2Health} / {BoardManager.Instance.startingPlayerHealth}";
+    }
 
+    void UpdateCardAmountDisplay()
+    {
+        player1CardAmount.text =
+            $"Cards: {BoardManager.Instance.GetCardAmount(Player.PlayerId.Player1)} / {BoardManager.Instance.maxCardsPerPlayer}"
+            ;
+        
+        player2CardAmount.text =
+            $"Cards: {BoardManager.Instance.GetCardAmount(Player.PlayerId.Player2)} / {BoardManager.Instance.maxCardsPerPlayer}"
+            ;
     }
 
     public void CreateInfoPanel(Vector2Int position, Player.PlayerId playerId)
