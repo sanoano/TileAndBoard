@@ -36,6 +36,7 @@ public class ConnectionManager : MonoBehaviour
         m_NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
         m_NetworkManager.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
         m_NetworkManager.OnClientDisconnectCallback += OnClientDisconnect;
+        m_NetworkManager.OnTransportFailure += OnTransportFailure;
         await UnityServices.InitializeAsync();
         
         username.onValueChanged.AddListener(onUsernameSet);
@@ -95,7 +96,7 @@ public class ConnectionManager : MonoBehaviour
             
         }
         
-        if (m_NetworkManager.ConnectedClientsList.Count == 2)
+        if (m_NetworkManager.ConnectedClientsList.Count == 2 && m_NetworkManager.LocalClient.IsSessionOwner)
         {
             m_NetworkManager.SceneManager.LoadScene("Battle2", LoadSceneMode.Single);
             
@@ -125,9 +126,11 @@ public class ConnectionManager : MonoBehaviour
             }.WithDistributedAuthorityNetwork();
 
             _session = await MultiplayerService.Instance.CreateOrJoinSessionAsync(_sessionName, options);
-
+            await AuthenticationService.Instance.UpdatePlayerNameAsync(_profileName);
+            
            _state = ConnectionState.Connected;
            statusText.text = "Session created! Waiting for player...";
+           
 
        }
        catch (Exception e)
@@ -140,6 +143,18 @@ public class ConnectionManager : MonoBehaviour
            sessionName.gameObject.SetActive(true);
            startButton.gameObject.SetActive(true);
        }
+   }
+
+   void OnTransportFailure()
+   {
+       m_NetworkManager.Shutdown();
+       
+       username.gameObject.SetActive(true);
+       sessionName.gameObject.SetActive(true);
+       startButton.gameObject.SetActive(true);
+
+       statusText.text = "Transport failure! Please try again. If problem persists, please restart game.";
+
    }
 }
 

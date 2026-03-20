@@ -21,6 +21,9 @@ public class tileColour : MonoBehaviour
         if (mainRenderer != null)
             mainRenderer.material.SetFloat("_Mode", 0);
         
+        grossDamageGO.SetActive(false);
+        netDamageGO.SetActive(false);
+        
         if (gameObject.layer == LayerMask.NameToLayer("Player2Tile"))
         {
             grossDamageGO.gameObject.transform.localPosition = new Vector3(grossDamageGO.gameObject.transform.localPosition.x,
@@ -30,8 +33,16 @@ public class tileColour : MonoBehaviour
             netDamageGO.gameObject.transform.localPosition = new Vector3(netDamageGO.gameObject.transform.localPosition.x,
                 -netDamageGO.gameObject.transform.localPosition.y,
                 netDamageGO.gameObject.transform.localPosition.z);
+            
         }
         
+        grossDamageGO.gameObject.transform.localScale = new Vector3(-grossDamageGO.gameObject.transform.localScale.x,
+            grossDamageGO.gameObject.transform.localScale.y,
+            grossDamageGO.gameObject.transform.localScale.z);
+        
+        netDamageGO.gameObject.transform.localScale = new Vector3(-netDamageGO.gameObject.transform.localScale.x,
+            netDamageGO.gameObject.transform.localScale.y,
+            netDamageGO.gameObject.transform.localScale.z);
     }
 
     void Update()
@@ -39,16 +50,7 @@ public class tileColour : MonoBehaviour
         grossDamageGO.transform.LookAt(mainCamera.transform);
         netDamageGO.transform.LookAt(mainCamera.transform);
 
-        if (grossDamageTMP.text == "0" && netDamageTMP.text == "0") 
-        {
-            grossDamageGO.SetActive(false);
-            netDamageGO.SetActive(false);
-        }
-        else
-        {
-            grossDamageGO.SetActive(true);
-            netDamageGO.SetActive(true);
-        }
+        
     }
 
     public void TileRecieveSignal(int newState, bool preview)
@@ -65,14 +67,18 @@ public class tileColour : MonoBehaviour
     }
 
     public void TileRecieveDamage(int Damage, int Defence)
-    {//Updates the little numbers above each tile. Similar issue to the TileRecieveSignal is that it needs to be reset back to 0,0 and the element will hide itself
+    { //Updates the little numbers above each tile. Similar issue to the TileRecieveSignal is that it needs to be reset back to 0,0 and the element will hide itself
+
+        int netAmount = Damage - Defence;
+        if (netAmount < 0) netAmount = 0;
+        
         if (Damage > Defence && Defence != 0)
         {// Dmg is larger than Def (red)
             grossDamageGO.SetActive(true);
             netDamageGO.SetActive(true);
 
             grossDamageTMP.text = Damage.ToString();
-            netDamageTMP.text = (Damage - Defence).ToString();
+            netDamageTMP.text = netAmount.ToString();
         }
         else if (Defence >= Damage && Defence != 0)
         {// Def is larger than Dmg (blue)
@@ -84,10 +90,27 @@ public class tileColour : MonoBehaviour
         }
         else if (Damage > 0 && Defence == 0)
         {// Dmg with no Def at all (red)
+            grossDamageGO.SetActive(false);
             netDamageGO.SetActive(true);
 
             grossDamageTMP.text = "";
             netDamageTMP.text = Damage.ToString();
+        }
+        else if (Damage == 0 && Defence > 0)
+        {// Def with no Dmg
+            grossDamageGO.SetActive(false);
+            netDamageGO.SetActive(true);
+
+            grossDamageTMP.text = "";
+            netDamageTMP.text = "0";
+        }
+        else if(Damage == 0 && Defence == 0)
+        {//Nothing
+            grossDamageTMP.text = "0";
+            netDamageTMP.text = "0";
+            
+            grossDamageGO.SetActive(false);
+            netDamageGO.SetActive(false);
         }
     }
 }

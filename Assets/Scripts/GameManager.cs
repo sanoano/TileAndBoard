@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using Unity.Entities;
 using Unity.Netcode;
+using Unity.Services.Authentication;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -16,6 +17,8 @@ public class GameManager : NetworkBehaviour
     public static GameManager instance;
 
     public Player.PlayerId playerId;
+
+    private string playerName;
 
     
     private void Awake()
@@ -47,7 +50,49 @@ public class GameManager : NetworkBehaviour
         headInstanceNO = headInstance.GetComponent<NetworkObject>();
         
         headInstanceNO.Spawn(false);
+        
+        GetPlayerName();
+        
+    }
+    
+    async void GetPlayerName()
+    {
+        try
+        {
+            playerName = await AuthenticationService.Instance.GetPlayerNameAsync();
 
+            if (playerId == Player.PlayerId.Player1)
+            {
+                foreach (var clientIds in NetworkManager.ConnectedClientsIds)
+                {
+                    SetPlayer1NameRpc(playerName, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                }
+            }
+            else
+            {
+                foreach (var clientIds in NetworkManager.ConnectedClientsIds)
+                {
+                    SetPlayer2NameRpc(playerName, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+        }
+       
+    }
+    
+    [Rpc(SendTo.SpecifiedInParams)]
+    void SetPlayer1NameRpc(string name, RpcParams rpcParams = default)
+    {
+        UIManager.Instance.player1Name.text = name;
+    }
+    
+    [Rpc(SendTo.SpecifiedInParams)]
+    void SetPlayer2NameRpc(string name, RpcParams rpcParams = default)
+    {
+        UIManager.Instance.player2Name.text = name;
     }
 
     private void Start()

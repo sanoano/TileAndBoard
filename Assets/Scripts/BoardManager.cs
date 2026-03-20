@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 using System.Collections.Generic;
+using TMPro;
 using Tweens;
 using Unity.Mathematics;
 using UnityEngine.Events;
@@ -254,15 +255,7 @@ public class BoardManager : NetworkBehaviour
                         CurrentSelectedTile = new Vector2Int(-1, -1);
                         UIManager.Instance.DestroyCurrentInfoInstance();
 
-                        foreach (var tile in player1Board.TileTransforms)
-                        {
-                            tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                        }
-
-                        foreach (var tile in player2Board.TileTransforms)
-                        {
-                            tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                        }
+                        ClearTiles();
 
                         UpdateTileVisuals();
 
@@ -270,15 +263,7 @@ public class BoardManager : NetworkBehaviour
                     }
 
                     //If its a different tile
-                    foreach (var tile in player1Board.TileTransforms)
-                    {
-                        tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                    }
-
-                    foreach (var tile in player2Board.TileTransforms)
-                    {
-                        tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                    }
+                    ClearTiles();
 
                     currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
                     UIManager.Instance.DestroyCurrentInfoInstance();
@@ -302,15 +287,7 @@ public class BoardManager : NetworkBehaviour
                         {
                             if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player2)
                             {
-                                foreach (var tile in player1Board.TileTransforms)
-                                {
-                                    tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                                }
-
-                                foreach (var tile in player2Board.TileTransforms)
-                                {
-                                    tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                                }
+                                ClearTiles();
 
 
                                 foreach (var position in unit.AttackPositions)
@@ -326,15 +303,7 @@ public class BoardManager : NetworkBehaviour
                         //If the new tile selected has no card on it, show the live board status again.
                         if (cardFound == false)
                         {
-                            foreach (var tile in player1Board.TileTransforms)
-                            {
-                                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                            }
-
-                            foreach (var tile in player2Board.TileTransforms)
-                            {
-                                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                            }
+                            ClearTiles();
                             
                             UpdateTileVisuals();
                         }
@@ -351,15 +320,7 @@ public class BoardManager : NetworkBehaviour
                         {
                             if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player1)
                             {
-                                foreach (var tile in player1Board.TileTransforms)
-                                {
-                                    tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                                }
-
-                                foreach (var tile in player2Board.TileTransforms)
-                                {
-                                    tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                                }
+                                ClearTiles();
 
 
                                 foreach (var position in unit.AttackPositions)
@@ -375,15 +336,7 @@ public class BoardManager : NetworkBehaviour
                         //If the new tile selected has no card on it, show the live board status again.
                         if (cardFound == false)
                         {
-                            foreach (var tile in player1Board.TileTransforms)
-                            {
-                                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                            }
-
-                            foreach (var tile in player2Board.TileTransforms)
-                            {
-                                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                            }
+                            ClearTiles();
                             
                             UpdateTileVisuals();
                         }
@@ -411,16 +364,7 @@ public class BoardManager : NetworkBehaviour
                         {
                             if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player2)
                             {
-                                foreach (var tile in player1Board.TileTransforms)
-                                {
-                                    tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                                    
-                                }
-                                
-                                foreach (var tile in player2Board.TileTransforms)
-                                {
-                                    tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                                }
+                                ClearTiles();
 
                                 foreach (var position in unit.AttackPositions)
                                 {
@@ -440,15 +384,7 @@ public class BoardManager : NetworkBehaviour
                         {
                             if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player1)
                             {
-                                foreach (var tile in player2Board.TileTransforms)
-                                {
-                                    tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                                }
-                                
-                                foreach (var tile in player1Board.TileTransforms)
-                                {
-                                    tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-                                }
+                                ClearTiles();
 
                                 foreach (var position in unit.AttackPositions)
                                 {
@@ -487,6 +423,22 @@ public class BoardManager : NetworkBehaviour
             //     
             // }
 
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (currentSelectedTileGameObject != null)
+            {
+                currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
+                currentSelectedTileGameObject = null;
+                CurrentSelectedTile = new Vector2Int(-1, -1);
+                UIManager.Instance.DestroyCurrentInfoInstance();
+
+                ClearTiles();
+
+                UpdateTileVisuals();
+                
+            }   
         }
         
     }
@@ -926,35 +878,101 @@ public class BoardManager : NetworkBehaviour
 
         public void UpdateTileVisuals()
         {
-        
-            //horrible, needs improvement
-            foreach (var instance in damageInstances)
+            
+            //for player 1 board
+            for (int i = 0; i < 3; i++)
             {
-                foreach (var position in instance.Positions)
+                for (int j = 0; j < 3; j++)
                 {
-                    if (instance.ID == Player.PlayerId.Player1)
+                    int workingDamage = 0;
+                    int workingDefense = 0;
+                    bool somethingHere = false;
+                    
+                    foreach (var damageInstance in damageInstances)
                     {
-                        player2Board.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(1, false);
+                        if (damageInstance.Positions.Contains(new Vector2Int(i, j)) &&
+                            damageInstance.ID == Player.PlayerId.Player2)
+                        {
+                            workingDamage += damageInstance.Damage;
+                            somethingHere = true;
+                        }
                     }
-                    else
+
+                    foreach (var defenseInstance in defenseInstances)
                     {
-                        player1Board.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(1, false);
+                        if (defenseInstance.Positions.Contains(new Vector2Int(i, j)) &&
+                            defenseInstance.ID == Player.PlayerId.Player1)
+                        {
+                            workingDefense += defenseInstance.Defense;
+                            somethingHere = true;
+                        }
                     }
+                    
+                    player1Board.TileTransforms[i, j].GetComponent<tileColour>().TileRecieveDamage(workingDamage, workingDefense);
+
+                    workingDamage -= workingDefense;
+
+                    if (somethingHere)
+                    {
+                        if (workingDamage <= 0)
+                        {
+                            player1Board.TileTransforms[i, j].GetComponent<tileColour>().TileRecieveSignal(2, false);
+                        }
+                        else
+                        {
+                            player1Board.TileTransforms[i, j].GetComponent<tileColour>().TileRecieveSignal(1, false);
+                        }
+                    }
+                    
+                    
+                    
                 }
             }
-        
-            foreach (var instance in defenseInstances)
+            //for player 2 board
+            for (int i = 0; i < 3; i++)
             {
-                foreach (var position in instance.Positions)
+                for (int j = 0; j < 3; j++)
                 {
-                    if (instance.ID == Player.PlayerId.Player2)
+                    int workingDamage = 0;
+                    int workingDefense = 0;
+                    bool somethingHere = false;
+                    
+                    foreach (var damageInstance in damageInstances)
                     {
-                        player2Board.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(2, false);
+                        if (damageInstance.Positions.Contains(new Vector2Int(i, j)) &&
+                            damageInstance.ID == Player.PlayerId.Player1)
+                        {
+                            workingDamage += damageInstance.Damage;
+                            somethingHere = true;
+                        }
                     }
-                    else
+
+                    foreach (var defenseInstance in defenseInstances)
                     {
-                        player1Board.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(2, false);
+                        if (defenseInstance.Positions.Contains(new Vector2Int(i, j)) &&
+                            defenseInstance.ID == Player.PlayerId.Player2)
+                        {
+                            workingDefense += defenseInstance.Defense;
+                            somethingHere = true;
+                        }
                     }
+
+                    workingDamage -= workingDefense;
+
+                    if (somethingHere)
+                    {
+                        if (workingDamage <= 0)
+                        {
+                            player2Board.TileTransforms[i, j].GetComponent<tileColour>().TileRecieveSignal(2, false);
+                        }
+                        else
+                        {
+                            player2Board.TileTransforms[i, j].GetComponent<tileColour>().TileRecieveSignal(1, false);
+                        }
+                    }
+                    
+                    player2Board.TileTransforms[i, j].GetComponent<tileColour>().TileRecieveDamage(workingDamage, workingDefense);
+                    
                 }
             }
         
@@ -1119,7 +1137,6 @@ public class BoardManager : NetworkBehaviour
         
             // if (!TacticsManager.instance.CanAfford(1)) return;
             
-            print("balls");
             UIManager.Instance.DestroyCurrentInfoInstance();
         
             foreach (Unit unit in unitsList)
@@ -1137,6 +1154,7 @@ public class BoardManager : NetworkBehaviour
             foreach (var tile in enemyBoard.TileTransforms)
             {
                 tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+                tile.GetComponent<tileColour>().TileRecieveDamage(0, 0);
             }
         
 
@@ -1170,15 +1188,7 @@ public class BoardManager : NetworkBehaviour
 
             if (workingPositions == null) return;
 
-            foreach (var tile in enemyBoard.TileTransforms)
-            {
-                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-            }
-        
-            foreach (var tile in localBoard.TileTransforms)
-            {
-                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-            }
+            ClearTiles();
 
             foreach (Vector2Int position in workingPositions)
             {
@@ -1209,15 +1219,7 @@ public class BoardManager : NetworkBehaviour
 
             if (workingPositions == null) return;
 
-            foreach (var tile in enemyBoard.TileTransforms)
-            {
-                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-            }
-        
-            foreach (var tile in localBoard.TileTransforms)
-            {
-                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-            }
+            ClearTiles();
 
             currentAdjacentPositions = GetAdjacentTiles(CurrentSelectedTile);
 
@@ -1236,6 +1238,21 @@ public class BoardManager : NetworkBehaviour
 
         }
 
+        void ClearTiles()
+        {
+            foreach (var tile in enemyBoard.TileTransforms)
+            {
+                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+                tile.GetComponent<tileColour>().TileRecieveDamage(0, 0);
+            }
+        
+            foreach (var tile in localBoard.TileTransforms)
+            {
+                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+                tile.GetComponent<tileColour>().TileRecieveDamage(0, 0);
+            }
+        }
+        
         Vector2Int[] GetAdjacentTiles(Vector2Int position)
         {
             Vector2Int[] adjacent = new Vector2Int[4];
@@ -1284,6 +1301,7 @@ public class BoardManager : NetworkBehaviour
         public void EvaluateDamage(Player.PlayerId playerId)
         {
         
+            //Evaluate PLayer 1 Damage
             if (playerId == Player.PlayerId.Player1)
             {
 
@@ -1325,6 +1343,8 @@ public class BoardManager : NetworkBehaviour
                             if (Equals(unit.Position, new Vector2Int(i, j)))
                             {
                                 unit.Health -= workingDamage;
+                                player1Board.Visuals[i, j].GetComponentsInChildren<TextMeshProUGUI>()[1].text =
+                                    unit.Health.ToString();
                                 attackBlocked = true;
                             }
                         }
@@ -1357,7 +1377,7 @@ public class BoardManager : NetworkBehaviour
                 List<DefenseInstance> toRemoveDefense = new List<DefenseInstance>();
                 foreach (var defenseInstance in defenseInstances)
                 {
-                    if (defenseInstance.ID == Player.PlayerId.Player2)
+                    if (defenseInstance.ID == Player.PlayerId.Player1)
                     {
                         toRemoveDefense.Add(defenseInstance);
                     }
@@ -1371,6 +1391,7 @@ public class BoardManager : NetworkBehaviour
             
             
             }
+            //Evaluate Player 2 Damage
             else
             {
             
@@ -1412,6 +1433,8 @@ public class BoardManager : NetworkBehaviour
                             if (Equals(unit.Position, new Vector2Int(i, j)))
                             {
                                 unit.Health -= workingDamage;
+                                player2Board.Visuals[i, j].GetComponentsInChildren<TextMeshProUGUI>()[1].text =
+                                    unit.Health.ToString();
                                 attackBlocked = true;
                             }
                         }
@@ -1442,7 +1465,7 @@ public class BoardManager : NetworkBehaviour
                 List<DefenseInstance> toRemoveDefense = new List<DefenseInstance>();
                 foreach (var defenseInstance in defenseInstances)
                 {
-                    if (defenseInstance.ID == Player.PlayerId.Player1)
+                    if (defenseInstance.ID == Player.PlayerId.Player2)
                     {
                         toRemoveDefense.Add(defenseInstance);
                     }

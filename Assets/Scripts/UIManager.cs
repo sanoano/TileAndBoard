@@ -57,6 +57,10 @@ public class UIManager : MonoBehaviour
     [Header("Card Amount Display")]
     [SerializeField] private TextMeshProUGUI player1CardAmount;
     [SerializeField] private TextMeshProUGUI player2CardAmount;
+
+    [Header("Usernames")] 
+    public TextMeshProUGUI player1Name;
+    public TextMeshProUGUI player2Name;
     
     [Header("Settings Menu")] 
     public GameObject settingsMenu;
@@ -88,7 +92,7 @@ public class UIManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape) && interactionState == InteractionState.None)
         {
             //settingsMenu.SetActive(!settingsMenu.activeSelf);
-            DestroyCurrentInfoInstance();
+            //DestroyCurrentInfoInstance();
         }
 
         tacticsText.text = $"Tactics Points: {TacticsManager.instance.currentTacticsPoints}";
