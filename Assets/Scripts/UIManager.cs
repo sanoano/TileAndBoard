@@ -103,10 +103,10 @@ public class UIManager : MonoBehaviour
     void UpdateHealthDisplay()
     {
         player1HealthDisplay.text =
-            $"Health: {BoardManager.Instance.player1Health} / {BoardManager.Instance.startingPlayerHealth}";
+            $"Life Points: {BoardManager.Instance.player1Health} / {BoardManager.Instance.startingPlayerHealth}";
         
         player2HealthDisplay.text =
-            $"Health: {BoardManager.Instance.player2Health} / {BoardManager.Instance.startingPlayerHealth}";
+            $"Life Points: {BoardManager.Instance.player2Health} / {BoardManager.Instance.startingPlayerHealth}";
     }
 
     void UpdateCardAmountDisplay()
