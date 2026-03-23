@@ -106,11 +106,11 @@ public class tileColour : MonoBehaviour
         }
         else if(Damage == 0 && Defence == 0)
         {//Nothing
-            grossDamageTMP.text = "0";
-            netDamageTMP.text = "0";
-            
             grossDamageGO.SetActive(false);
             netDamageGO.SetActive(false);
+
+            grossDamageTMP.text = "";
+            netDamageTMP.text = "";
         }
     }
 }
