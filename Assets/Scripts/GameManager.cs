@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using Unity.Entities;
+using Unity.Entities.UniversalDelegates;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using UnityEngine;
@@ -86,13 +87,15 @@ public class GameManager : NetworkBehaviour
     [Rpc(SendTo.SpecifiedInParams)]
     void SetPlayer1NameRpc(string name, RpcParams rpcParams = default)
     {
-        UIManager.Instance.player1Name.text = name;
+        string trimmedName = name.Substring(0, name.Length - 5); // Removes the username suffix ie. #XXXX
+        UIManager.Instance.player1Name.text = trimmedName;
     }
     
     [Rpc(SendTo.SpecifiedInParams)]
     void SetPlayer2NameRpc(string name, RpcParams rpcParams = default)
     {
-        UIManager.Instance.player2Name.text = name;
+        string trimmedName = name.Substring(0, name.Length - 5); 
+        UIManager.Instance.player2Name.text = trimmedName;
     }
 
     private void Start()
