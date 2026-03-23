@@ -1260,7 +1260,24 @@ public class BoardManager : NetworkBehaviour
 
             if (position.x + 1 <= 2)
             {
-                adjacent[0] = new Vector2Int(position.x + 1, position.y); 
+                bool cardPresent = false;
+                foreach (var unit in unitsList)
+                {
+                    if (unit.ID != GameManager.instance.playerId) continue;
+                    if (Equals(unit.Position, new Vector2Int(position.x + 1, position.y)))
+                    {
+                        cardPresent = true;
+                    }
+                }
+
+                if (cardPresent == false)
+                {
+                    adjacent[0] = new Vector2Int(position.x + 1, position.y); 
+                }
+                else
+                {
+                    adjacent[0] = new Vector2Int(-1, -1);
+                }
             }
             else
             {
@@ -1269,7 +1286,24 @@ public class BoardManager : NetworkBehaviour
 
             if (position.x - 1 >= 0)
             {
-                adjacent[1] = new Vector2Int(position.x - 1, position.y);
+                bool cardPresent = false;
+                foreach (var unit in unitsList)
+                {
+                    if (unit.ID != GameManager.instance.playerId) continue;
+                    if (Equals(unit.Position, new Vector2Int(position.x - 1, position.y)))
+                    {
+                        cardPresent = true;
+                    }
+                }
+
+                if (cardPresent == false)
+                {
+                    adjacent[1] = new Vector2Int(position.x - 1, position.y); 
+                }
+                else
+                {
+                    adjacent[1] = new Vector2Int(-1, -1);
+                }
             }
             else
             {
@@ -1278,7 +1312,24 @@ public class BoardManager : NetworkBehaviour
         
             if (position.y + 1 <= 2)
             {
-                adjacent[2] = new Vector2Int(position.x, position.y + 1);
+                bool cardPresent = false;
+                foreach (var unit in unitsList)
+                {
+                    if (unit.ID != GameManager.instance.playerId) continue;
+                    if (Equals(unit.Position, new Vector2Int(position.x, position.y + 1)))
+                    {
+                        cardPresent = true;
+                    }
+                }
+
+                if (cardPresent == false)
+                {
+                    adjacent[2] = new Vector2Int(position.x, position.y + 1); 
+                }
+                else
+                {
+                    adjacent[2] = new Vector2Int(-1, -1);
+                }
             }
             else
             {
@@ -1287,7 +1338,24 @@ public class BoardManager : NetworkBehaviour
 
             if (position.y - 1 >= 0)
             {
-                adjacent[3] = new Vector2Int(position.x, position.y - 1);
+                bool cardPresent = false;
+                foreach (var unit in unitsList)
+                {
+                    if (unit.ID != GameManager.instance.playerId) continue;
+                    if (Equals(unit.Position, new Vector2Int(position.x, position.y - 1)))
+                    {
+                        cardPresent = true;
+                    }
+                }
+
+                if (cardPresent == false)
+                {
+                    adjacent[3] = new Vector2Int(position.x, position.y - 1); 
+                }
+                else
+                {
+                    adjacent[3] = new Vector2Int(-1, -1);
+                }
             }
             else
             {
