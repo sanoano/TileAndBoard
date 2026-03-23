@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8556937968875228009
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4586309597528217988}
+  - component: {fileID: 7123550328120768374}
+  m_Layer: 0
+  m_Name: UIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4586309597528217988
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8556937968875228009}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7123550328120768374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8556937968875228009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b8045f061d6f4470aa53b727ec18608, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIManager
+  interactionState: 0
+  uiInfoPrefab: {fileID: 5223788855421830316, guid: 3ed9d650e46c04ac4a5eccf3b6e695fa, type: 3}
+  InfoPanelPos: {fileID: 0}
+  Canvas: {fileID: 0}
+  cardInfoPrefab: {fileID: 8099708331046039731, guid: 1daef69ebf3c44663bcedfb62d05526c, type: 3}
+  CardInfoPanelPos: {fileID: 0}
+  actionsInfoPrefab: {fileID: 2643444099898030300, guid: 3f1775050f87142cbacf1da40d74b679, type: 3}
+  actionsInfoPanelPos: {fileID: 0}
+  tacticsText: {fileID: 0}
+  player1HealthDisplay: {fileID: 0}
+  player2HealthDisplay: {fileID: 0}
+  controlsText: {fileID: 0}
+  player1CardAmount: {fileID: 0}
+  player2CardAmount: {fileID: 0}
+  player1Name: {fileID: 0}
+  player2Name: {fileID: 0}
+  settingsMenu: {fileID: 0}
+  mixer: {fileID: 24100000, guid: 5557c0f46872649a992f506b1dbbdd7d, type: 2}

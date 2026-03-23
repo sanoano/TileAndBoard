@@ -82,9 +82,15 @@ public class UIManager : MonoBehaviour
         interactionState = InteractionState.None;
         EnableControlsText();
         
+    }
+
+    public void Start()
+    {
         BoardManager.Instance.cardPlaced.AddListener(UpdateCardAmountDisplay);
         BoardManager.Instance.damageTaken.AddListener(UpdateHealthDisplay);
         BoardManager.Instance.cardDied.AddListener(UpdateCardAmountDisplay);
+        UpdateHealthDisplay();
+        UpdateCardAmountDisplay();
     }
 
     private void Update()

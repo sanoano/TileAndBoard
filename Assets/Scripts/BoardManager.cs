@@ -210,10 +210,6 @@ public class BoardManager : NetworkBehaviour
 
         player1Health = startingPlayerHealth;
         player2Health = startingPlayerHealth;
-        
-        cardPlaced.Invoke();
-        damageTaken.Invoke();
-
     }
 
     public override void OnNetworkSpawn()
@@ -232,10 +228,14 @@ public class BoardManager : NetworkBehaviour
 
     private void TileSelect()
     {
+        
         if (Input.GetMouseButtonDown(0))
         {
+            
             if (UIManager.Instance.settingsMenu.activeSelf) return;
+            
             if (cameraInfo.cameraState == OrbitCamera.CameraState.Free) return;
+            
 
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
