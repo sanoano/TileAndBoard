@@ -98,6 +98,12 @@ public class GameManager : NetworkBehaviour
         UIManager.Instance.player2Name.text = trimmedName;
     }
 
+    public async void DisconnectUser()
+    {
+        await NetworkManager.Singleton.gameObject.GetComponent<ConnectionManager>().LeaveSessionAsync();
+
+    }
+
     private void Start()
     {
         

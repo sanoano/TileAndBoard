@@ -95,10 +95,10 @@ public class UIManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && interactionState == InteractionState.None)
+        if (Input.GetKeyDown(KeyCode.Escape) && interactionState == InteractionState.None && BoardManager.Instance.currentSelectedTileGameObject == null)
         {
-            //settingsMenu.SetActive(!settingsMenu.activeSelf);
-            //DestroyCurrentInfoInstance();
+            settingsMenu.SetActive(!settingsMenu.activeSelf);
+            DestroyCurrentInfoInstance();
         }
 
         tacticsText.text = $"Tactics Points: {TacticsManager.instance.currentTacticsPoints}";

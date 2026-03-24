@@ -35,7 +35,7 @@ public class ConnectionManager : MonoBehaviour
         m_NetworkManager = GetComponent<NetworkManager>();
         m_NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
         m_NetworkManager.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
-        m_NetworkManager.OnClientDisconnectCallback += OnClientDisconnect;
+        m_NetworkManager.OnConnectionEvent += OnClientDisconnect;
         m_NetworkManager.OnTransportFailure += OnTransportFailure;
         await UnityServices.InitializeAsync();
         
@@ -67,16 +67,73 @@ public class ConnectionManager : MonoBehaviour
         _sessionName = cleanedValue;
     }
     
-    private async void OnClientDisconnect(ulong clientId)
+    private async void OnClientDisconnect(NetworkManager manager,ConnectionEventData connectionEventData )
     {
-        if (clientId != m_NetworkManager.LocalClientId && SceneManager.GetActiveScene().name == "Battle")
+        print("player disconnect");
+        if (connectionEventData.EventType == ConnectionEvent.PeerDisconnected && connectionEventData.ClientId != NetworkManager.Singleton.LocalClientId)
         {
-            await _session.LeaveAsync();
-            AuthenticationService.Instance.SignOut();
-            SceneManager.LoadScene("Lobby");
+            await LeaveSessionAsync();
+            
         }
         
     }
+    
+    public async Task LeaveSessionAsync()
+    {
+      
+        if (_session != null)
+        {
+            await _session.LeaveAsync();
+            _session = null;
+        }
+
+        if (m_NetworkManager != null && m_NetworkManager.ShutdownInProgress == false)
+        {
+            m_NetworkManager.Shutdown();
+            
+           
+            await WaitForShutdown();
+        }
+        
+        AuthenticationService.Instance.SignOut();
+        
+        ClearSessionState();
+        SceneManager.LoadScene("Lobby");
+
+        Debug.Log("Session left successfully");
+    }
+
+    private async Task WaitForShutdown()
+    {
+        
+        int maxWait = 5000;
+        int waited = 0;
+        
+        while (m_NetworkManager.ShutdownInProgress)
+        {
+            await Task.Delay(100);
+            waited += 100;
+            
+            if (waited >= maxWait)
+            {
+                Debug.LogWarning("Network shutdown timeout");
+                break;
+            }
+        }
+    }
+
+    private void ClearSessionState()
+    {
+        
+        System.GC.Collect();
+        
+        
+        
+        Debug.Log("State cleared");
+    }
+
+
+  
 
     private void OnSessionOwnerPromoted(ulong sessionOwnerPromoted)
     {
@@ -137,6 +194,7 @@ public class ConnectionManager : MonoBehaviour
        {
            _state = ConnectionState.Disconnected;
            Debug.LogException(e);
+           NetworkManager.Singleton.Shutdown();
            AuthenticationService.Instance.SignOut();
            statusText.text = "Failed to connect. Error: " + e;
            username.gameObject.SetActive(true);
@@ -147,7 +205,8 @@ public class ConnectionManager : MonoBehaviour
 
    void OnTransportFailure()
    {
-       m_NetworkManager.Shutdown();
+       NetworkManager.Singleton.Shutdown();
+       AuthenticationService.Instance.SignOut();
        
        username.gameObject.SetActive(true);
        sessionName.gameObject.SetActive(true);
