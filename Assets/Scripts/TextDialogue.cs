@@ -23,7 +23,7 @@ public class TextDialogue : MonoBehaviour
 
     void Start()
     {
-        dialogueTMP = GetComponent<TextMeshProUGUI>();
+        
         SetOpacity(opacityInactive);
 
         boardMax = CardManager.instance.maxCards;

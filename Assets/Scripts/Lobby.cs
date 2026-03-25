@@ -58,7 +58,7 @@ public class ConnectionManager : MonoBehaviour
     private void onUsernameSet(string value)
     {
         string cleanedValue = value.Replace(" ", String.Empty);
-        _profileName = value;
+        _profileName = cleanedValue;
     }
     
     private void onSessionNameSet(string value)

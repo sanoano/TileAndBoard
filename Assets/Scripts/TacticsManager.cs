@@ -11,6 +11,8 @@ public class TacticsManager : MonoBehaviour
     [SerializeField] private int maxTacticPoints;
     [SerializeField] private int startingTacticPoints;
     public int tacticsPointsPerTurn;
+    public int actionsPerTurn;
+    public int currentActions;
     
     
     
@@ -26,7 +28,8 @@ public class TacticsManager : MonoBehaviour
         }
 
         currentTacticsPoints = startingTacticPoints;
-        
+        currentActions = actionsPerTurn;
+
     }
 
     public void AddTacticsPoints(int amount)

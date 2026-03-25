@@ -509,6 +509,9 @@ public class BoardManager : NetworkBehaviour
             {
                 //TacticsManager.instance.RemoveTacticsPoints(1);
 
+                TacticsManager.instance.currentActions -= 1;
+
+                
                 UIManager.Instance.interactionState = UIManager.InteractionState.None;
                 UIManager.Instance.EnableControlsText();
                 foreach (Vector2Int position in workingPositions)
@@ -611,6 +614,7 @@ public class BoardManager : NetworkBehaviour
             if (Input.GetKeyDown(KeyCode.Return))
             {
                 //TacticsManager.instance.RemoveTacticsPoints(1);
+                TacticsManager.instance.currentActions -= 1;
 
                 UIManager.Instance.interactionState = UIManager.InteractionState.None;
                 UIManager.Instance.EnableControlsText();
@@ -750,6 +754,8 @@ public class BoardManager : NetworkBehaviour
                 !currentAdjacentPositions[direction].Equals(new Vector2Int(-1, -1)))
             {
                 currentlySelectedUnit.HasActed = true;
+                
+
                 
                 Vector3 position = new Vector3(
                     localBoard.TileTransforms[currentAdjacentPositions[direction].x, currentAdjacentPositions[direction].y]
@@ -1204,7 +1210,8 @@ public class BoardManager : NetworkBehaviour
         {
         
             // if (!TacticsManager.instance.CanAfford(1)) return;
-        
+
+            TacticsManager.instance.currentActions -= 1;
             UIManager.Instance.DestroyCurrentInfoInstance();
         
             foreach (Unit unit in unitsList)
