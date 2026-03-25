@@ -23,7 +23,7 @@ public class CardManager : MonoBehaviour
 
 
     [Header("Properties")] 
-    [SerializeField] private int maxCards;
+    public int maxCards;
     [SerializeField] private int initialDrawAmount;
     [SerializeField] private float cardDisplayOffset;
     [SerializeField] private float cardLayoutTime;
