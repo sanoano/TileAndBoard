@@ -3,7 +3,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
-public class UIDialogue : MonoBehaviour
+public class TextDialogue : MonoBehaviour
 {// This dialogue box accepts int arguments that correspond with status messages for the player. Disappear after a couple of secs
 
     [Header("UI Elements")]
