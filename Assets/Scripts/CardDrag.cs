@@ -75,7 +75,7 @@ public class CardDrag : MonoBehaviour
         if (CardManager.instance.cardDrawInProgress) return;
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        
+
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, BoardManager.Instance.playerSpecificLayer))
         {
 
@@ -86,61 +86,71 @@ public class CardDrag : MonoBehaviour
                     hit.transform.gameObject);
 
             //Check if card can be placed, if so place it
-            if (BoardManager.Instance.localBoard.Visuals[tileCoords.x, tileCoords.y] == null &&
-                TurnManager.instance.isYourTurn &&
-                TacticsManager.instance.CanAfford(1) &&
-                BoardManager.Instance.GetCardAmount(GameManager.instance.playerId) < BoardManager.Instance.maxCardsPerPlayer)
+            if (!TurnManager.instance.isYourTurn)
             {
-                isDragged = false;
-                TacticsManager.instance.RemoveTacticsPoints(1);
-                BoardManager.Instance.PlaceCard(this.gameObject,
-                    CardManager.instance.playerHand[position],
-                    hit.transform.gameObject);
-                
+                PlaceFailed(5);
+                return;
             }
-            else
+            
+            if (BoardManager.Instance.localBoard.Visuals[tileCoords.x, tileCoords.y] != null)
             {
-                isDragged = false;
-                var tween = new PositionTween
-                {
-                    to = returnPosition,
-                    duration = 0.5f,
-                    easeType = EaseType.ElasticOut
-                };
-                print("balls");
-                growTween = new LocalScaleTween()
-                {
-                    to = normalScale,
-                    duration = animTime,
-                    easeType = EaseType.ElasticOut
-                };
+                PlaceFailed(6);
+                return;
+            }
 
-                gameObject.AddTween(growTween);
-                gameObject.AddTween(tween);
+            if (!TacticsManager.instance.CanAfford(1))
+            {
+                PlaceFailed(1);
+                return;
             }
+
+            if (BoardManager.Instance.GetCardAmount(GameManager.instance.playerId) >=
+                BoardManager.Instance.maxCardsPerPlayer)
+            {
+                PlaceFailed(3);
+                return;
+            }
+
+            isDragged = false;
+            TacticsManager.instance.RemoveTacticsPoints(1);
+            BoardManager.Instance.PlaceCard(this.gameObject,
+                CardManager.instance.playerHand[position],
+                hit.transform.gameObject);
         }
         else
         {
-            isDragged = false;
-            var tween = new PositionTween
-            {
-                to = returnPosition,
-                duration = 0.5f,
-                easeType = EaseType.ElasticOut
-            };
+            PlaceFailed(0);
             
-            growTween = new LocalScaleTween()
-            {
-                to = normalScale,
-                duration = animTime,
-                easeType = EaseType.ElasticOut
-            };
+        }
 
-            gameObject.AddTween(growTween);
+    }
 
-            gameObject.AddTween(tween);
+    private void PlaceFailed(int error)
+    {
+        if (error > 0)
+        {
+            TextDialogue.instance.DialogueRecieveStatus(error);
         }
         
+        
+        isDragged = false;
+        var tween = new PositionTween
+        {
+            to = returnPosition,
+            duration = 0.5f,
+            easeType = EaseType.ElasticOut
+        };
+            
+        growTween = new LocalScaleTween()
+        {
+            to = normalScale,
+            duration = animTime,
+            easeType = EaseType.ElasticOut
+        };
+
+        gameObject.AddTween(growTween);
+
+        gameObject.AddTween(tween);
     }
 
     private void OnMouseEnter()

@@ -1,7 +1,10 @@
+using System;
 using System.Xml;
 using System.Collections;
 using TMPro;
+using Tweens;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TextDialogue : MonoBehaviour
 {// This dialogue box accepts int arguments that correspond with status messages for the player. Disappear after a couple of secs
@@ -9,7 +12,7 @@ public class TextDialogue : MonoBehaviour
     [Header("UI Elements")]
     [SerializeField] private TextMeshProUGUI dialogueTMP;
     [SerializeField] private TextMeshProUGUI headerTMP;
-    [SerializeField] private GameObject background;
+    [SerializeField] private Image background;
 
     [Header("UI Variables")]
     [SerializeField] private float fadeDelay = 4.0f;
@@ -22,85 +25,150 @@ public class TextDialogue : MonoBehaviour
 
     private int boardMax, handMax;
 
+    public static TextDialogue instance;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
+
     void Start()
     {
-        SetOpacity(opacityInactive);
-        background.SetActive(false);
+        Color color = new Color(255, 255, 255, 0);
+        background.color = color;
+        dialogueTMP.color = color;
+        headerTMP.color = color;
 
+        
         boardMax = CardManager.instance.maxCards;
         handMax = BoardManager.Instance.maxCardsPerPlayer;
     }
 
-    void Update()
-    {
-        if (dialogueTMP.text != textLast)
-        {
-            textLast = dialogueTMP.text;
-            lastUpdateTime = Time.time;
-            SetOpacity(opacityActive);
-        }
-
-        if (Time.time - lastUpdateTime > fadeDelay)
-        {
-            SetOpacity(opacityInactive);
-            dialogueTMP.text = "";
-            dialogueTMP.text = "";
-        }
-    }
+   
 
     public void DialogueRecieveStatus(int code)
     {
-        if (code == 1)
+        StopAllCoroutines();
+        Color invisible = new Color(255, 255, 255, 0);
+        background.color = invisible;
+        dialogueTMP.color = invisible;
+        headerTMP.color = invisible;
+
+        
+        switch (code)
         {
-            headerTMP.text = "Insufficient TP";
-            dialogueTMP.text = "You do not have enough Tactics Points for this action!";
+            case 1:
+                headerTMP.text = "Insufficient TP";
+                dialogueTMP.text = "You do not have enough Tactics Points for this action!";
+                break;
+            case 2:
+                headerTMP.text = "Insufficient Card Actions";
+                dialogueTMP.text = "You cannot perform any more Card Actions this turn!";
+                break;
+            case 3:
+                headerTMP.text = "Reached Card Limit";
+                dialogueTMP.text = "You cannot place more than " + boardMax + " cards on your board!";
+                break;
+            case 4:
+                headerTMP.text = "Reached Hand Limit";
+                dialogueTMP.text = "The maximum amount of cards you can hold is " + handMax + "!";
+                break;
+            case 5:
+                headerTMP.text = "Not Your Turn";
+                dialogueTMP.text = "You can't take any actions until your opponent ends their turn!";
+                break;
+            case 6:
+                headerTMP.text = "Invalid Space";
+                dialogueTMP.text = "This space is already occupied by a card!";
+                break;
+            case 7:
+                headerTMP.text = "Invalid Space";
+                dialogueTMP.text = "You can't place a card on your opponent's board!";
+                break;
+            default:
+                headerTMP.text = "Unknown Error!";
+                dialogueTMP.text = "idk what's going on!";
+                break;
         }
-        else if (code == 2)
-        {
-            headerTMP.text = "Insufficient Card Actions";
-            dialogueTMP.text = "You cannot perform any more Card Actions this turn!";
-        }
-        else if (code == 3)
-        {
-            headerTMP.text = "Reached Card Limit";
-            dialogueTMP.text = "You cannot place more than " + boardMax + " cards on your board!";
-        }
-        else if (code == 4)
-        {
-            headerTMP.text = "Reached Hand Limit";
-            dialogueTMP.text = "The maximum amount of cards you can hold is " + handMax + "!";
-        }
-        else if (code == 5)
-        {
-            headerTMP.text = "Not Your Turn";
-            dialogueTMP.text = "You can't take any actions until your opponent ends their turn!";
-        }
-        else if (code == 6)
-        {
-            headerTMP.text = "Invalid Space";
-            dialogueTMP.text = "This space is already occupied by a card!";
-        }
-        else if (code == 7)
-        {
-            headerTMP.text = "Invalid Space";
-            dialogueTMP.text = "You can't place a card on your opponent's board!";
-        }
-        else
-        {
-            headerTMP.text = "Unknown Error!";
-            dialogueTMP.text = "idk what's going on!";
-        }
+
+        Color opaque = new Color(255, 255, 255, 255);
+        print("meep");
+
+       
+        var backgroundTween = new ColorTween {
+            from = background.color,
+            to = opaque,
+            duration = fadeDuration,
+            easeType = EaseType.ExpoInOut,
+            onUpdate = (_, value) => background.color = value,
+        };
+        var dialogueTween = new ColorTween {
+            from = dialogueTMP.color,
+            to = opaque,
+            duration = fadeDuration,
+            easeType = EaseType.ExpoInOut,
+            onUpdate = (_, value) => dialogueTMP.color = value,
+        };
+        var headerTween = new ColorTween {
+            from = headerTMP.color,
+            to = opaque,
+            duration = fadeDuration,
+            easeType = EaseType.ExpoInOut,
+            onUpdate = (_, value) => headerTMP.color = value,
+        };
+
+        dialogueTMP.gameObject.AddTween(dialogueTween);
+        headerTMP.gameObject.AddTween(headerTween);
+        background.gameObject.AddTween(backgroundTween);
+
+        StartCoroutine(FadeAway());
+
     }
 
-    private void SetOpacity(float alpha)
+    IEnumerator FadeAway()
     {
-        Color color = dialogueTMP.color;
-        color.a = Mathf.Clamp01(alpha);
-        dialogueTMP.color = color;
-        headerTMP.color = color;
-        if (alpha  > 0)
-            background.SetActive(true);
-        else
-            background.SetActive(false);
+        yield return new WaitForSeconds(fadeDelay);
+        
+        Color invisible = new Color(255, 255, 255, 0);
+        
+        var backgroundTween = new ColorTween {
+            from = background.color,
+            to = invisible,
+            duration = fadeDuration,
+            easeType = EaseType.ExpoInOut,
+            onUpdate = (_, value) => background.color = value,
+        };
+        var dialogueTween = new ColorTween {
+            from = dialogueTMP.color,
+            to = invisible,
+            duration = fadeDuration,
+            easeType = EaseType.ExpoInOut,
+            onUpdate = (_, value) => dialogueTMP.color = value,
+        };
+        var headerTween = new ColorTween {
+            from = headerTMP.color,
+            to = invisible,
+            duration = fadeDuration,
+            easeType = EaseType.ExpoInOut,
+            onUpdate = (_, value) => headerTMP.color = value,
+        };
+
+        dialogueTMP.gameObject.AddTween(dialogueTween);
+        headerTMP.gameObject.AddTween(headerTween);
+        background.gameObject.AddTween(backgroundTween);
+
+        yield return null;
+
     }
+    
+    
+
+
 }

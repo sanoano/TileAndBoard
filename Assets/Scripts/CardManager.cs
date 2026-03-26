@@ -57,11 +57,27 @@ public class CardManager : MonoBehaviour
 
     public void DrawCardHandler(int amount)
     {
-        if (TacticsManager.instance.CanAfford(1) && TurnManager.instance.isYourTurn)
+        
+        if (!TacticsManager.instance.CanAfford(1))
         {
-            TacticsManager.instance.RemoveTacticsPoints(1);
-            StartCoroutine(DrawCard(amount));
+            TextDialogue.instance.DialogueRecieveStatus(1);
+            return;
         }
+
+        if (!TurnManager.instance.isYourTurn)
+        {
+            TextDialogue.instance.DialogueRecieveStatus(5);
+            return;
+        }
+
+        if (playerHand.Count >= maxCards)
+        {
+            TextDialogue.instance.DialogueRecieveStatus(4);
+            return;
+        }
+        
+        TacticsManager.instance.RemoveTacticsPoints(1);
+        StartCoroutine(DrawCard(amount));
         
     }
 

@@ -72,7 +72,7 @@ public class tileColour : MonoBehaviour
         int netAmount = Damage - Defence;
         if (netAmount < 0) netAmount = 0;
         
-        if (Damage > Defence && Defence != 0)
+        if (Damage > Defence && Defence != 0 && Damage != 0)
         {// Dmg is larger than Def (red)
             grossDamageGO.SetActive(true);
             netDamageGO.SetActive(true);
@@ -80,7 +80,7 @@ public class tileColour : MonoBehaviour
             grossDamageTMP.text = Damage.ToString();
             netDamageTMP.text = netAmount.ToString();
         }
-        else if (Defence >= Damage && Defence != 0)
+        else if (Defence >= Damage && Defence != 0 && Damage !=0)
         {// Def is larger than Dmg (blue)
             grossDamageGO.SetActive(true);
             netDamageGO.SetActive(true);
