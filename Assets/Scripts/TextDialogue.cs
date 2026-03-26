@@ -9,6 +9,7 @@ public class TextDialogue : MonoBehaviour
     [Header("UI Elements")]
     [SerializeField] private TextMeshProUGUI dialogueTMP;
     [SerializeField] private TextMeshProUGUI headerTMP;
+    [SerializeField] private GameObject background;
 
     [Header("UI Variables")]
     [SerializeField] private float fadeDelay = 4.0f;
@@ -23,8 +24,8 @@ public class TextDialogue : MonoBehaviour
 
     void Start()
     {
-        
         SetOpacity(opacityInactive);
+        background.SetActive(false);
 
         boardMax = CardManager.instance.maxCards;
         handMax = BoardManager.Instance.maxCardsPerPlayer;
@@ -89,13 +90,17 @@ public class TextDialogue : MonoBehaviour
             headerTMP.text = "Unknown Error!";
             dialogueTMP.text = "idk what's going on!";
         }
-
     }
+
     private void SetOpacity(float alpha)
     {
         Color color = dialogueTMP.color;
         color.a = Mathf.Clamp01(alpha);
         dialogueTMP.color = color;
         headerTMP.color = color;
+        if (alpha  > 0)
+            background.SetActive(true);
+        else
+            background.SetActive(false);
     }
 }
