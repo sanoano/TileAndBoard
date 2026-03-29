@@ -185,8 +185,6 @@ public class BoardManager : NetworkBehaviour
                 player2Board.TileTransforms[i, j] =
                     player2BoardGameObject.GetComponentsInChildren<BoxCollider>()[childIndex].gameObject;
 
-                Debug.Log(player1BoardGameObject.GetComponentsInChildren<BoxCollider>()[childIndex]);
-
                 childIndex++;
             }
 
@@ -269,6 +267,8 @@ public class BoardManager : NetworkBehaviour
                     UIManager.Instance.DestroyCurrentInfoInstance();
 
                     currentSelectedTileGameObject = hit.transform.gameObject;
+                    
+                    currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.green;
 
                     CurrentSelectedTile =
                         CoordinatesOf<GameObject>(player1Board.TileTransforms, hit.transform.gameObject);

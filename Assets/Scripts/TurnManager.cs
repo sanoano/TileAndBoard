@@ -134,6 +134,8 @@ public class TurnManager : NetworkBehaviour
 
         if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
         
+        UIManager.Instance.DestroyCurrentInfoInstance();
+        
         if (currentTurn == TurnState.Player1Turn && GameManager.instance.playerId == Player.PlayerId.Player1)
         {
             foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
