@@ -286,10 +286,10 @@ public class UIManager : MonoBehaviour
             }
             
             buttons[3].onClick.AddListener(delegate{CardManager.instance.RecallCard(cardVisual, unitToDisplay);});
-            // if (TacticsManager.instance.currentTacticsPoints <= 0 || !TurnManager.instance.isYourTurn)
-            // {
-            //     buttons[3].interactable = false;
-            // }
+            if (TacticsManager.instance.currentTacticsPoints <= 0 || !TurnManager.instance.isYourTurn)
+            {
+                buttons[3].interactable = false;
+            }
 
         }
 
