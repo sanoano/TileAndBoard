@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Tweens;
+using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class CardManager : MonoBehaviour
+public class CardManager : NetworkBehaviour
 {
 
     public static CardManager instance;
@@ -153,6 +154,112 @@ public class CardManager : MonoBehaviour
         cardDrawInProgress = false;
         yield return null;
         
+    }
+
+    public void RecallCard(GameObject cardVisual, BoardManager.Unit unit)
+    {
+        UIManager.Instance.DestroyCurrentInfoInstance();
+        
+        BoardManager.Instance.NullSelection();
+        
+
+        BoardManager.Instance.localBoard.Visuals[unit.Position.x, unit.Position.y] = null;
+        
+        CardDeck cardList = Resources.Load<CardDeck>("Data/MasterList");
+
+        CardDeck.CardData cardData = new CardDeck.CardData();
+
+        foreach (CardDeck.CardData card in cardList.Cards)
+        {
+            if (card.Name == unit.Name)
+            {
+                cardData = card;
+            }
+        }
+
+        cardData.Health = unit.Health;
+        
+        playerHand.Add(cardData);
+        playerHandVisuals.Add(cardVisual);
+
+        
+        
+        if (playerHand.Count != 1)
+        {
+
+            var pos = new Vector3(0 - (cardDisplayOffset * playerHand.Count - cardDisplayOffset),
+                0,
+                0);
+
+            var tween = new LocalPositionTween
+            {
+                to = pos,
+                duration = cardLayoutTime,
+                easeType = EaseType.ElasticOut
+            };
+            
+            var rotTween = new LocalRotationTween
+            {
+                to = Quaternion.identity,
+                duration = cardLayoutTime,
+                easeType = EaseType.ElasticOut
+            };
+
+            var scaleTween = new LocalScaleTween
+            {
+                to = new Vector3(4, 4, 4),
+                duration = cardLayoutTime,
+                easeType = EaseType.ElasticOut
+            };
+
+            cardVisual.AddTween(tween);
+            cardVisual.AddTween(rotTween);
+            cardVisual.AddTween(scaleTween);
+            
+            foreach (GameObject card in playerHandVisuals)
+            {
+                if (card == cardVisual) continue;
+
+                var pos2 = new Vector3(card.transform.localPosition.x + cardDisplayOffset,
+                    card.transform.localPosition.y,
+                    card.transform.localPosition.z);
+
+                var tween2 = new LocalPositionTween()
+                {
+                    to = pos2,
+                    duration = cardLayoutTime,
+                    easeType = EaseType.ElasticOut
+                };
+
+                card.AddTween(tween2);
+            }
+                
+          
+        }
+        
+        
+        cardVisual.GetComponent<CardDrag>().isPlaced = false;
+        
+        foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            if (clientIds == NetworkManager.Singleton.LocalClientId) continue;
+            RecallCardRpc(BoardManager.Instance.unitsList.IndexOf(unit),RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+        }
+
+        BoardManager.Instance.unitsList.Remove(unit);
+
+    }
+    [Rpc(SendTo.SpecifiedInParams)]
+    private void RecallCardRpc(int unitIndex, RpcParams rpcParams = default)
+    {
+
+        BoardManager.Unit unit = BoardManager.Instance.unitsList[unitIndex];
+        
+        Destroy(BoardManager.Instance.enemyBoard.Visuals[unit.Position.x, unit.Position.y]);
+
+        BoardManager.Instance.unitsList.Remove(unit);
+
+
     }
 
     public void RemoveCard(GameObject cardVisual)

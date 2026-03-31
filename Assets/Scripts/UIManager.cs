@@ -59,6 +59,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI player1CardAmount;
     [SerializeField] private TextMeshProUGUI player2CardAmount;
 
+    [Header("Hand Amount Display")] 
+    [SerializeField] private TextMeshProUGUI handAmount;
+
     [Header("Usernames")] 
     public TextMeshProUGUI player1Name;
     public TextMeshProUGUI player2Name;
@@ -105,7 +108,7 @@ public class UIManager : MonoBehaviour
         tacticsText.text = $"Tactics Points: {TacticsManager.instance.currentTacticsPoints}";
         actionsText.text = $"Card Actions: {TacticsManager.instance.currentActions}";
 
-
+        handAmount.text = $"{CardManager.instance.playerHand.Count} / {CardManager.instance.maxCards}";
     }
 
     void UpdateHealthDisplay()
@@ -192,6 +195,7 @@ public class UIManager : MonoBehaviour
     {
 
         BoardManager.Unit unitToDisplay = default;
+        GameObject cardVisual = null;
         
         // if (cardInfoPrefabInstance)
         // {
@@ -204,6 +208,7 @@ public class UIManager : MonoBehaviour
             if (unit.ID == playerId && unit.Position == position)
             {
                 unitToDisplay = unit;
+                cardVisual = BoardManager.Instance.localBoard.Visuals[unit.Position.x, unit.Position.y];
                 unitFound = true;
                 break;
             }
@@ -212,11 +217,7 @@ public class UIManager : MonoBehaviour
         if (!unitFound) return;
 
         cardInfoPrefabInstance = Instantiate(cardInfoPrefab, CardInfoPanelPos.transform.position, Quaternion.identity, CardInfoPanelPos.transform);
-
-        actionsInfoPrefabInstance = Instantiate(actionsInfoPrefab, actionsInfoPanelPos.transform.position, Quaternion.identity,
-            actionsInfoPanelPos.transform);
         
-        Transform[] actionChildren = actionsInfoPrefabInstance.GetComponentsInChildren<Transform>();
         Transform[] cardChildren = cardInfoPrefabInstance.GetComponentsInChildren<Transform>();
 
         TextMeshProUGUI cardInfoText = cardChildren[2].gameObject.GetComponent<TextMeshProUGUI>();
@@ -227,17 +228,25 @@ public class UIManager : MonoBehaviour
         cardInfoText.text += $"Movement: {unitToDisplay.Movement}" + "\n";
         cardInfoText.text += $"Defense: {unitToDisplay.Defense}" + "\n";
         cardInfoText.text += $"Damage: {unitToDisplay.Damage}" + "\n";
-        
-        var panel = actionChildren[2].gameObject;
 
-        if (unitToDisplay.ID == GameManager.instance.playerId && unitToDisplay.HasActed == false)
+
+        if (unitToDisplay.ID == GameManager.instance.playerId)
         {
+            actionsInfoPrefabInstance = Instantiate(actionsInfoPrefab, actionsInfoPanelPos.transform.position,
+                Quaternion.identity,
+                actionsInfoPanelPos.transform);
+
+            Transform[] actionChildren = actionsInfoPrefabInstance.GetComponentsInChildren<Transform>();
+
+            var panel = actionChildren[2].gameObject;
+
             var buttons = panel.GetComponentsInChildren<Button>();
             print(buttons[0].gameObject.name);
-            if (unitToDisplay.Damage > 0 && TurnManager.instance.isYourTurn)
+            if (unitToDisplay.Damage > 0)
             {
                 buttons[0].onClick.AddListener(BoardManager.Instance.PrepareAttack);
-                if (TacticsManager.instance.currentActions <= 0)
+                if (TacticsManager.instance.currentActions <= 0 || !TurnManager.instance.isYourTurn ||
+                    unitToDisplay.HasActed)
                 {
                     buttons[0].interactable = false;
                 }
@@ -246,12 +255,13 @@ public class UIManager : MonoBehaviour
             {
                 buttons[0].gameObject.SetActive(false);
             }
-            
 
-            if (unitToDisplay.Defense > 0 && TurnManager.instance.isYourTurn)
+
+            if (unitToDisplay.Defense > 0)
             {
                 buttons[1].onClick.AddListener(BoardManager.Instance.PrepareDefense);
-                if (TacticsManager.instance.currentActions <= 0)
+                if (TacticsManager.instance.currentActions <= 0 || !TurnManager.instance.isYourTurn ||
+                    unitToDisplay.HasActed)
                 {
                     buttons[1].interactable = false;
                 }
@@ -261,10 +271,11 @@ public class UIManager : MonoBehaviour
                 buttons[1].gameObject.SetActive(false);
             }
 
-            if (unitToDisplay.Movement > 0 && TurnManager.instance.isYourTurn)
-            { 
+            if (unitToDisplay.Movement > 0)
+            {
                 buttons[2].onClick.AddListener(BoardManager.Instance.PrepareMovement);
-                if (TacticsManager.instance.currentActions <= 0)
+                if (TacticsManager.instance.currentActions <= 0 || !TurnManager.instance.isYourTurn ||
+                    unitToDisplay.HasActed)
                 {
                     buttons[2].interactable = false;
                 }
@@ -273,13 +284,15 @@ public class UIManager : MonoBehaviour
             {
                 buttons[2].gameObject.SetActive(false);
             }
+            
+            buttons[3].onClick.AddListener(delegate{CardManager.instance.RecallCard(cardVisual, unitToDisplay);});
+            // if (TacticsManager.instance.currentTacticsPoints <= 0 || !TurnManager.instance.isYourTurn)
+            // {
+            //     buttons[3].interactable = false;
+            // }
+
         }
-        else
-        {
-            panel.SetActive(false);
-        }
-        
-        
+
     }
 
     public void DestroyCurrentInfoInstance()

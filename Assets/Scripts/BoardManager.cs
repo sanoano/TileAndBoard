@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using TMPro;
 using Tweens;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine.Events;
 
 public class BoardManager : NetworkBehaviour
@@ -248,14 +249,7 @@ public class BoardManager : NetworkBehaviour
                     //If we are selecting the same tile again, we deselect
                     if (hit.transform.gameObject == currentSelectedTileGameObject)
                     {
-                        currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
-                        currentSelectedTileGameObject = null;
-                        CurrentSelectedTile = new Vector2Int(-1, -1);
-                        UIManager.Instance.DestroyCurrentInfoInstance();
-
-                        ClearTiles();
-
-                        UpdateTileVisuals();
+                        NullSelection();
 
                         return;
                     }
@@ -398,30 +392,7 @@ public class BoardManager : NetworkBehaviour
                     currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.green;
                 }
             }
-            // else
-            // {
-            //     if (currentSelectedTileGameObject != null)
-            //     {
-            //         currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
-            //         currentSelectedTileGameObject = null;
-            //         CurrentSelectedTile = new Vector2Int(-1, -1);
-            //         UIManager.Instance.DestroyCurrentInfoInstance();
-            //
-            //         foreach (var tile in player1Board.TileTransforms)
-            //         {
-            //             tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-            //         }
-            //
-            //         foreach (var tile in player2Board.TileTransforms)
-            //         {
-            //             tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-            //         }
-            //
-            //         UpdateTileVisuals();
-            //     }
-            //     
-            //     
-            // }
+            
 
         }
 
@@ -429,18 +400,23 @@ public class BoardManager : NetworkBehaviour
         {
             if (currentSelectedTileGameObject != null)
             {
-                currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
-                currentSelectedTileGameObject = null;
-                CurrentSelectedTile = new Vector2Int(-1, -1);
-                UIManager.Instance.DestroyCurrentInfoInstance();
-
-                ClearTiles();
-
-                UpdateTileVisuals();
-                
+                NullSelection();
             }   
         }
         
+    }
+
+    public void NullSelection()
+    {
+        currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
+        currentSelectedTileGameObject = null;
+        CurrentSelectedTile = new Vector2Int(-1, -1);
+        UIManager.Instance.DestroyCurrentInfoInstance();
+
+        ClearTiles();
+
+        UpdateTileVisuals();
+
     }
 
     void Attacking()
@@ -1026,21 +1002,21 @@ public class BoardManager : NetworkBehaviour
         {
             to = position,
             duration = placeAnimationTime,
-            easeType = EaseType.CubicInOut
+            easeType = EaseType.ExpoOut
         };
 
         var rotationTween = new LocalRotationTween()
         {
             to = rotation,
             duration = placeAnimationTime,
-            easeType = EaseType.CubicInOut
+            easeType = EaseType.ExpoOut
         };
 
         var scaleTween = new LocalScaleTween()
         {
             to = scale,
             duration = placeAnimationTime,
-            easeType = EaseType.CubicInOut
+            easeType = EaseType.ExpoOut
         };
 
         cardVisual.AddTween(positionTween, rotationTween, scaleTween);
@@ -1051,13 +1027,13 @@ public class BoardManager : NetworkBehaviour
 
         foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
         {
-            if (clientIds == NetworkManager.LocalClientId) continue;
-            PlaceCardRpc(cardData.ID, unit.ID, unit.Position, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+            if (clientIds == NetworkManager.Singleton.LocalClientId) continue;
+            PlaceCardRpc(cardData.ID, unit.ID, unit.Position, cardData.Health, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
         }
     }
 
     [Rpc(SendTo.SpecifiedInParams)]
-    public void PlaceCardRpc(int ID, Player.PlayerId playerId, Vector2Int coordinates, RpcParams rpcParams = default)
+    public void PlaceCardRpc(int ID, Player.PlayerId playerId, Vector2Int coordinates, int unitHealth, RpcParams rpcParams = default)
     {
         CardDeck cardList = Resources.Load<CardDeck>("Data/MasterList");
 
@@ -1074,7 +1050,7 @@ public class BoardManager : NetworkBehaviour
         Unit unit = new Unit(
             name: cardData.Name,
             id: playerId,
-            health: cardData.Health,
+            health: unitHealth,
             damage: cardData.Damage,
             defense: cardData.Defence,
             movement: cardData.Speed,
@@ -1601,6 +1577,8 @@ public class BoardManager : NetworkBehaviour
 
         return totalCards;
     }
+
+    
 
 
     // Source - https://stackoverflow.com/a
