@@ -158,10 +158,12 @@ public class CardManager : NetworkBehaviour
 
     public void RecallCard(GameObject cardVisual, BoardManager.Unit unit)
     {
+        
+        TacticsManager.instance.RemoveTacticsPoints(1);
+        
         UIManager.Instance.DestroyCurrentInfoInstance();
         
         BoardManager.Instance.NullSelection();
-        
 
         BoardManager.Instance.localBoard.Visuals[unit.Position.x, unit.Position.y] = null;
         
