@@ -62,6 +62,9 @@ public class UIManager : MonoBehaviour
     [Header("Hand Amount Display")] 
     [SerializeField] private TextMeshProUGUI handAmount;
 
+    [Header("Turn Display")] 
+    [SerializeField] private TextMeshProUGUI turnCountText;
+
     [Header("Usernames")] 
     public TextMeshProUGUI player1Name;
     public TextMeshProUGUI player2Name;
@@ -109,6 +112,8 @@ public class UIManager : MonoBehaviour
         actionsText.text = $"Card Actions: {TacticsManager.instance.currentActions}";
 
         handAmount.text = $"{CardManager.instance.playerHand.Count} / {CardManager.instance.maxCards}";
+
+        turnCountText.text = $"Turn {TurnManager.instance.turnCount}";
     }
 
     void UpdateHealthDisplay()

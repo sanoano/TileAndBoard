@@ -23,6 +23,9 @@ public class TurnManager : NetworkBehaviour
 
     [Header("Master Deck")] 
     [SerializeField] private CardDeck cardList;
+
+    [Header("Turn Count")]
+    public int turnCount = 1;
     
     
     private void Awake()
@@ -103,6 +106,8 @@ public class TurnManager : NetworkBehaviour
                 }
                 
                 BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player2);
+
+                turnCount += 1;
 
                 break;
             
