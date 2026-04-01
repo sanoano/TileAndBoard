@@ -122,6 +122,7 @@ public class BoardManager : NetworkBehaviour
     [SerializeField] private float angle = 90.0f;
     public int maxCardsPerPlayer;
     public int startingPlayerHealth;
+    [SerializeField] private bool boardTakesFullDamage;
 
     [Header("Player Health")] 
     public int player1Health;
@@ -423,11 +424,14 @@ public class BoardManager : NetworkBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
+            
             foreach (Vector2Int position in workingPositions)
             {
                 enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
                     .TileRecieveSignal(0, false);
             }
+            
+            UpdateTileVisuals();
 
             for (int i = 0; i < workingPositions.Count; i++)
             {
@@ -456,7 +460,7 @@ public class BoardManager : NetworkBehaviour
             foreach (Vector2Int position in workingPositions)
             {
                 enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                    .TileRecieveSignal(1, true);
+                    .TileRecieveSignal(3, true);
             }
         }
 
@@ -533,6 +537,8 @@ public class BoardManager : NetworkBehaviour
                 localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
                     .TileRecieveSignal(0, false);
             }
+            
+            UpdateTileVisuals();
 
 
             for (int i = 0; i < workingPositions.Count; i++)
@@ -562,7 +568,7 @@ public class BoardManager : NetworkBehaviour
             foreach (Vector2Int position in workingPositions)
             {
                 localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                    .TileRecieveSignal(2, true);
+                    .TileRecieveSignal(3, true);
             }
         }
 
@@ -755,6 +761,8 @@ public class BoardManager : NetworkBehaviour
 
             currentlySelectedUnit.Movement -= 1;
             CurrentSelectedTile = currentAdjacentPositions[direction];
+            
+            AudioManager.singleton.PlaySound("cardMove", true);
 
             if (NetworkManager.Singleton)
             {
@@ -771,6 +779,9 @@ public class BoardManager : NetworkBehaviour
             {
                 tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
             }
+            
+            ClearTiles();
+            UpdateTileVisuals();
 
             currentAdjacentPositions = GetAdjacentTiles(CurrentSelectedTile);
 
@@ -1022,6 +1033,8 @@ public class BoardManager : NetworkBehaviour
         cardVisual.AddTween(positionTween, rotationTween, scaleTween);
 
         cardVisual.GetComponent<CardDrag>().isPlaced = true;
+        
+        AudioManager.singleton.PlaySound("cardPlace", true);
 
         cardPlaced.Invoke();
 
@@ -1120,17 +1133,20 @@ public class BoardManager : NetworkBehaviour
         }
 
         if (workingPositions == null) return;
-        print("balls2");
-        foreach (var tile in enemyBoard.TileTransforms)
-        {
-            tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-            tile.GetComponent<tileColour>().TileRecieveDamage(0, 0);
-        }
+        
+        // foreach (var tile in enemyBoard.TileTransforms)
+        // {
+        //     tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+        //     tile.GetComponent<tileColour>().TileRecieveDamage(0, 0);
+        // }
+        
+        ClearTiles();
+        UpdateTileVisuals();
 
 
         foreach (Vector2Int position in workingPositions)
         {
-            enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(1, true);
+            enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(3, true);
         }
 
         UIManager.Instance.interactionState = UIManager.InteractionState.Attacking;
@@ -1156,10 +1172,11 @@ public class BoardManager : NetworkBehaviour
         if (workingPositions == null) return;
 
         ClearTiles();
+        UpdateTileVisuals();
 
         foreach (Vector2Int position in workingPositions)
         {
-            localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(2, true);
+            localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(3, true);
         }
 
         UIManager.Instance.interactionState = UIManager.InteractionState.Defending;
@@ -1186,6 +1203,7 @@ public class BoardManager : NetworkBehaviour
         if (workingPositions == null) return;
 
         ClearTiles();
+        UpdateTileVisuals();
 
         currentAdjacentPositions = GetAdjacentTiles(CurrentSelectedTile);
 
@@ -1378,7 +1396,15 @@ public class BoardManager : NetworkBehaviour
 
                     if (!attackBlocked && workingDamage > 0)
                     {
-                        BoardTakeDamage(1, Player.PlayerId.Player1);
+                        if (boardTakesFullDamage)
+                        {
+                            BoardTakeDamage(workingDamage, Player.PlayerId.Player1);
+                        }
+                        else
+                        {
+                            BoardTakeDamage(1, Player.PlayerId.Player1);
+                        }
+                        
                     }
                 }
             }
@@ -1460,7 +1486,15 @@ public class BoardManager : NetworkBehaviour
 
                     if (!attackBlocked && workingDamage > 0)
                     {
-                        BoardTakeDamage(1, Player.PlayerId.Player2);
+                        if (boardTakesFullDamage)
+                        {
+                            BoardTakeDamage(workingDamage, Player.PlayerId.Player2);
+                        }
+                        else
+                        {
+                            BoardTakeDamage(1, Player.PlayerId.Player2);
+                        }
+                        
                     }
                 }
             }

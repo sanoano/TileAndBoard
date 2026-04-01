@@ -24,12 +24,26 @@ public class AudioManager : MonoBehaviour
     }
 
 
-    public void PlaySound(AudioClip clip)
+    public void PlaySound(string name, bool randomisePitch)
     {
+        AudioClip clip = null;    
+        
+        clip = Resources.Load<AudioClip>($"Audio/SFX/{name}");
+
+        if (clip == null)
+        {
+            Debug.LogWarning("Sound not found! Check name is correct.");
+            return;
+        }
+        
         AudioSource source = new GameObject().AddComponent<AudioSource>();
         source.gameObject.transform.SetParent(transform);
         source.clip = clip;
         source.outputAudioMixerGroup = sfxGroup;
+        if (randomisePitch)
+        {
+            source.pitch = Random.Range(0.8f, 1.2f);
+        }
         source.Play();
         StartCoroutine(DestroyInstance(source.gameObject, source.clip.length));
     }

@@ -103,6 +103,8 @@ public class CardManager : NetworkBehaviour
             cardVisual.name = playerHand[playerHand.Count - 1].Name;
 
             playerDeck.RemoveAt(randInt);
+            
+            AudioManager.singleton.PlaySound("cardDeal", true);
 
             if (playerHand.Count != 1)
             {

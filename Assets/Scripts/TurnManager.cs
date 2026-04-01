@@ -166,7 +166,7 @@ public class TurnManager : NetworkBehaviour
         currentTurn = turn;
         UpdateTurnText(currentTurn);
         OnTurnChanged(currentTurn);
-        AudioManager.singleton.PlaySound(Resources.Load<AudioClip>("Audio/SFX/peg falling"));
+        AudioManager.singleton.PlaySound("roundChange", false);
         isYourTurn = !isYourTurn;
     }
     
