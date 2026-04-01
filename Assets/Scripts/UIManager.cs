@@ -31,7 +31,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject InfoPanelPos;
     
     [Header("Canvas")]
-    [SerializeField] private GameObject Canvas;
+    public GameObject Canvas;
     
 
     [Header("Card Info Panel")] 

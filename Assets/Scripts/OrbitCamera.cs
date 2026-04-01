@@ -72,10 +72,6 @@ public class OrbitCamera : MonoBehaviour
                     to = cameraStaticPostion,
                     duration = returnDuration,
                     easeType = EaseType.ElasticOut,
-                    onEnd = (instance) =>
-                    {
-                        CardManager.instance.cardHoldPosition.SetActive(true);
-                    },
                 };
 
                 var rotationTween = new RotationTween
@@ -87,6 +83,7 @@ public class OrbitCamera : MonoBehaviour
 
                 gameObject.AddTween(positionTween);
                 gameObject.AddTween(rotationTween);
+                UIManager.Instance.Canvas.SetActive(true);
                 
 
             }
@@ -98,7 +95,7 @@ public class OrbitCamera : MonoBehaviour
                 pitch = defaultPitch;
                 
                 UIManager.Instance.DestroyCurrentInfoInstance();
-                CardManager.instance.cardHoldPosition.SetActive(false);
+                UIManager.Instance.Canvas.SetActive(false);
             }
 
         }
