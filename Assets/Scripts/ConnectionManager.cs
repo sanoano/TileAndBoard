@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
-public class Lobby : MonoBehaviour
+public class ConnectionManager : MonoBehaviour
 {
    private string _profileName;
    private string _sessionName;
@@ -18,20 +18,10 @@ public class Lobby : MonoBehaviour
    public ISession _session;
    private NetworkManager m_NetworkManager;
 
-   [Header("UI References")]
    [SerializeField] private TMP_InputField username;
    [SerializeField] private TMP_InputField sessionName;
-   [SerializeField] private Button createGameButton;
-   [SerializeField] private Button createButton;
-   [SerializeField] private Button joinButton;
+   [SerializeField] private Button startButton;
    [SerializeField] private TextMeshProUGUI statusText;
-   [SerializeField] private GameObject sessionListContent;
-   [SerializeField] private GameObject sessionList;
-   [SerializeField] private Button backButton;
-   [SerializeField] private Button refreshButton;
-
-   [Header("Session Prefab")] 
-   [SerializeField] private GameObject sessionInfoPrefab;
 
    private enum ConnectionState
    {
@@ -47,119 +37,22 @@ public class Lobby : MonoBehaviour
         m_NetworkManager.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
         m_NetworkManager.OnConnectionEvent += OnClientDisconnect;
         m_NetworkManager.OnTransportFailure += OnTransportFailure;
-
-        try
-        {
-            await UnityServices.InitializeAsync();
-        }
-        catch (Exception e)
-        {
-            Debug.Log(e);
-            statusText.text = "Unity Services failed to initialize. Please restart game.";
-        }
-        
+        await UnityServices.InitializeAsync();
         
         username.onValueChanged.AddListener(onUsernameSet);
         sessionName.onValueChanged.AddListener(onSessionNameSet);
-        createGameButton.onClick.AddListener(StartSession);
-        joinButton.onClick.AddListener(delegate { QuerySessions();});
-        refreshButton.onClick.AddListener(delegate { QuerySessions();});
+        startButton.onClick.AddListener(StartOrJoin);
         statusText.text = "";
 
     }
 
-    private void Update()
-    {
-        try
-        {
-            if (_profileName == String.Empty)
-            {
-                joinButton.interactable = false;
-                createButton.interactable = false;
-            }
-            else
-            {
-                joinButton.interactable = true;
-                createButton.interactable = true;
-            }
-        }
-        catch(Exception e)
-        {
-            
-        }
-        
-    }
-
-    private void StartSession()
+    private void StartOrJoin()
     {
         username.gameObject.SetActive(false);
         sessionName.gameObject.SetActive(false);
-        createGameButton.gameObject.SetActive(false);
-        backButton.gameObject.SetActive(false);
-        
-        if (_profileName == "")
-        {
-            username.gameObject.SetActive(true);
-            sessionName.gameObject.SetActive(true);
-            createGameButton.gameObject.SetActive(true);
-            statusText.text = "You must set a username before creating/joining a session!";
-            return;
-        }
-        CreateSessionAsync();
+        startButton.gameObject.SetActive(false);
+        CreateOrJoinSessionAsync();
         statusText.text = "Connecting to/Creating session...";
-    }
-
-    public async Task QuerySessions()
-    {
-
-        foreach (var child in sessionListContent.GetComponentsInChildren<Transform>())
-        {
-            if (child.name == "SessionInfo")
-            {
-                Destroy(child);
-            }
-        }
-        
-        
-        QuerySessionsResults results;
-
-        try
-        {
-            AuthenticationService.Instance.SwitchProfile(_profileName);
-            await AuthenticationService.Instance.SignInAnonymouslyAsync();
-            results = await MultiplayerService.Instance.QuerySessionsAsync(new QuerySessionsOptions());
-        }
-        catch (AuthenticationException e)
-        {
-            Debug.Log(e);
-            statusText.text = "You must set a username before searching for sessions.";
-            return;
-        }
-        catch (Exception e)
-        {
-            Debug.LogWarning(e);
-            statusText.text = "Failed to query sessions. Please try again.";
-            return;
-        }
-        
-
-        if (results.Sessions.Count > 0)
-        {
-            foreach (var session in results.Sessions)
-            {
-                var instance = Instantiate(sessionInfoPrefab, sessionListContent.transform);
-                var infoDisplayInstance = instance.GetComponent<SessionInfoDisplay>();
-                infoDisplayInstance.SetSessionName(session.Name);
-                infoDisplayInstance.SetJoinButton(session.Id, this);
-
-            }
-        }
-        else
-        {
-            statusText.text = "No sessions found.";
-        }
-        
-        AuthenticationService.Instance.SignOut();
     }
 
     private void onUsernameSet(string value)
@@ -176,7 +69,7 @@ public class Lobby : MonoBehaviour
     
     private async void OnClientDisconnect(NetworkManager manager,ConnectionEventData connectionEventData )
     {
-        
+        print("player disconnect");
         if (connectionEventData.EventType == ConnectionEvent.PeerDisconnected && connectionEventData.ClientId != NetworkManager.Singleton.LocalClientId)
         {
             await LeaveSessionAsync();
@@ -273,35 +166,7 @@ public class Lobby : MonoBehaviour
        _session?.LeaveAsync();
    }
 
-   public async Task JoinSessionAsync(string id)
-   {
-       
-       sessionList.SetActive(false);
-       username.gameObject.SetActive(false);
-
-       statusText.text = "Joining session...";
-       
-       try
-       {
-           AuthenticationService.Instance.SwitchProfile(_profileName);
-           await AuthenticationService.Instance.SignInAnonymouslyAsync();
-
-           _session = await MultiplayerService.Instance.JoinSessionByIdAsync(id, new JoinSessionOptions());
-           await AuthenticationService.Instance.UpdatePlayerNameAsync(_profileName);
-       }
-       catch (Exception e)
-       {
-           Debug.LogException(e);
-           NetworkManager.Singleton.Shutdown();
-           AuthenticationService.Instance.SignOut();
-           statusText.text = "Failed to connect. Please try again.";
-           username.gameObject.SetActive(true);
-           joinButton.gameObject.SetActive(true);
-           createButton.gameObject.SetActive(true);
-       }
-   }
-
-   private async Task CreateSessionAsync()
+   private async Task CreateOrJoinSessionAsync()
    {
        
        _state = ConnectionState.Connecting;
@@ -317,7 +182,7 @@ public class Lobby : MonoBehaviour
                 MaxPlayers = _maxPlayers
             }.WithDistributedAuthorityNetwork();
 
-            _session = await MultiplayerService.Instance.CreateSessionAsync(options);
+            _session = await MultiplayerService.Instance.CreateOrJoinSessionAsync(_sessionName, options);
             await AuthenticationService.Instance.UpdatePlayerNameAsync(_profileName);
             
            _state = ConnectionState.Connected;
@@ -334,8 +199,7 @@ public class Lobby : MonoBehaviour
            statusText.text = "Failed to connect. Error: " + e;
            username.gameObject.SetActive(true);
            sessionName.gameObject.SetActive(true);
-           createGameButton.gameObject.SetActive(true);
-           backButton.gameObject.SetActive(true);
+           startButton.gameObject.SetActive(true);
        }
    }
 
@@ -346,7 +210,7 @@ public class Lobby : MonoBehaviour
        
        username.gameObject.SetActive(true);
        sessionName.gameObject.SetActive(true);
-       createGameButton.gameObject.SetActive(true);
+       startButton.gameObject.SetActive(true);
 
        statusText.text = "Transport failure! Please try again. If problem persists, please restart game.";
 

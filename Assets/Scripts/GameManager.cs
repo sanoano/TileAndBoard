@@ -100,7 +100,7 @@ public class GameManager : NetworkBehaviour
 
     public async void DisconnectUser()
     {
-        await NetworkManager.Singleton.gameObject.GetComponent<ConnectionManager>().LeaveSessionAsync();
+        await NetworkManager.Singleton.gameObject.GetComponent<Lobby>().LeaveSessionAsync();
 
     }
 
