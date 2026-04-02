@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using UnityEngine.Events;
@@ -26,6 +27,11 @@ public class TurnManager : NetworkBehaviour
 
     [Header("Turn Count")]
     public int turnCount = 1;
+
+    [Header("Turn Timer")] 
+    public float maxTimePerTurn = 180f;
+    public float currentTime;
+    
     
     
     private void Awake()
@@ -61,10 +67,41 @@ public class TurnManager : NetworkBehaviour
         
     }
 
+    private void Start()
+    {
+        currentTime = maxTimePerTurn;
+    }
+
     public enum TurnState : byte
     {
         Player1Turn,
         Player2Turn,
+    }
+
+    public void Update()
+    {
+        if (isYourTurn)
+        {
+            currentTime -= Time.deltaTime;
+        }
+
+        if (currentTime < 0)
+        {
+            ForceEndTurn();
+            currentTime = maxTimePerTurn;
+        }
+    }
+
+    public void ForceEndTurn()
+    {
+        UIManager.Instance.interactionState = UIManager.InteractionState.None;
+        UIManager.Instance.EnableControlsText();
+        
+        BoardManager.Instance.ClearTiles();
+        BoardManager.Instance.UpdateTileVisuals();
+        BoardManager.Instance.NullSelection();
+            
+        ChangeTurn();
     }
 
     public void UpdateTurnText(TurnState turnState)

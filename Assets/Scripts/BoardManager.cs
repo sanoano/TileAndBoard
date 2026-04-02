@@ -256,7 +256,7 @@ public class BoardManager : NetworkBehaviour
                     }
 
                     //If its a different tile
-                    ClearTiles();
+                    // ClearTiles();
 
                     currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
                     UIManager.Instance.DestroyCurrentInfoInstance();
@@ -282,25 +282,25 @@ public class BoardManager : NetworkBehaviour
                         {
                             if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player2)
                             {
-                                ClearTiles();
-
-
-                                foreach (var position in unit.AttackPositions)
-                                {
-                                    player1Board.TileTransforms[position.x, position.y]
-                                        .GetComponent<tileColour>().TileRecieveSignal(1, true);
-                                }
-
-                                cardFound = true;
-                                break;
+                                // ClearTiles();
+                                //
+                                //
+                                // foreach (var position in unit.AttackPositions)
+                                // {
+                                //     player1Board.TileTransforms[position.x, position.y]
+                                //         .GetComponent<tileColour>().TileRecieveSignal(1, true);
+                                // }
+                                //
+                                // cardFound = true;
+                                // break;
                             }
                         }
                         //If the new tile selected has no card on it, show the live board status again.
                         if (cardFound == false)
                         {
-                            ClearTiles();
-                            
-                            UpdateTileVisuals();
+                            // ClearTiles();
+                            //
+                            // UpdateTileVisuals();
                         }
                     }
                     //If the tile is on the player board
@@ -315,25 +315,25 @@ public class BoardManager : NetworkBehaviour
                         {
                             if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player1)
                             {
-                                ClearTiles();
-
-
-                                foreach (var position in unit.AttackPositions)
-                                {
-                                    player2Board.TileTransforms[position.x, position.y]
-                                        .GetComponent<tileColour>().TileRecieveSignal(1, true);
-                                }
-
-                                cardFound = true;
-                                break;
+                                // ClearTiles();
+                                //
+                                //
+                                // foreach (var position in unit.AttackPositions)
+                                // {
+                                //     player2Board.TileTransforms[position.x, position.y]
+                                //         .GetComponent<tileColour>().TileRecieveSignal(1, true);
+                                // }
+                                //
+                                // cardFound = true;
+                                // break;
                             }
                         }
                         //If the new tile selected has no card on it, show the live board status again.
                         if (cardFound == false)
                         {
-                            ClearTiles();
-                            
-                            UpdateTileVisuals();
+                            // ClearTiles();
+                            //
+                            // UpdateTileVisuals();
                         }
                     }
 
@@ -359,13 +359,13 @@ public class BoardManager : NetworkBehaviour
                         {
                             if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player2)
                             {
-                                ClearTiles();
-
-                                foreach (var position in unit.AttackPositions)
-                                {
-                                    player1Board.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                                        .TileRecieveSignal(1, true);
-                                }
+                                // ClearTiles();
+                                //
+                                // foreach (var position in unit.AttackPositions)
+                                // {
+                                //     player1Board.TileTransforms[position.x, position.y].GetComponent<tileColour>()
+                                //         .TileRecieveSignal(1, true);
+                                // }
                             }
                         }
                     }
@@ -379,13 +379,13 @@ public class BoardManager : NetworkBehaviour
                         {
                             if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player1)
                             {
-                                ClearTiles();
-
-                                foreach (var position in unit.AttackPositions)
-                                {
-                                    player2Board.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                                        .TileRecieveSignal(1, true);
-                                }
+                                // ClearTiles();
+                                //
+                                // foreach (var position in unit.AttackPositions)
+                                // {
+                                //     player2Board.TileTransforms[position.x, position.y].GetComponent<tileColour>()
+                                //         .TileRecieveSignal(1, true);
+                                // }
                             }
                         }
                     }
@@ -414,9 +414,9 @@ public class BoardManager : NetworkBehaviour
         CurrentSelectedTile = new Vector2Int(-1, -1);
         UIManager.Instance.DestroyCurrentInfoInstance();
 
-        ClearTiles();
-
-        UpdateTileVisuals();
+        // ClearTiles();
+        //
+        // UpdateTileVisuals();
 
     }
 
@@ -1218,7 +1218,7 @@ public class BoardManager : NetworkBehaviour
         UIManager.Instance.EnableControlsText();
     }
 
-    void ClearTiles()
+    public void ClearTiles()
     {
         foreach (var tile in enemyBoard.TileTransforms)
         {

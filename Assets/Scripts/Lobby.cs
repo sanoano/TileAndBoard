@@ -111,12 +111,13 @@ public class Lobby : MonoBehaviour
 
     public async Task QuerySessions()
     {
+        statusText.text = "";
 
         foreach (var child in sessionListContent.GetComponentsInChildren<Transform>())
         {
-            if (child.name == "SessionInfo")
+            if (child.gameObject != sessionListContent)
             {
-                Destroy(child);
+                Destroy(child.gameObject);
             }
         }
         
@@ -331,7 +332,7 @@ public class Lobby : MonoBehaviour
            Debug.LogException(e);
            NetworkManager.Singleton.Shutdown();
            AuthenticationService.Instance.SignOut();
-           statusText.text = "Failed to connect. Error: " + e;
+           statusText.text = "Failed to create session. Please try again.";
            username.gameObject.SetActive(true);
            sessionName.gameObject.SetActive(true);
            createGameButton.gameObject.SetActive(true);
