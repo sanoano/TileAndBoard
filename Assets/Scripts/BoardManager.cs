@@ -210,6 +210,8 @@ public class BoardManager : NetworkBehaviour
 
         player1Health = startingPlayerHealth;
         player2Health = startingPlayerHealth;
+
+        currentSelectedTileGameObject = null;
     }
 
     public override void OnNetworkSpawn()
@@ -409,7 +411,10 @@ public class BoardManager : NetworkBehaviour
 
     public void NullSelection()
     {
-        currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
+        if (currentSelectedTileGameObject != null)
+        {
+            currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
+        }
         currentSelectedTileGameObject = null;
         CurrentSelectedTile = new Vector2Int(-1, -1);
         UIManager.Instance.DestroyCurrentInfoInstance();

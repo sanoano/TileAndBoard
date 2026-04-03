@@ -88,7 +88,6 @@ public class TurnManager : NetworkBehaviour
         if (currentTime < 0)
         {
             ForceEndTurn();
-            currentTime = maxTimePerTurn;
         }
     }
 
@@ -173,6 +172,8 @@ public class TurnManager : NetworkBehaviour
 
     public void ChangeTurn()
     {
+
+        currentTime = maxTimePerTurn;
 
         if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
         

@@ -13,6 +13,7 @@ public class Lobby : MonoBehaviour
 {
    private string _profileName;
    private string _sessionName;
+   private string _sessionJoinCode;
    private int _maxPlayers = 2;
    private ConnectionState _state = ConnectionState.Disconnected;
    public ISession _session;
@@ -21,6 +22,7 @@ public class Lobby : MonoBehaviour
    [Header("UI References")]
    [SerializeField] private TMP_InputField username;
    [SerializeField] private TMP_InputField sessionName;
+   [SerializeField] private TMP_InputField joinCodeInput;
    [SerializeField] private Button createGameButton;
    [SerializeField] private Button createButton;
    [SerializeField] private Button joinButton;
@@ -29,6 +31,9 @@ public class Lobby : MonoBehaviour
    [SerializeField] private GameObject sessionList;
    [SerializeField] private Button backButton;
    [SerializeField] private Button refreshButton;
+   [SerializeField] private Button joinDirectButton;
+   [SerializeField] private Button joinGameDirectButton;
+   [SerializeField] private Button backButtonJoin;
 
    [Header("Session Prefab")] 
    [SerializeField] private GameObject sessionInfoPrefab;
@@ -61,11 +66,14 @@ public class Lobby : MonoBehaviour
         
         username.onValueChanged.AddListener(onUsernameSet);
         sessionName.onValueChanged.AddListener(onSessionNameSet);
+        joinCodeInput.onValueChanged.AddListener(onJoinCodeSet);
         createGameButton.onClick.AddListener(StartSession);
+        joinGameDirectButton.onClick.AddListener(JoinGameByJoinCode);
         joinButton.onClick.AddListener(delegate { QuerySessions();});
         refreshButton.onClick.AddListener(delegate { QuerySessions();});
         statusText.text = "";
 
+        _profileName = String.Empty;
     }
 
     private void Update()
@@ -76,11 +84,13 @@ public class Lobby : MonoBehaviour
             {
                 joinButton.interactable = false;
                 createButton.interactable = false;
+                joinDirectButton.interactable = false;
             }
             else
             {
                 joinButton.interactable = true;
                 createButton.interactable = true;
+                joinDirectButton.interactable = true;
             }
         }
         catch(Exception e)
@@ -97,16 +107,38 @@ public class Lobby : MonoBehaviour
         createGameButton.gameObject.SetActive(false);
         backButton.gameObject.SetActive(false);
         
-        if (_profileName == "")
+        if (_profileName == String.Empty)
         {
             username.gameObject.SetActive(true);
             sessionName.gameObject.SetActive(true);
             createGameButton.gameObject.SetActive(true);
-            statusText.text = "You must set a username before creating/joining a session!";
+            backButton.gameObject.SetActive(true);
+            statusText.text = "You must set a username before creating a session!";
             return;
         }
         CreateSessionAsync();
-        statusText.text = "Connecting to/Creating session...";
+        statusText.text = "Creating session...";
+    }
+    
+    private void JoinGameByJoinCode()
+    {
+        joinCodeInput.gameObject.SetActive(false);
+        joinGameDirectButton.gameObject.SetActive(false);
+        backButtonJoin.gameObject.SetActive(false);
+        username.gameObject.SetActive(false);
+        
+        if (_profileName == String.Empty)
+        {
+            joinCodeInput.gameObject.SetActive(true);
+            joinGameDirectButton.gameObject.SetActive(true);
+            backButtonJoin.gameObject.SetActive(true);
+            username.gameObject.SetActive(true);
+            statusText.text = "You must set a username before joining a session!";
+            return;
+        }
+
+        JoinSessionByJoinCodeAsync(_sessionJoinCode);
+        statusText.text = "Connecting to session...";
     }
 
     public async Task QuerySessions()
@@ -173,6 +205,11 @@ public class Lobby : MonoBehaviour
     {
         string cleanedValue = value.Replace(" ", String.Empty);
         _sessionName = cleanedValue;
+    }
+
+    private void onJoinCodeSet(string value)
+    {
+        _sessionJoinCode = value;
     }
     
     private async void OnClientDisconnect(NetworkManager manager,ConnectionEventData connectionEventData )
@@ -299,6 +336,30 @@ public class Lobby : MonoBehaviour
            username.gameObject.SetActive(true);
            joinButton.gameObject.SetActive(true);
            createButton.gameObject.SetActive(true);
+       }
+   }
+   
+   public async Task JoinSessionByJoinCodeAsync(string joinCode)
+   {
+       
+       try
+       {
+           AuthenticationService.Instance.SwitchProfile(_profileName);
+           await AuthenticationService.Instance.SignInAnonymouslyAsync();
+
+           _session = await MultiplayerService.Instance.JoinSessionByCodeAsync(joinCode, new JoinSessionOptions());
+           await AuthenticationService.Instance.UpdatePlayerNameAsync(_profileName);
+       }
+       catch (Exception e)
+       {
+           Debug.LogException(e);
+           NetworkManager.Singleton.Shutdown();
+           AuthenticationService.Instance.SignOut();
+           statusText.text = "Failed to connect. Check join code and try again.";
+           joinCodeInput.gameObject.SetActive(true);
+           joinGameDirectButton.gameObject.SetActive(true);
+           backButtonJoin.gameObject.SetActive(true);
+           username.gameObject.SetActive(true);
        }
    }
 
