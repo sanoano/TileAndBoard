@@ -14,6 +14,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Lobby2.unity
     guid: 14f2b342e782c42f29240d9a14065f95
+  - enabled: 1
+    path: Assets/Scenes/WaitingRoom.unity
+    guid: 968b936c522ea4c05ac559e0d0e73286
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

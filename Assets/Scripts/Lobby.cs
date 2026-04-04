@@ -17,7 +17,7 @@ public class Lobby : MonoBehaviour
    private int _maxPlayers = 2;
    private ConnectionState _state = ConnectionState.Disconnected;
    public ISession _session;
-   private NetworkManager m_NetworkManager;
+   [HideInInspector] public NetworkManager m_NetworkManager;
 
    [Header("UI References")]
    [SerializeField] private TMP_InputField username;
@@ -48,7 +48,7 @@ public class Lobby : MonoBehaviour
     private async void Awake()
     {
         m_NetworkManager = GetComponent<NetworkManager>();
-        m_NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
+        // m_NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
         m_NetworkManager.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
         m_NetworkManager.OnConnectionEvent += OnClientDisconnect;
         m_NetworkManager.OnTransportFailure += OnTransportFailure;
@@ -243,7 +243,7 @@ public class Lobby : MonoBehaviour
         AuthenticationService.Instance.SignOut();
         
         ClearSessionState();
-        SceneManager.LoadScene("Lobby");
+        SceneManager.LoadScene("Lobby2");
 
         Debug.Log("Session left successfully");
     }
@@ -289,21 +289,21 @@ public class Lobby : MonoBehaviour
         }
     }
 
-    private void OnClientConnectedCallback(ulong clientId)
-    {
-        if (m_NetworkManager.LocalClientId == clientId)
-        {
-            Debug.Log($"Client-{clientId} is connected and can spawn {nameof(NetworkObject)}s.");
-            
-            
-        }
-        
-        if (m_NetworkManager.ConnectedClientsList.Count == 2 && m_NetworkManager.LocalClient.IsSessionOwner)
-        {
-            m_NetworkManager.SceneManager.LoadScene("Battle2", LoadSceneMode.Single);
-            
-        }
-    }
+    // private void OnClientConnectedCallback(ulong clientId)
+    // {
+    //     if (m_NetworkManager.LocalClientId == clientId)
+    //     {
+    //         Debug.Log($"Client-{clientId} is connected and can spawn {nameof(NetworkObject)}s.");
+    //         
+    //         
+    //     }
+    //     
+    //     if (m_NetworkManager.ConnectedClientsList.Count == 2 && m_NetworkManager.LocalClient.IsSessionOwner)
+    //     {
+    //         m_NetworkManager.SceneManager.LoadScene("Battle2", LoadSceneMode.Single);
+    //         
+    //     }
+    // }
     
 
    private void OnDestroy()
@@ -321,11 +321,15 @@ public class Lobby : MonoBehaviour
        
        try
        {
+           AuthenticationService.Instance.SignOut();
            AuthenticationService.Instance.SwitchProfile(_profileName);
            await AuthenticationService.Instance.SignInAnonymouslyAsync();
-
-           _session = await MultiplayerService.Instance.JoinSessionByIdAsync(id, new JoinSessionOptions());
            await AuthenticationService.Instance.UpdatePlayerNameAsync(_profileName);
+
+           _session = await MultiplayerService.Instance.JoinSessionByIdAsync(id, new JoinSessionOptions().
+               WithPlayerName(VisibilityPropertyOptions.Public));
+           
+          
        }
        catch (Exception e)
        {
@@ -337,6 +341,8 @@ public class Lobby : MonoBehaviour
            joinButton.gameObject.SetActive(true);
            createButton.gameObject.SetActive(true);
        }
+
+      
    }
    
    public async Task JoinSessionByJoinCodeAsync(string joinCode)
@@ -346,9 +352,12 @@ public class Lobby : MonoBehaviour
        {
            AuthenticationService.Instance.SwitchProfile(_profileName);
            await AuthenticationService.Instance.SignInAnonymouslyAsync();
-
-           _session = await MultiplayerService.Instance.JoinSessionByCodeAsync(joinCode, new JoinSessionOptions());
            await AuthenticationService.Instance.UpdatePlayerNameAsync(_profileName);
+
+           _session = await MultiplayerService.Instance.JoinSessionByCodeAsync(joinCode, new JoinSessionOptions().
+               WithPlayerName(VisibilityPropertyOptions.Public));
+           
+           
        }
        catch (Exception e)
        {
@@ -361,6 +370,8 @@ public class Lobby : MonoBehaviour
            backButtonJoin.gameObject.SetActive(true);
            username.gameObject.SetActive(true);
        }
+       
+       
    }
 
    private async Task CreateSessionAsync()
@@ -373,19 +384,20 @@ public class Lobby : MonoBehaviour
        {
            AuthenticationService.Instance.SwitchProfile(_profileName);
            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+           await AuthenticationService.Instance.UpdatePlayerNameAsync(_profileName);
 
             var options = new SessionOptions() {
                 Name = _sessionName,
                 MaxPlayers = _maxPlayers
-            }.WithDistributedAuthorityNetwork();
+            }.WithDistributedAuthorityNetwork().WithPlayerName(VisibilityPropertyOptions.Public);
 
             _session = await MultiplayerService.Instance.CreateSessionAsync(options);
-            await AuthenticationService.Instance.UpdatePlayerNameAsync(_profileName);
+            
             
            _state = ConnectionState.Connected;
            statusText.text = "Session created! Waiting for player...";
            
-
+           NetworkManager.Singleton.SceneManager.LoadScene("WaitingRoom", LoadSceneMode.Single);
        }
        catch (Exception e)
        {
@@ -399,6 +411,7 @@ public class Lobby : MonoBehaviour
            createGameButton.gameObject.SetActive(true);
            backButton.gameObject.SetActive(true);
        }
+       
    }
 
    void OnTransportFailure()

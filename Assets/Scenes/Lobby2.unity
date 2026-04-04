@@ -3914,6 +3914,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a254ae12292d4dec8ad7bb93f2c0fc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConnectionManager
+  m_NetworkManager: {fileID: 0}
   username: {fileID: 981536149}
   sessionName: {fileID: 1244416591}
   joinCodeInput: {fileID: 624408301}
