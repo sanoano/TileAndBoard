@@ -64,6 +64,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Turn Display")] 
     [SerializeField] private TextMeshProUGUI turnCountText;
+    [SerializeField] private TextMeshProUGUI turnTimer;
 
     [Header("Usernames")] 
     public TextMeshProUGUI player1Name;
@@ -114,6 +115,16 @@ public class UIManager : MonoBehaviour
         handAmount.text = $"{CardManager.instance.playerHand.Count} / {CardManager.instance.maxCards}";
 
         turnCountText.text = $"Turn {TurnManager.instance.turnCount}";
+
+        if (TurnManager.instance.isYourTurn)
+        {
+            turnTimer.text = ((int)TurnManager.instance.currentTime).ToString();
+        }
+        else
+        {
+            turnTimer.text = String.Empty;
+        }
+        
     }
 
     void UpdateHealthDisplay()
