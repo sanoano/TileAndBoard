@@ -11,13 +11,13 @@ public class AudioManager : MonoBehaviour
 
     private void Awake()
     {
-        if (singleton != null && singleton != this)
+        if (singleton == null)
         {
-            Destroy(this);
+            singleton = this;
         }
         else
         {
-            singleton = this;
+            Destroy(this);
         }
         
         DontDestroyOnLoad(this.gameObject);

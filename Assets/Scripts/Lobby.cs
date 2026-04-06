@@ -11,11 +11,10 @@ using TMPro;
 
 public class Lobby : MonoBehaviour
 {
-   private string _profileName;
    private string _sessionName;
    private string _sessionJoinCode;
    private int _maxPlayers = 2;
-   private ConnectionState _state = ConnectionState.Disconnected;
+   private bool isPrivate;
    public ISession _session;
    [HideInInspector] public NetworkManager m_NetworkManager;
 
@@ -34,20 +33,32 @@ public class Lobby : MonoBehaviour
    [SerializeField] private Button joinDirectButton;
    [SerializeField] private Button joinGameDirectButton;
    [SerializeField] private Button backButtonJoin;
+   [SerializeField] private Toggle privateToggle;
 
    [Header("Session Prefab")] 
    [SerializeField] private GameObject sessionInfoPrefab;
 
-   private enum ConnectionState
-   {
-       Disconnected,
-       Connecting,
-       Connected,
-   }
+   private static Lobby instance;
+   
 
     private async void Awake()
     {
+
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            DestroyImmediate(instance.gameObject);
+            Destroy(instance);
+            instance = this;
+        }
+        
+        
         m_NetworkManager = GetComponent<NetworkManager>();
+        
+        m_NetworkManager.SetSingleton();
         // m_NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
         m_NetworkManager.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
         m_NetworkManager.OnConnectionEvent += OnClientDisconnect;
@@ -55,7 +66,16 @@ public class Lobby : MonoBehaviour
 
         try
         {
-            await UnityServices.InitializeAsync();
+            if (UnityServices.State == ServicesInitializationState.Uninitialized)
+            {
+                await UnityServices.InitializeAsync();
+            }
+
+            if (!AuthenticationService.Instance.IsSignedIn)
+            {
+                print("Signed In");
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            }
         }
         catch (Exception e)
         {
@@ -69,34 +89,44 @@ public class Lobby : MonoBehaviour
         joinCodeInput.onValueChanged.AddListener(onJoinCodeSet);
         createGameButton.onClick.AddListener(StartSession);
         joinGameDirectButton.onClick.AddListener(JoinGameByJoinCode);
+        privateToggle.onValueChanged.AddListener(onPrivateSet);
         joinButton.onClick.AddListener(delegate { QuerySessions();});
         refreshButton.onClick.AddListener(delegate { QuerySessions();});
-        statusText.text = "";
+        // statusText.text = "";
 
-        _profileName = String.Empty;
+        if (AuthenticationService.Instance.PlayerName != null)
+        {
+            username.text = AuthenticationService.Instance.PlayerName;
+        }
+        else
+        {
+            var result = await AuthenticationService.Instance.GetPlayerNameAsync(true);
+            username.text = result;
+        }
+
     }
 
     private void Update()
     {
-        try
-        {
-            if (_profileName == String.Empty)
-            {
-                joinButton.interactable = false;
-                createButton.interactable = false;
-                joinDirectButton.interactable = false;
-            }
-            else
-            {
-                joinButton.interactable = true;
-                createButton.interactable = true;
-                joinDirectButton.interactable = true;
-            }
-        }
-        catch(Exception e)
-        {
-            
-        }
+        // try
+        // {
+        //     if (_profileName == String.Empty)
+        //     {
+        //         joinButton.interactable = false;
+        //         createButton.interactable = false;
+        //         joinDirectButton.interactable = false;
+        //     }
+        //     else
+        //     {
+        //         joinButton.interactable = true;
+        //         createButton.interactable = true;
+        //         joinDirectButton.interactable = true;
+        //     }
+        // }
+        // catch(Exception e)
+        // {
+        //     Debug.Log(e);
+        // }
         
     }
 
@@ -106,14 +136,16 @@ public class Lobby : MonoBehaviour
         sessionName.gameObject.SetActive(false);
         createGameButton.gameObject.SetActive(false);
         backButton.gameObject.SetActive(false);
+        privateToggle.gameObject.SetActive(false);
         
-        if (_profileName == String.Empty)
+        if (_sessionName == String.Empty)
         {
             username.gameObject.SetActive(true);
             sessionName.gameObject.SetActive(true);
             createGameButton.gameObject.SetActive(true);
             backButton.gameObject.SetActive(true);
-            statusText.text = "You must set a username before creating a session!";
+            privateToggle.gameObject.SetActive(true);
+            statusText.text = "You must set a session name before creating a session.";
             return;
         }
         CreateSessionAsync();
@@ -127,13 +159,13 @@ public class Lobby : MonoBehaviour
         backButtonJoin.gameObject.SetActive(false);
         username.gameObject.SetActive(false);
         
-        if (_profileName == String.Empty)
+        if (_sessionJoinCode == String.Empty)
         {
             joinCodeInput.gameObject.SetActive(true);
             joinGameDirectButton.gameObject.SetActive(true);
             backButtonJoin.gameObject.SetActive(true);
             username.gameObject.SetActive(true);
-            statusText.text = "You must set a username before joining a session!";
+            statusText.text = "You must provide a join code.";
             return;
         }
 
@@ -158,14 +190,12 @@ public class Lobby : MonoBehaviour
 
         try
         {
-            AuthenticationService.Instance.SwitchProfile(_profileName);
-            await AuthenticationService.Instance.SignInAnonymouslyAsync();
             results = await MultiplayerService.Instance.QuerySessionsAsync(new QuerySessionsOptions());
         }
         catch (AuthenticationException e)
         {
             Debug.Log(e);
-            statusText.text = "You must set a username before searching for sessions.";
+            statusText.text = "Not authorised.";
             return;
         }
         catch (Exception e)
@@ -192,13 +222,15 @@ public class Lobby : MonoBehaviour
             statusText.text = "No sessions found.";
         }
         
-        AuthenticationService.Instance.SignOut();
     }
 
     private void onUsernameSet(string value)
     {
+        
+        if (AuthenticationService.Instance.PlayerName == value) return;
+        
         string cleanedValue = value.Replace(" ", String.Empty);
-        _profileName = cleanedValue;
+        AuthenticationService.Instance.UpdatePlayerNameAsync(cleanedValue);
     }
     
     private void onSessionNameSet(string value)
@@ -211,6 +243,11 @@ public class Lobby : MonoBehaviour
     {
         _sessionJoinCode = value;
     }
+
+    private void onPrivateSet(bool value)
+    {
+        isPrivate = value;
+    }
     
     private async void OnClientDisconnect(NetworkManager manager,ConnectionEventData connectionEventData )
     {
@@ -218,7 +255,6 @@ public class Lobby : MonoBehaviour
         if (connectionEventData.EventType == ConnectionEvent.PeerDisconnected && connectionEventData.ClientId != NetworkManager.Singleton.LocalClientId)
         {
             await LeaveSessionAsync();
-            
         }
         
     }
@@ -240,7 +276,7 @@ public class Lobby : MonoBehaviour
             await WaitForShutdown();
         }
         
-        AuthenticationService.Instance.SignOut();
+        // AuthenticationService.Instance.SignOut();
         
         ClearSessionState();
         SceneManager.LoadScene("Lobby2");
@@ -271,8 +307,6 @@ public class Lobby : MonoBehaviour
     {
         
         System.GC.Collect();
-        
-        
         
         Debug.Log("State cleared");
     }
@@ -309,6 +343,7 @@ public class Lobby : MonoBehaviour
    private void OnDestroy()
    {
        _session?.LeaveAsync();
+       AuthenticationService.Instance.SignOut();
    }
 
    public async Task JoinSessionAsync(string id)
@@ -321,10 +356,6 @@ public class Lobby : MonoBehaviour
        
        try
        {
-           AuthenticationService.Instance.SignOut();
-           AuthenticationService.Instance.SwitchProfile(_profileName);
-           await AuthenticationService.Instance.SignInAnonymouslyAsync();
-           await AuthenticationService.Instance.UpdatePlayerNameAsync(_profileName);
 
            _session = await MultiplayerService.Instance.JoinSessionByIdAsync(id, new JoinSessionOptions().
                WithPlayerName(VisibilityPropertyOptions.Public));
@@ -335,7 +366,6 @@ public class Lobby : MonoBehaviour
        {
            Debug.LogException(e);
            NetworkManager.Singleton.Shutdown();
-           AuthenticationService.Instance.SignOut();
            statusText.text = "Failed to connect. Please try again.";
            username.gameObject.SetActive(true);
            joinButton.gameObject.SetActive(true);
@@ -350,9 +380,6 @@ public class Lobby : MonoBehaviour
        
        try
        {
-           AuthenticationService.Instance.SwitchProfile(_profileName);
-           await AuthenticationService.Instance.SignInAnonymouslyAsync();
-           await AuthenticationService.Instance.UpdatePlayerNameAsync(_profileName);
 
            _session = await MultiplayerService.Instance.JoinSessionByCodeAsync(joinCode, new JoinSessionOptions().
                WithPlayerName(VisibilityPropertyOptions.Public));
@@ -363,7 +390,6 @@ public class Lobby : MonoBehaviour
        {
            Debug.LogException(e);
            NetworkManager.Singleton.Shutdown();
-           AuthenticationService.Instance.SignOut();
            statusText.text = "Failed to connect. Check join code and try again.";
            joinCodeInput.gameObject.SetActive(true);
            joinGameDirectButton.gameObject.SetActive(true);
@@ -376,40 +402,45 @@ public class Lobby : MonoBehaviour
 
    private async Task CreateSessionAsync()
    {
-       
-       _state = ConnectionState.Connecting;
-       
-       
        try
        {
-           AuthenticationService.Instance.SwitchProfile(_profileName);
-           await AuthenticationService.Instance.SignInAnonymouslyAsync();
-           await AuthenticationService.Instance.UpdatePlayerNameAsync(_profileName);
 
-            var options = new SessionOptions() {
-                Name = _sessionName,
-                MaxPlayers = _maxPlayers
-            }.WithDistributedAuthorityNetwork().WithPlayerName(VisibilityPropertyOptions.Public);
+           SessionOptions options;
+           
+           if (isPrivate)
+           {
+               options = new SessionOptions() {
+                   Name = _sessionName,
+                   MaxPlayers = _maxPlayers,
+                   IsPrivate = true
+               }.WithDistributedAuthorityNetwork().WithPlayerName(VisibilityPropertyOptions.Public);
+           }
+           else
+           {
+               options = new SessionOptions() {
+                   Name = _sessionName,
+                   MaxPlayers = _maxPlayers
+               }.WithDistributedAuthorityNetwork().WithPlayerName(VisibilityPropertyOptions.Public);
+           }
+           
 
-            _session = await MultiplayerService.Instance.CreateSessionAsync(options);
+           _session = await MultiplayerService.Instance.CreateSessionAsync(options);
             
             
-           _state = ConnectionState.Connected;
            statusText.text = "Session created! Waiting for player...";
            
            NetworkManager.Singleton.SceneManager.LoadScene("WaitingRoom", LoadSceneMode.Single);
        }
        catch (Exception e)
        {
-           _state = ConnectionState.Disconnected;
            Debug.LogException(e);
            NetworkManager.Singleton.Shutdown();
-           AuthenticationService.Instance.SignOut();
            statusText.text = "Failed to create session. Please try again.";
            username.gameObject.SetActive(true);
            sessionName.gameObject.SetActive(true);
            createGameButton.gameObject.SetActive(true);
            backButton.gameObject.SetActive(true);
+           privateToggle.gameObject.SetActive(true);
        }
        
    }
@@ -417,7 +448,6 @@ public class Lobby : MonoBehaviour
    void OnTransportFailure()
    {
        NetworkManager.Singleton.Shutdown();
-       AuthenticationService.Instance.SignOut();
        
        username.gameObject.SetActive(true);
        sessionName.gameObject.SetActive(true);
