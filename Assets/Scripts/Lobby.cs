@@ -34,9 +34,13 @@ public class Lobby : MonoBehaviour
    [SerializeField] private Button joinGameDirectButton;
    [SerializeField] private Button backButtonJoin;
    [SerializeField] private Toggle privateToggle;
+   [SerializeField] private Button reconnectButton;
 
    [Header("Session Prefab")] 
    [SerializeField] private GameObject sessionInfoPrefab;
+
+   [Header("Parameters")] 
+   [SerializeField] private float checkDisconnectTime;
 
    private static Lobby instance;
    
@@ -44,18 +48,15 @@ public class Lobby : MonoBehaviour
     private async void Awake()
     {
 
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else
+        if (instance != null)
         {
             DestroyImmediate(instance.gameObject);
             Destroy(instance);
-            instance = this;
         }
         
-        
+        instance = this;
+
+
         m_NetworkManager = GetComponent<NetworkManager>();
         
         m_NetworkManager.SetSingleton();
@@ -80,7 +81,7 @@ public class Lobby : MonoBehaviour
         catch (Exception e)
         {
             Debug.Log(e);
-            statusText.text = "Unity Services failed to initialize. Please restart game.";
+            statusText.text = "Multiplayer Services failed to initialize.";
         }
         
         
@@ -90,8 +91,10 @@ public class Lobby : MonoBehaviour
         createGameButton.onClick.AddListener(StartSession);
         joinGameDirectButton.onClick.AddListener(JoinGameByJoinCode);
         privateToggle.onValueChanged.AddListener(onPrivateSet);
+        reconnectButton.onClick.AddListener(Reconnect);
         joinButton.onClick.AddListener(delegate { QuerySessions();});
         refreshButton.onClick.AddListener(delegate { QuerySessions();});
+        
         // statusText.text = "";
 
         if (AuthenticationService.Instance.PlayerName != null)
@@ -103,31 +106,53 @@ public class Lobby : MonoBehaviour
             var result = await AuthenticationService.Instance.GetPlayerNameAsync(true);
             username.text = result;
         }
+        
+        InvokeRepeating(nameof(CheckReconnect), checkDisconnectTime, checkDisconnectTime);
 
     }
+    
 
-    private void Update()
+    private void CheckReconnect()
     {
-        // try
-        // {
-        //     if (_profileName == String.Empty)
-        //     {
-        //         joinButton.interactable = false;
-        //         createButton.interactable = false;
-        //         joinDirectButton.interactable = false;
-        //     }
-        //     else
-        //     {
-        //         joinButton.interactable = true;
-        //         createButton.interactable = true;
-        //         joinDirectButton.interactable = true;
-        //     }
-        // }
-        // catch(Exception e)
-        // {
-        //     Debug.Log(e);
-        // }
+        if (!AuthenticationService.Instance.IsSignedIn ||
+            UnityServices.State != ServicesInitializationState.Initialized)
+        {
+            if (SceneManager.GetActiveScene().name != "Lobby2") return;
+            statusText.text = "Disconnected from Multiplayer Services. Press button to try reconnect.";
+            reconnectButton.gameObject.SetActive(true);
+
+        }
+    }
+
+    private async void Reconnect()
+    {
         
+        reconnectButton.gameObject.SetActive(false);
+        statusText.text = "Reconnecting...";
+        
+        try
+        {
+            if (UnityServices.State == ServicesInitializationState.Uninitialized)
+            {
+                await UnityServices.InitializeAsync();
+            }
+
+            if (!AuthenticationService.Instance.IsSignedIn)
+            {
+                print("Signed In");
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+            statusText.text = "Failed to reconnect.";
+            reconnectButton.gameObject.SetActive(true);
+            return;
+        }
+
+        statusText.text = "Connected successfully.";
+        reconnectButton.gameObject.SetActive(false);
     }
 
     private void StartSession()
@@ -226,7 +251,7 @@ public class Lobby : MonoBehaviour
 
     private void onUsernameSet(string value)
     {
-        
+        if (value == String.Empty) return;
         if (AuthenticationService.Instance.PlayerName == value) return;
         
         string cleanedValue = value.Replace(" ", String.Empty);

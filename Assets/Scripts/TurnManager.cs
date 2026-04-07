@@ -6,6 +6,8 @@ using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
+
 
 public class TurnManager : NetworkBehaviour
 {
@@ -51,20 +53,54 @@ public class TurnManager : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         turnButton.onClick.AddListener(ChangeTurn);
-        currentTurn = TurnState.Player1Turn;
-        UpdateTurnText(currentTurn);
-
-        if (GameManager.instance.playerId == Player.PlayerId.Player2)
-        {
-            turnButton.gameObject.SetActive(false);
-            isYourTurn = false;
-        }
 
         if (GameManager.instance.playerId == Player.PlayerId.Player1)
         {
-            isYourTurn = true;
+            int rand;
+
+            rand = Random.Range(0, 2);
+
+            if (rand == 0)
+            {
+                foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+                {
+                    SetFirstTurnRpc(TurnState.Player1Turn, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                }
+            }
+            else
+            {
+                foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+                {
+                    SetFirstTurnRpc(TurnState.Player2Turn, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                }
+            }
         }
         
+        
+        
+    }
+    
+    [Rpc(SendTo.SpecifiedInParams)]
+    private void SetFirstTurnRpc(TurnState turn, RpcParams rpcParams = default)
+    {
+        currentTurn = turn;
+        
+        UpdateTurnText(currentTurn);
+
+        if (GameManager.instance.playerId == Player.PlayerId.Player2 && turn == TurnState.Player2Turn)
+        {
+            isYourTurn = true;
+        }
+
+        if (GameManager.instance.playerId == Player.PlayerId.Player1 && turn == TurnState.Player1Turn)
+        {
+            isYourTurn = true;
+        }
+
+        if (!isYourTurn)
+        {
+            turnButton.gameObject.SetActive(false);
+        }
     }
 
     private void Start()

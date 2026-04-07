@@ -2402,7 +2402,7 @@ PrefabInstance:
       objectReference: {fileID: 1727934277}
     - target: {fileID: 2673322661631672235, guid: 464cbf80ddad54f67b2765e00d3aa9e6, type: 3}
       propertyPath: isYourTurn
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2673322661631672235, guid: 464cbf80ddad54f67b2765e00d3aa9e6, type: 3}
       propertyPath: turnButton
@@ -2410,7 +2410,7 @@ PrefabInstance:
       objectReference: {fileID: 727717175}
     - target: {fileID: 2673322661631672235, guid: 464cbf80ddad54f67b2765e00d3aa9e6, type: 3}
       propertyPath: maxTimePerTurn
-      value: 15
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 4695407658119503313, guid: 464cbf80ddad54f67b2765e00d3aa9e6, type: 3}
       propertyPath: m_LocalPosition.x
