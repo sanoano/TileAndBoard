@@ -5416,6 +5416,10 @@ PrefabInstance:
       propertyPath: actionsPerTurn
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 4513259577054355773, guid: c68ad123c385847c9afe780e67ec6c9c, type: 3}
+      propertyPath: startingTacticPoints
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 4589475767484239893, guid: c68ad123c385847c9afe780e67ec6c9c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 708.3269

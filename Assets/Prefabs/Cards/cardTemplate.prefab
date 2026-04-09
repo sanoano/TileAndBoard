@@ -1050,14 +1050,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7011985744931520955}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.13052599, y: -0, z: -0.000000014901161, w: 0.99144495}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4173606984157764393}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 15, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2404776279793271808
 SpriteRenderer:
   serializedVersion: 2
@@ -1151,6 +1151,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardDrag
   isPlaced: 0
+  followSpeed: 15
+  baseTiltX: 0
+  maxTiltZ: 35
+  tiltSensitivity: 15
+  tiltDamping: 10
   animTime: 0.5
 --- !u!1 &7060330029808066208
 GameObject:

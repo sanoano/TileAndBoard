@@ -6,6 +6,7 @@ public class CardDrag : MonoBehaviour
 {
 
     public static bool isDragged;
+    private bool isDraggedLocal;
     private Vector3 mousePosition;
     private Vector3 returnPosition;
     private Camera cam;
@@ -21,7 +22,23 @@ public class CardDrag : MonoBehaviour
     private Vector3 bigScale;
     private Vector3 smallScale;
 
-    [Header("Properties")] [SerializeField]
+    private GameObject currentHoveredTile;
+
+    [Header("Movement Settings")] 
+    public float followSpeed = 15f;
+
+    [Header("Tilt Settings")] 
+    public float baseTiltX = 0;
+    public float maxTiltZ = 35f;
+    public float tiltSensitivity = 15f;
+    public float tiltDamping = 10f;
+    private Vector3 targetWorldPosition;
+    
+    private float currentTiltZ;
+    
+    private Plane dragPlane;
+    
+    [Header("Anim Settings")] [SerializeField]
     private float animTime;
 
     private void Awake()
@@ -31,24 +48,28 @@ public class CardDrag : MonoBehaviour
         collider = GetComponent<BoxCollider>();
         animTime = 0.25f;
         normalScale = transform.localScale;
-        bigScale = new Vector3(transform.localScale.x + 1.5f, transform.localScale.y + 1.5f, transform.localScale.z + 1.5f);
-        smallScale = new Vector3(transform.localScale.x - 1.5f, transform.localScale.y - 1.5f, transform.localScale.z - 1.5f);
+        bigScale = new Vector3(transform.localScale.x + 1.5f, transform.localScale.y + 1.5f,
+            transform.localScale.z + 1.5f);
+        smallScale = new Vector3(transform.localScale.x - 1.5f, transform.localScale.y - 1.5f,
+            transform.localScale.z - 1.5f);
         isDragged = false;
+        isDraggedLocal = false;
+
+        targetWorldPosition = transform.position;
+
+
     }
 
-    private Vector3 GetMousePos()
-    {
-        return cam.WorldToScreenPoint(transform.position);
-    }
 
     private void OnMouseDown()
     {
         if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
         if (isPlaced) return;
         if (CardManager.instance.cardDrawInProgress) return;
-        mousePosition = Input.mousePosition - GetMousePos();
         isDragged = true;
+        isDraggedLocal = true;
         returnPosition = transform.position;
+        dragPlane = new Plane(cam.transform.forward, transform.position);
 
         shrinkTween = new LocalScaleTween()
         {
@@ -58,16 +79,106 @@ public class CardDrag : MonoBehaviour
         };
 
         gameObject.AddTween(shrinkTween);
+
+        BoardManager.Instance.ClearTiles();
+
+        foreach (var unit in BoardManager.Instance.unitsList)
+        {
+            if (unit.ID == GameManager.instance.playerId)
+            {
+                BoardManager.Instance.localBoard.TileTransforms[unit.Position.x, unit.Position.y]
+                    .GetComponent<tileColour>()
+                    .TileRecieveSignal(1, false);
+            }
+        }
     }
 
-    private void OnMouseDrag()
+    void Update()
     {
-        if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
-        if (isPlaced) return;
-        if (CardManager.instance.cardDrawInProgress) return;
-        transform.position = Vector3.Slerp(transform.position, cam.ScreenToWorldPoint(Input.mousePosition - mousePosition), 0.18f);
+        
+        if (isDraggedLocal)
+        {
+            
+            if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
+            if (isPlaced) return;
+            if (CardManager.instance.cardDrawInProgress) return;
+
+            //Colour tile that card is currently above
+            Ray ray2 = cam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray2, out hit, Mathf.Infinity, BoardManager.Instance.playerSpecificLayer))
+            {
+                if (currentHoveredTile == null)
+                {
+                    currentHoveredTile = hit.transform.gameObject;
+                    currentHoveredTile.GetComponent<tileColour>().TileRecieveSignal(3, true);
+                }
+                else
+                {
+                    currentHoveredTile.GetComponent<tileColour>().TileRecieveSignal(0, true);
+                    currentHoveredTile = hit.transform.gameObject;
+                    currentHoveredTile.GetComponent<tileColour>().TileRecieveSignal(3, true);
+                }
+            }
+            else
+            {
+                if (currentHoveredTile != null)
+                {
+                    currentHoveredTile.GetComponent<tileColour>().TileRecieveSignal(0, true);
+                    currentHoveredTile = null;
+                }
+            }
+            
+            
+            
+            //Card tilt when dragging
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            
+            if (dragPlane.Raycast(ray, out float distance))
+            {
+                targetWorldPosition = ray.GetPoint(distance);
+            }
+           
+            transform.position = Vector3.Lerp(transform.position, targetWorldPosition, Time.deltaTime * followSpeed);
+            
+            Vector3 offset = targetWorldPosition - transform.position;
+           
+            float horizontalScreenDistance = Vector3.Dot(offset, cam.transform.right);
+
+            // Map to tilt angle
+            float targetTiltZ = -horizontalScreenDistance * tiltSensitivity;
+            targetTiltZ = Mathf.Clamp(targetTiltZ, -maxTiltZ, maxTiltZ);
+            
+            currentTiltZ = Mathf.Lerp(currentTiltZ, targetTiltZ, Time.deltaTime * tiltDamping);
+        }
+        else
+        {
+            currentTiltZ = Mathf.Lerp(currentTiltZ, 0f, Time.deltaTime * tiltDamping);
+        }
+
+      
+        Quaternion dynamicTilt = Quaternion.AngleAxis(currentTiltZ, cam.transform.forward);
+       
+        Quaternion parentRot = transform.parent != null ? transform.parent.rotation : Quaternion.identity;
+        
+        Quaternion baseLocalRot = Quaternion.Euler(baseTiltX, 0, 0);
+    
+        Quaternion targetWorldRot = dynamicTilt * parentRot * baseLocalRot;
+        
+      
+        transform.localRotation = Quaternion.Inverse(parentRot) * targetWorldRot;
+        
+
+    }
+    
+    private Vector3 GetMouseWorldPos()
+    {
+        Vector3 mousePos = Input.mousePosition;
+        mousePos.z = Mathf.Abs(cam.transform.position.z - transform.position.z);
+        return cam.ScreenToWorldPoint(mousePos);
     }
 
+    
     private void OnMouseUp()
     {
         if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
@@ -112,17 +223,26 @@ public class CardDrag : MonoBehaviour
             }
 
             isDragged = false;
+            isDraggedLocal = false;
             TacticsManager.instance.RemoveTacticsPoints(1);
             BoardManager.Instance.PlaceCard(this.gameObject,
                 CardManager.instance.playerHand[position],
                 hit.transform.gameObject);
+            if (currentHoveredTile != null)
+            {
+                currentHoveredTile.GetComponent<tileColour>().TileRecieveSignal(0, true);
+                currentHoveredTile = null;
+            }
         }
         else
         {
             PlaceFailed(0);
             
         }
-
+        
+        BoardManager.Instance.ClearTiles();
+        BoardManager.Instance.UpdateTileVisuals();
+        
     }
 
     private void PlaceFailed(int error)
@@ -132,8 +252,13 @@ public class CardDrag : MonoBehaviour
             TextDialogue.instance.DialogueRecieveStatus(error);
         }
         
-        
+        if (currentHoveredTile != null)
+        {
+            currentHoveredTile.GetComponent<tileColour>().TileRecieveSignal(0, true);
+            currentHoveredTile = null;
+        }
         isDragged = false;
+        isDraggedLocal = false;
         var tween = new PositionTween
         {
             to = returnPosition,
@@ -195,7 +320,7 @@ public class CardDrag : MonoBehaviour
             duration = animTime,
             easeType = EaseType.ElasticOut
         };
-
+        
         gameObject.AddTween(shrinkTween);
     }
 }
