@@ -235,7 +235,7 @@ public class UIManager : MonoBehaviour
 
         cardInfoPrefabInstance = Instantiate(cardInfoPrefab, CardInfoPanelPos.transform.position, Quaternion.identity, CardInfoPanelPos.transform);
         
-        Transform[] cardChildren = cardInfoPrefabInstance.GetComponentsInChildren<Transform>();
+        Transform[] cardChildren = cardInfoPrefabInstance.GetComponentsInChildren<Transform>(true);
 
         /*TextMeshProUGUI cardInfoText = cardChildren[2].gameObject.GetComponent<TextMeshProUGUI>();
 
