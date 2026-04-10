@@ -1,12 +1,13 @@
-using System;
-using UnityEngine;
-using System.Collections.Generic;
 using JetBrains.Annotations;
+using System;
+using System.Collections.Generic;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
+using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
+using static CardDeck;
 
 
 public class UIManager : MonoBehaviour
@@ -236,14 +237,63 @@ public class UIManager : MonoBehaviour
         
         Transform[] cardChildren = cardInfoPrefabInstance.GetComponentsInChildren<Transform>();
 
-        TextMeshProUGUI cardInfoText = cardChildren[2].gameObject.GetComponent<TextMeshProUGUI>();
+        /*TextMeshProUGUI cardInfoText = cardChildren[2].gameObject.GetComponent<TextMeshProUGUI>();
 
         cardInfoText.text = "";
         cardInfoText.text += $"Name: {unitToDisplay.Name}" + "\n";
         cardInfoText.text += $"Health: {unitToDisplay.Health}" + "\n";
         cardInfoText.text += $"Movement: {unitToDisplay.Movement}" + "\n";
         cardInfoText.text += $"Defense: {unitToDisplay.Defense}" + "\n";
-        cardInfoText.text += $"Damage: {unitToDisplay.Damage}" + "\n";
+        cardInfoText.text += $"Damage: {unitToDisplay.Damage}" + "\n";*/
+
+        //For the new card info dialogue
+        TextMeshProUGUI cardInfoHeader = cardChildren[1].gameObject.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI cardInfoHealth = cardChildren[10].gameObject.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI cardInfoSpeed = cardChildren[11].gameObject.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI cardInfoDamage = cardChildren[12].gameObject.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI cardInfoDefence = cardChildren[13].gameObject.GetComponent<TextMeshProUGUI>();
+
+        cardInfoHeader.text = "Card Info: " + unitToDisplay.Name;
+        cardInfoHealth.text = unitToDisplay.Health.ToString();
+        cardInfoSpeed.text = unitToDisplay.Movement.ToString();
+        cardInfoDamage.text = unitToDisplay.Damage.ToString();
+        cardInfoDefence.text = unitToDisplay.Defense.ToString();
+
+        //nasty nasty way to do this...but idc
+        foreach (Vector2Int coord in unitToDisplay.AttackPositions)
+        {// Simple logic tree to find out which squares should show up...inelegant but robust enough...
+            int x = coord.x;
+            int y = coord.y;
+
+            if (y == 0) 
+            {
+                if (x == 0)
+                    cardChildren[15].gameObject.SetActive(true);
+                else if (x == 1)
+                    cardChildren[16].gameObject.SetActive(true);
+                else if (x == 2)
+                    cardChildren[17].gameObject.SetActive(true);
+            }
+            else if (y == 1)
+            {
+                if (x == 0)
+                    cardChildren[18].gameObject.SetActive(true);
+                else if (x == 1)
+                    cardChildren[19].gameObject.SetActive(true);
+                else if (x == 2)
+                    cardChildren[20].gameObject.SetActive(true);
+            }
+            else if (y == 2)
+            {
+                if (x == 0)
+                    cardChildren[21].gameObject.SetActive(true);
+                else if (x == 1)
+                    cardChildren[22].gameObject.SetActive(true);
+                else if (x == 2)
+                    cardChildren[23].gameObject.SetActive(true);
+            }
+        }
+
 
 
         if (unitToDisplay.ID == GameManager.instance.playerId)
