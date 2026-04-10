@@ -1,10 +1,12 @@
 using System;
+using System.Collections;
 using TMPro;
 using Unity.Netcode;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Tweens;
 
 public class WaitingRoom : NetworkBehaviour
 {
@@ -17,11 +19,11 @@ public class WaitingRoom : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI playerListText;
     [SerializeField] private Button startGameButton;
     [SerializeField] private Button leaveGameButton;
+    [SerializeField] private Image lensCap;
 
-    private void Awake()
-    {
-        
-    }
+    [Header("Parameters")] 
+    [SerializeField] private float fadeDuration;
+    
 
     private void Start()
     {
@@ -68,7 +70,48 @@ public class WaitingRoom : NetworkBehaviour
 
     private void StartGame()
     {
-        NetworkManager.Singleton.SceneManager.LoadScene("Battle2", LoadSceneMode.Single);
+        foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            StartGameHandlerRpc(RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+        }
+
+        startGameButton.interactable = false;
+    }
+    
+    [Rpc(SendTo.SpecifiedInParams)]
+    private void StartGameHandlerRpc(RpcParams rpcParams = default)
+    {
+        StartCoroutine(StartGameRoutine());
+    }
+
+
+    private IEnumerator StartGameRoutine()
+    {
+        
+        lensCap.gameObject.SetActive(true);
+        
+        Color invisible = new Color(0, 0, 0, 255);
+        
+        var backgroundTween = new ColorTween {
+            from = lensCap.color,
+            to = invisible,
+            duration = fadeDuration,
+            easeType = EaseType.ExpoInOut,
+            onUpdate = (_, value) => lensCap.color = value,
+        };
+
+        var instance = lensCap.gameObject.AddTween(backgroundTween);
+
+        yield return instance.AwaitDecommission();
+
+        if (NetworkManager.Singleton.LocalClient.IsSessionOwner)
+        {
+            NetworkManager.Singleton.SceneManager.LoadScene("BattleArena", LoadSceneMode.Single);
+        }
+        
+
+        yield return null;
+
     }
 
     private void LeaveGame()

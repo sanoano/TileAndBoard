@@ -117,7 +117,7 @@ public class Lobby : MonoBehaviour
         if (!AuthenticationService.Instance.IsSignedIn ||
             UnityServices.State != ServicesInitializationState.Initialized)
         {
-            if (SceneManager.GetActiveScene().name != "Lobby2") return;
+            if (SceneManager.GetActiveScene().name != "MainMenu") return;
             statusText.text = "Disconnected from Multiplayer Services. Press button to try reconnect.";
             reconnectButton.gameObject.SetActive(true);
 
@@ -304,7 +304,7 @@ public class Lobby : MonoBehaviour
         // AuthenticationService.Instance.SignOut();
         
         ClearSessionState();
-        SceneManager.LoadScene("Lobby2");
+        SceneManager.LoadScene("MainMenu");
 
         Debug.Log("Session left successfully");
     }
@@ -454,7 +454,7 @@ public class Lobby : MonoBehaviour
             
            statusText.text = "Session created! Waiting for player...";
            
-           NetworkManager.Singleton.SceneManager.LoadScene("WaitingRoom", LoadSceneMode.Single);
+           NetworkManager.Singleton.SceneManager.LoadScene("PlayerLobby", LoadSceneMode.Single);
        }
        catch (Exception e)
        {

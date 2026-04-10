@@ -95,78 +95,80 @@ public class CardDrag : MonoBehaviour
 
     void Update()
     {
-        
-        if (isDraggedLocal)
+        if (!isPlaced)
         {
-            
-            if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
-            if (isPlaced) return;
-            if (CardManager.instance.cardDrawInProgress) return;
-
-            //Colour tile that card is currently above
-            Ray ray2 = cam.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray2, out hit, Mathf.Infinity, BoardManager.Instance.playerSpecificLayer))
+            if (isDraggedLocal)
             {
-                if (currentHoveredTile == null)
+                if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
+                if (isPlaced) return;
+                if (CardManager.instance.cardDrawInProgress) return;
+
+                //Colour tile that card is currently above
+                Ray ray2 = cam.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+                if (Physics.Raycast(ray2, out hit, Mathf.Infinity, BoardManager.Instance.playerSpecificLayer))
                 {
-                    currentHoveredTile = hit.transform.gameObject;
-                    currentHoveredTile.GetComponent<tileColour>().TileRecieveSignal(3, true);
+                    if (currentHoveredTile == null)
+                    {
+                        currentHoveredTile = hit.transform.gameObject;
+                        currentHoveredTile.GetComponent<tileColour>().TileRecieveSignal(3, true);
+                    }
+                    else
+                    {
+                        currentHoveredTile.GetComponent<tileColour>().TileRecieveSignal(0, true);
+                        currentHoveredTile = hit.transform.gameObject;
+                        currentHoveredTile.GetComponent<tileColour>().TileRecieveSignal(3, true);
+                    }
                 }
                 else
                 {
-                    currentHoveredTile.GetComponent<tileColour>().TileRecieveSignal(0, true);
-                    currentHoveredTile = hit.transform.gameObject;
-                    currentHoveredTile.GetComponent<tileColour>().TileRecieveSignal(3, true);
+                    if (currentHoveredTile != null)
+                    {
+                        currentHoveredTile.GetComponent<tileColour>().TileRecieveSignal(0, true);
+                        currentHoveredTile = null;
+                    }
                 }
+
+
+                //Card tilt when dragging
+                Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+
+                if (dragPlane.Raycast(ray, out float distance))
+                {
+                    targetWorldPosition = ray.GetPoint(distance);
+                }
+
+                transform.position =
+                    Vector3.Lerp(transform.position, targetWorldPosition, Time.deltaTime * followSpeed);
+
+                Vector3 offset = targetWorldPosition - transform.position;
+
+                float horizontalScreenDistance = Vector3.Dot(offset, cam.transform.right);
+
+                // Map to tilt angle
+                float targetTiltZ = -horizontalScreenDistance * tiltSensitivity;
+                targetTiltZ = Mathf.Clamp(targetTiltZ, -maxTiltZ, maxTiltZ);
+
+                currentTiltZ = Mathf.Lerp(currentTiltZ, targetTiltZ, Time.deltaTime * tiltDamping);
             }
             else
             {
-                if (currentHoveredTile != null)
-                {
-                    currentHoveredTile.GetComponent<tileColour>().TileRecieveSignal(0, true);
-                    currentHoveredTile = null;
-                }
+                currentTiltZ = Mathf.Lerp(currentTiltZ, 0f, Time.deltaTime * tiltDamping);
             }
-            
-            
-            
-            //Card tilt when dragging
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            
-            if (dragPlane.Raycast(ray, out float distance))
-            {
-                targetWorldPosition = ray.GetPoint(distance);
-            }
-           
-            transform.position = Vector3.Lerp(transform.position, targetWorldPosition, Time.deltaTime * followSpeed);
-            
-            Vector3 offset = targetWorldPosition - transform.position;
-           
-            float horizontalScreenDistance = Vector3.Dot(offset, cam.transform.right);
 
-            // Map to tilt angle
-            float targetTiltZ = -horizontalScreenDistance * tiltSensitivity;
-            targetTiltZ = Mathf.Clamp(targetTiltZ, -maxTiltZ, maxTiltZ);
-            
-            currentTiltZ = Mathf.Lerp(currentTiltZ, targetTiltZ, Time.deltaTime * tiltDamping);
-        }
-        else
-        {
-            currentTiltZ = Mathf.Lerp(currentTiltZ, 0f, Time.deltaTime * tiltDamping);
-        }
 
-      
-        Quaternion dynamicTilt = Quaternion.AngleAxis(currentTiltZ, cam.transform.forward);
-       
-        Quaternion parentRot = transform.parent != null ? transform.parent.rotation : Quaternion.identity;
+            Quaternion dynamicTilt = Quaternion.AngleAxis(currentTiltZ, cam.transform.forward);
+
+            Quaternion parentRot = transform.parent != null ? transform.parent.rotation : Quaternion.identity;
+
+            Quaternion baseLocalRot = Quaternion.Euler(baseTiltX, 0, 0);
+
+            Quaternion targetWorldRot = dynamicTilt * parentRot * baseLocalRot;
+
+
+            transform.localRotation = Quaternion.Inverse(parentRot) * targetWorldRot;
+        }
         
-        Quaternion baseLocalRot = Quaternion.Euler(baseTiltX, 0, 0);
-    
-        Quaternion targetWorldRot = dynamicTilt * parentRot * baseLocalRot;
-        
-      
-        transform.localRotation = Quaternion.Inverse(parentRot) * targetWorldRot;
         
 
     }
