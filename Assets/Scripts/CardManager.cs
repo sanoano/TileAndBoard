@@ -333,29 +333,29 @@ public class CardManager : NetworkBehaviour
             if (y == 0)
             {
                 if (x == 0)
-                    gridSquares[1].gameObject.SetActive(true);
+                    gridSquares[8].gameObject.SetActive(true);
                 else if (x == 1)
-                    gridSquares[2].gameObject.SetActive(true);
+                    gridSquares[9].gameObject.SetActive(true);
                 else if (x == 2)
-                    gridSquares[3].gameObject.SetActive(true);
+                    gridSquares[10].gameObject.SetActive(true);
             }
             else if (y == 1)
             {
                 if (x == 0)
-                    gridSquares[4].gameObject.SetActive(true);
+                    gridSquares[11].gameObject.SetActive(true);
                 else if (x == 1)
-                    gridSquares[5].gameObject.SetActive(true);
+                    gridSquares[12].gameObject.SetActive(true);
                 else if (x == 2)
-                    gridSquares[6].gameObject.SetActive(true);
+                    gridSquares[13].gameObject.SetActive(true);
             }
             else if (y == 2)
             {
                 if (x == 0)
-                    gridSquares[7].gameObject.SetActive(true);
+                    gridSquares[14].gameObject.SetActive(true);
                 else if (x == 1)
-                    gridSquares[8].gameObject.SetActive(true);
+                    gridSquares[15].gameObject.SetActive(true);
                 else if (x == 2)
-                    gridSquares[9].gameObject.SetActive(true);
+                    gridSquares[16].gameObject.SetActive(true);
             }
         }
 
