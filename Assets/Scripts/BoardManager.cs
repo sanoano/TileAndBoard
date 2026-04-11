@@ -257,7 +257,7 @@ public class BoardManager : NetworkBehaviour
                         return;
                     }
 
-                    //If its a different tile
+                    //If it's a different tile
                     // ClearTiles();
 
                     currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
@@ -530,6 +530,10 @@ public class BoardManager : NetworkBehaviour
                         RpcTarget.Single(clientIds, RpcTargetUse.Temp));
                 }
             }
+            else
+            {
+                AddDamageInstanceLocal(name, GameManager.instance.playerId, damage, positions);
+            }
         }
     }
 
@@ -635,6 +639,10 @@ public class BoardManager : NetworkBehaviour
                     AddDefenseInstanceRpc(name, GameManager.instance.playerId, defense, positions,
                         RpcTarget.Single(clientIds, RpcTargetUse.Temp));
                 }
+            }
+            else
+            {
+                AddDefenseInstanceLocal(name, GameManager.instance.playerId, defense, positions);
             }
         }
     }
@@ -843,10 +851,52 @@ public class BoardManager : NetworkBehaviour
 
         UpdateTileVisuals();
     }
+    
+    public void AddDefenseInstanceLocal(string name, Player.PlayerId pID, int defense, Vector2Int[] positions)
+    {
+        List<Vector2Int> positionList = new List<Vector2Int>();
+
+        foreach (var position in positions)
+        {
+            positionList.Add(position);
+        }
+
+        DefenseInstance instance = new DefenseInstance(
+            name: name,
+            id: pID,
+            defense: defense,
+            positions: new List<Vector2Int>(positionList)
+        );
+
+        defenseInstances.Add(instance);
+
+        UpdateTileVisuals();
+    }
 
     [Rpc(SendTo.SpecifiedInParams)]
     public void AddDamageInstanceRpc(string name, Player.PlayerId pID, int damage, Vector2Int[] positions,
         RpcParams rpcParams = default)
+    {
+        List<Vector2Int> positionList = new List<Vector2Int>();
+
+        foreach (var position in positions)
+        {
+            positionList.Add(position);
+        }
+
+        DamageInstance instance = new DamageInstance(
+            name: name,
+            id: pID,
+            damage: damage,
+            positions: new List<Vector2Int>(positionList)
+        );
+
+        damageInstances.Add(instance);
+
+        UpdateTileVisuals();
+    }
+    
+    public void AddDamageInstanceLocal(string name, Player.PlayerId pID, int damage, Vector2Int[] positions)
     {
         List<Vector2Int> positionList = new List<Vector2Int>();
 
@@ -1043,11 +1093,15 @@ public class BoardManager : NetworkBehaviour
 
         cardPlaced.Invoke();
 
-        foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+        if (NetworkManager.Singleton)
         {
-            if (clientIds == NetworkManager.Singleton.LocalClientId) continue;
-            PlaceCardRpc(cardData.ID, unit.ID, unit.Position, cardData.Health, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+            foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+            {
+                if (clientIds == NetworkManager.Singleton.LocalClientId) continue;
+                PlaceCardRpc(cardData.ID, unit.ID, unit.Position, cardData.Health, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+            }
         }
+        
     }
 
     [Rpc(SendTo.SpecifiedInParams)]

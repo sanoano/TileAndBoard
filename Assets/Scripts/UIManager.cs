@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 using static CardDeck;
+using Tweens;
 
 
 public class UIManager : MonoBehaviour
@@ -74,6 +75,10 @@ public class UIManager : MonoBehaviour
     [Header("Settings Menu")] 
     public GameObject settingsMenu;
 
+    [Header("Lens Cap")] 
+    [SerializeField] private Image lensCap;
+    [SerializeField] private float fadeDuration;
+
     public AudioMixer mixer;
     
 
@@ -100,6 +105,21 @@ public class UIManager : MonoBehaviour
         BoardManager.Instance.cardDied.AddListener(UpdateCardAmountDisplay);
         UpdateHealthDisplay();
         UpdateCardAmountDisplay();
+        
+        Color invisible = new Color(0, 0, 0, 0);
+        
+        var backgroundTween = new ColorTween {
+            from = lensCap.color,
+            to = invisible,
+            duration = fadeDuration,
+            easeType = EaseType.SineOut,
+            onUpdate = (_, value) => lensCap.color = value,
+            onEnd = (instance) => {
+                lensCap.gameObject.SetActive(false);
+            },
+        };
+
+        var instance = lensCap.gameObject.AddTween(backgroundTween);
     }
 
     private void Update()

@@ -46,14 +46,16 @@ public class TurnManager : NetworkBehaviour
         {
             Destroy(this);
         }
+
         
+        turnButton.onClick.AddListener(ChangeTurn);
         
     }
+    
 
     public override void OnNetworkSpawn()
     {
-        turnButton.onClick.AddListener(ChangeTurn);
-
+        
         if (GameManager.instance.playerId == Player.PlayerId.Player1)
         {
             int rand;
@@ -106,6 +108,13 @@ public class TurnManager : NetworkBehaviour
     private void Start()
     {
         currentTime = maxTimePerTurn;
+        
+        if (!NetworkManager.Singleton)
+        {
+            currentTurn = TurnState.Player1Turn;
+            isYourTurn = true;
+            UpdateTurnText(currentTurn);
+        }
     }
 
     public enum TurnState : byte
@@ -214,25 +223,52 @@ public class TurnManager : NetworkBehaviour
         if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
         
         UIManager.Instance.DestroyCurrentInfoInstance();
-        
-        if (currentTurn == TurnState.Player1Turn && GameManager.instance.playerId == Player.PlayerId.Player1)
+
+        if (NetworkManager.Singleton)
         {
-            foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+            if (currentTurn == TurnState.Player1Turn && GameManager.instance.playerId == Player.PlayerId.Player1)
             {
-                ChangeTurnRpc(TurnState.Player2Turn, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+                {
+                    ChangeTurnRpc(TurnState.Player2Turn, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                }
+            }
+            else
+            {
+                foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+                {
+                    ChangeTurnRpc(TurnState.Player1Turn, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                }
             }
         }
         else
         {
-            foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
-            {
-                ChangeTurnRpc(TurnState.Player1Turn, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
-            }
+            print("meep");
+            ChangeTurnLocal(TurnState.Player2Turn);
+            ChangeTurnLocal(TurnState.Player1Turn);
         }
+        
     }
     
     [Rpc(SendTo.SpecifiedInParams)]
     private void ChangeTurnRpc(TurnState turn, RpcParams rpcParams = default)
+    {
+        if (turnButton.IsActive() == false)
+        {
+            turnButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            turnButton.gameObject.SetActive(false);
+        }
+        currentTurn = turn;
+        UpdateTurnText(currentTurn);
+        OnTurnChanged(currentTurn);
+        AudioManager.singleton.PlaySound("roundChange", false);
+        isYourTurn = !isYourTurn;
+    }
+    
+    private void ChangeTurnLocal(TurnState turn)
     {
         if (turnButton.IsActive() == false)
         {

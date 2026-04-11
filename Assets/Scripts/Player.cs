@@ -15,17 +15,22 @@ public static class Player
     {
 
         PlayerId playerId;
-        
-        if (NetworkManager.Singleton.LocalClient.ClientId == 1)
+
+        if (NetworkManager.Singleton)
         {
-            playerId = PlayerId.Player1;
+            if (NetworkManager.Singleton.LocalClient.ClientId == 1)
+            {
+                playerId = PlayerId.Player1;
+            }
+            else
+            {
+                playerId = PlayerId.Player2;
+            }
         }
         else
         {
-            playerId = PlayerId.Player2;
+            playerId = PlayerId.Player1;
         }
-
-        Debug.Log(playerId);
 
         return playerId;
     }

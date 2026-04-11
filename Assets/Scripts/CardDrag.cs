@@ -82,15 +82,15 @@ public class CardDrag : MonoBehaviour
 
         BoardManager.Instance.ClearTiles();
 
-        foreach (var unit in BoardManager.Instance.unitsList)
-        {
-            if (unit.ID == GameManager.instance.playerId)
-            {
-                BoardManager.Instance.localBoard.TileTransforms[unit.Position.x, unit.Position.y]
-                    .GetComponent<tileColour>()
-                    .TileRecieveSignal(1, false);
-            }
-        }
+        // foreach (var unit in BoardManager.Instance.unitsList)
+        // {
+        //     if (unit.ID == GameManager.instance.playerId)
+        //     {
+        //         BoardManager.Instance.localBoard.TileTransforms[unit.Position.x, unit.Position.y]
+        //             .GetComponent<tileColour>()
+        //             .TileRecieveSignal(1, false);
+        //     }
+        // }
     }
 
     void Update()

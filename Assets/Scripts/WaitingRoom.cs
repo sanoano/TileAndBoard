@@ -90,11 +90,11 @@ public class WaitingRoom : NetworkBehaviour
         
         lensCap.gameObject.SetActive(true);
         
-        Color invisible = new Color(0, 0, 0, 255);
+        Color opaque = new Color(0, 0, 0, 255);
         
         var backgroundTween = new ColorTween {
             from = lensCap.color,
-            to = invisible,
+            to = opaque,
             duration = fadeDuration,
             easeType = EaseType.ExpoInOut,
             onUpdate = (_, value) => lensCap.color = value,
