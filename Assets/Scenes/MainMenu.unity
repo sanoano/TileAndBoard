@@ -6351,10 +6351,50 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7703443794331361419, guid: 2bc0b7f55d5a7f14392679c4ead31a19, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: dc1c15bc8b2e3fc4099de234125ddb4b, type: 2}
+    - target: {fileID: -7651377819444715535, guid: 2bc0b7f55d5a7f14392679c4ead31a19, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: dc1c15bc8b2e3fc4099de234125ddb4b, type: 2}
+    - target: {fileID: -6554104996581698596, guid: 2bc0b7f55d5a7f14392679c4ead31a19, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: dc1c15bc8b2e3fc4099de234125ddb4b, type: 2}
+    - target: {fileID: -4939684134708133308, guid: 2bc0b7f55d5a7f14392679c4ead31a19, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: dc1c15bc8b2e3fc4099de234125ddb4b, type: 2}
+    - target: {fileID: -3042095830460775355, guid: 2bc0b7f55d5a7f14392679c4ead31a19, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: dc1c15bc8b2e3fc4099de234125ddb4b, type: 2}
+    - target: {fileID: -3014825551051576114, guid: 2bc0b7f55d5a7f14392679c4ead31a19, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: dc1c15bc8b2e3fc4099de234125ddb4b, type: 2}
+    - target: {fileID: -1006969259886780338, guid: 2bc0b7f55d5a7f14392679c4ead31a19, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: dc1c15bc8b2e3fc4099de234125ddb4b, type: 2}
+    - target: {fileID: -609888523399550922, guid: 2bc0b7f55d5a7f14392679c4ead31a19, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: dc1c15bc8b2e3fc4099de234125ddb4b, type: 2}
     - target: {fileID: 919132149155446097, guid: 2bc0b7f55d5a7f14392679c4ead31a19, type: 3}
       propertyPath: m_Name
       value: acIsland
       objectReference: {fileID: 0}
+    - target: {fileID: 4559043323027729949, guid: 2bc0b7f55d5a7f14392679c4ead31a19, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: dc1c15bc8b2e3fc4099de234125ddb4b, type: 2}
+    - target: {fileID: 6960306958773628069, guid: 2bc0b7f55d5a7f14392679c4ead31a19, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: dc1c15bc8b2e3fc4099de234125ddb4b, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
