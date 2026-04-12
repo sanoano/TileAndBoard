@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 
 public class tileColour : MonoBehaviour
 {// For use with materials that use _shaderTileSelection. Script assigned to the tile itself to receive signals.
@@ -19,8 +20,9 @@ public class tileColour : MonoBehaviour
         TryGetComponent<Renderer>(out mainRenderer);
 
         if (mainRenderer != null)
-            mainRenderer.material.SetFloat("_Mode", 0);
-        
+            TileRecieveSignal(0, false);
+
+
         grossDamageGO.SetActive(false);
         netDamageGO.SetActive(false);
         
@@ -58,6 +60,11 @@ public class tileColour : MonoBehaviour
      // Preview just makes tiles emmit a lower glow for when card actions aren't confirmed.
 
         mainRenderer.material.SetFloat("_Mode", newState);
+
+        if (newState == 0)
+            mainRenderer.enabled = false;
+        else
+            mainRenderer.enabled = true;
 
         //We don't need to check for if the tile is in state 0 to turn of emmission as the shader handles that automatically c:
         if (preview)

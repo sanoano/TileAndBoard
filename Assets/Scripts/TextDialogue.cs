@@ -99,7 +99,7 @@ public class TextDialogue : MonoBehaviour
         }
 
         Color opaque = new Color(255, 255, 255, 255);
-        print("meep");
+        //print("meep");
 
        
         var backgroundTween = new ColorTween {
