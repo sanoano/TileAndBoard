@@ -257,6 +257,22 @@ public class CardDrag : MonoBehaviour
         BoardManager.Instance.ClearTiles();
         BoardManager.Instance.UpdateTileVisuals();
         
+        if (sr.sortingOrder != 1)
+        {
+            sr.sortingOrder -= 10;
+            foreach (var child in srChildren)
+            {
+                child.sortingOrder -= 10;
+            }
+        
+            foreach (var child in canvasChildren)
+            {
+                child.sortingOrder -= 15;
+            }
+            
+            canvas.sortingOrder -= 10;
+
+        }
     }
 
     private void PlaceFailed(int error)
@@ -302,18 +318,24 @@ public class CardDrag : MonoBehaviour
         var pos = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z + 0.01f);
         transform.localPosition = pos;
 
-        sr.sortingOrder += 10;
-        foreach (var child in srChildren)
+        if (sr.sortingOrder == 1)
         {
-            child.sortingOrder += 10;
+            sr.sortingOrder += 10;
+            foreach (var child in srChildren)
+            {
+                child.sortingOrder += 10;
+            }
+        
+            foreach (var child in canvasChildren)
+            {
+                child.sortingOrder += 15;
+            }
+            
+            canvas.sortingOrder += 10;
         }
         
-        foreach (var child in canvasChildren)
-        {
-            child.sortingOrder += 10;
-        }
 
-        canvas.sortingOrder += 10;
+        
 
         growTween = new LocalScaleTween
         {
@@ -336,19 +358,26 @@ public class CardDrag : MonoBehaviour
         if (orbitCamera.cameraState == OrbitCamera.CameraState.Free) return;
         var pos = new Vector3(transform.localPosition.x, transform.localPosition.y, 0);
         transform.localPosition = pos;
-        
-        sr.sortingOrder -= 10;
-        foreach (var child in srChildren)
-        {
-            child.sortingOrder -= 10;
-        }
-        
-        foreach (var child in canvasChildren)
-        {
-            child.sortingOrder -= 10;
-        }
 
-        canvas.sortingOrder -= 10;
+
+        if (sr.sortingOrder != 1)
+        {
+            sr.sortingOrder -= 10;
+            foreach (var child in srChildren)
+            {
+                child.sortingOrder -= 10;
+            }
+        
+            foreach (var child in canvasChildren)
+            {
+                child.sortingOrder -= 15;
+            }
+            
+            canvas.sortingOrder -= 10;
+
+        }
+        
+        
 
         shrinkTween = new LocalScaleTween()
         {
