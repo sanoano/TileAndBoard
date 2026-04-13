@@ -91,5 +91,7 @@ public class CameraMainMenu : MonoBehaviour
         //makes sure everything matches up exactly
         transform.position = targetPos;
         transform.rotation = targetRot;
+
+        moveCoroutine = null;
     }
 }

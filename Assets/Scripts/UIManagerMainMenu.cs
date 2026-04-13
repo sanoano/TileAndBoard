@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 
 public class UIManagerMainMenu : MonoBehaviour
 {//Mmmm buttons
@@ -24,12 +25,15 @@ public class UIManagerMainMenu : MonoBehaviour
     [SerializeField] private GameObject[] options;//(6)
 
     GameObject[][] UIlist;
+    private int state = 0;
     void Start()
     {
         UIlist = new GameObject[][] {presstostart, buttons1, buttons2, createGame, joinGame, findGame, options};
 
         statusTMP = status.GetComponent<TextMeshProUGUI>();
         statusTMP.text = "";
+
+        SetMenuLevel(0);
     }
 
     public void SetMenuScreen(int menuState)
@@ -63,6 +67,8 @@ public class UIManagerMainMenu : MonoBehaviour
             cameraScript.SetCameraState(1);
         else
             cameraScript.SetCameraState(0);
+
+        state = menuState;
     }
 
     public void SetMenuLevel(int menuLevel)
@@ -71,6 +77,15 @@ public class UIManagerMainMenu : MonoBehaviour
             title.SetActive(true);
         else
             title.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if (Input.anyKeyDown && state < 1)
+        {
+            SetMenuScreen(1);
+            SetMenuLevel(1);
+        }
     }
 
     public void QuitGame()
