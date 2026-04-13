@@ -10,7 +10,6 @@ public class envPassiveRotate : MonoBehaviour
     private void Awake()
     {
         startingRot = transform.eulerAngles.y;
-        Debug.Log(startingRot);
     }
     void Update()
     {

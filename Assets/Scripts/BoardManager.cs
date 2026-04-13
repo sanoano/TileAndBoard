@@ -103,10 +103,19 @@ public class BoardManager : NetworkBehaviour
     public List<DamageInstance> damageInstances;
     public List<DefenseInstance> defenseInstances;
 
-    [Header("Board References")] [SerializeField]
-    private GameObject player1BoardGameObject;
-
+    [Header("Board References")] 
+    [SerializeField] private GameObject player1BoardGameObject;
     [SerializeField] private GameObject player2BoardGameObject;
+    private GameObject islandBottom1, islandBottom2;
+
+    private bool board1DoOnce = false;
+    private bool board2DoOnce = false;
+
+    private float speed1 = 0;
+    private float speed2 = 0;
+    private float maxSpeed = 30.0f;
+    private float acceleration = 5.0f;
+    
 
     [Header("Layers")] public LayerMask playerSpecificLayer;
     [SerializeField] private LayerMask interactionLayers;
@@ -161,8 +170,11 @@ public class BoardManager : NetworkBehaviour
         cameraInfo = cam.GetComponent<OrbitCamera>();
 
         interactionLayers = LayerMask.GetMask("Player1Tile", "Player2Tile");
-        
-        
+
+        Transform[] island1Components = player1BoardGameObject.GetComponentsInChildren<Transform>(true);
+        Transform[] island2Components = player2BoardGameObject.GetComponentsInChildren<Transform>(true);
+        islandBottom1 = island1Components[38].gameObject;
+        islandBottom2 = island2Components[38].gameObject;
     }
 
     private void Start()
@@ -212,6 +224,24 @@ public class BoardManager : NetworkBehaviour
         player2Health = startingPlayerHealth;
 
         currentSelectedTileGameObject = null;
+    }
+
+    private void Update()
+    {
+        if (speed1 < maxSpeed && board1DoOnce)
+        {
+            speed1 += acceleration * Time.deltaTime;
+
+            islandBottom1.transform.position = new Vector3(islandBottom1.transform.position.x, islandBottom1.transform.position.y - speed1 * Time.deltaTime, islandBottom1.transform.position.z);
+        }
+
+        if (speed2 < maxSpeed && board2DoOnce)
+        {
+            speed2 += acceleration * Time.deltaTime;
+
+            islandBottom2.transform.position = new Vector3(islandBottom2.transform.position.x, islandBottom2.transform.position.y - speed2 * Time.deltaTime, islandBottom2.transform.position.z);
+        }
+            
     }
 
     public override void OnNetworkSpawn()
@@ -1642,6 +1672,9 @@ public class BoardManager : NetworkBehaviour
             {
                 //do stuff
             }
+
+            if (player1Health <= (player1Health / 2) && !board1DoOnce)
+                board1DoOnce = true;
         }
         else
         {
@@ -1651,6 +1684,9 @@ public class BoardManager : NetworkBehaviour
             {
                 //do stuff
             }
+
+            if (player2Health <= (player2Health / 2) && !board2DoOnce)
+                board2DoOnce = true;
         }
 
         damageTaken.Invoke();
