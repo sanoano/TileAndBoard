@@ -26,17 +26,17 @@ public class tileColour : MonoBehaviour
         grossDamageGO.SetActive(false);
         netDamageGO.SetActive(false);
         
-        if (gameObject.layer == LayerMask.NameToLayer("Player2Tile"))
-        {
-            grossDamageGO.gameObject.transform.localPosition = new Vector3(grossDamageGO.gameObject.transform.localPosition.x,
-                -grossDamageGO.gameObject.transform.localPosition.y,
-                grossDamageGO.gameObject.transform.localPosition.z);
-            
-            netDamageGO.gameObject.transform.localPosition = new Vector3(netDamageGO.gameObject.transform.localPosition.x,
-                -netDamageGO.gameObject.transform.localPosition.y,
-                netDamageGO.gameObject.transform.localPosition.z);
-            
-        }
+        // if (gameObject.layer == LayerMask.NameToLayer("Player2Tile"))
+        // {
+        //     grossDamageGO.gameObject.transform.localPosition = new Vector3(grossDamageGO.gameObject.transform.localPosition.x,
+        //         -grossDamageGO.gameObject.transform.localPosition.y,
+        //         grossDamageGO.gameObject.transform.localPosition.z);
+        //     
+        //     netDamageGO.gameObject.transform.localPosition = new Vector3(netDamageGO.gameObject.transform.localPosition.x,
+        //         -netDamageGO.gameObject.transform.localPosition.y,
+        //         netDamageGO.gameObject.transform.localPosition.z);
+        //     
+        // }
         
         grossDamageGO.gameObject.transform.localScale = new Vector3(-grossDamageGO.gameObject.transform.localScale.x,
             grossDamageGO.gameObject.transform.localScale.y,

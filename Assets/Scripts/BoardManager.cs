@@ -260,12 +260,12 @@ public class BoardManager : NetworkBehaviour
                     //If it's a different tile
                     // ClearTiles();
 
-                    currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
+                    //currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
                     UIManager.Instance.DestroyCurrentInfoInstance();
 
                     currentSelectedTileGameObject = hit.transform.gameObject;
                     
-                    currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.green;
+                    //currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.green;
 
                     CurrentSelectedTile =
                         CoordinatesOf<GameObject>(player1Board.TileTransforms, hit.transform.gameObject);
@@ -392,7 +392,7 @@ public class BoardManager : NetworkBehaviour
                         }
                     }
 
-                    currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.green;
+                    //currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.green;
                 }
             }
             
@@ -413,7 +413,7 @@ public class BoardManager : NetworkBehaviour
     {
         if (currentSelectedTileGameObject != null)
         {
-            currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
+            // currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
         }
         currentSelectedTileGameObject = null;
         CurrentSelectedTile = new Vector2Int(-1, -1);
@@ -482,7 +482,7 @@ public class BoardManager : NetworkBehaviour
             workingPositions = null;
             currentlySelectedUnit = default;
 
-            currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
+            //currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
 
             currentSelectedTileGameObject = null;
             CurrentSelectedTile = new Vector2Int(-1, 1);
@@ -517,7 +517,7 @@ public class BoardManager : NetworkBehaviour
                 print(positions[i]);
             }
 
-            currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
+            //currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
 
             currentSelectedTileGameObject = null;
             CurrentSelectedTile = new Vector2Int(-1, 1);
@@ -594,7 +594,7 @@ public class BoardManager : NetworkBehaviour
             workingPositions = null;
             currentlySelectedUnit = default;
 
-            currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
+            //currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
 
             currentSelectedTileGameObject = null;
             CurrentSelectedTile = new Vector2Int(-1, 1);
@@ -627,7 +627,7 @@ public class BoardManager : NetworkBehaviour
                 print(positions[i]);
             }
 
-            currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
+            //currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
 
             currentSelectedTileGameObject = null;
             CurrentSelectedTile = new Vector2Int(-1, 1);
@@ -1062,7 +1062,7 @@ public class BoardManager : NetworkBehaviour
             rotation = Quaternion.Euler(new Vector3(45, 0, 90));
         }
 
-        Vector3 scale = new Vector3(5, 6, 4);
+        Vector3 scale = new Vector3(6, 7, 5);
 
         var positionTween = new PositionTween()
         {

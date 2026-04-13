@@ -5731,7 +5731,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1847557323
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6388,7 +6388,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4513259577054355773, guid: c68ad123c385847c9afe780e67ec6c9c, type: 3}
       propertyPath: startingTacticPoints
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4589475767484239893, guid: c68ad123c385847c9afe780e67ec6c9c, type: 3}
       propertyPath: m_LocalPosition.x

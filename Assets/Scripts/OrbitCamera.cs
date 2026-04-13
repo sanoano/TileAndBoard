@@ -90,7 +90,7 @@ public class OrbitCamera : MonoBehaviour
             //If free cam has just been enabled
             else
             {
-                orbitRadius = 35;
+                orbitRadius = 75;
                 yaw = defaultYaw;
                 pitch = defaultPitch;
                 

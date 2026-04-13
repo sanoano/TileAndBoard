@@ -243,12 +243,16 @@ public class CardManager : NetworkBehaviour
         
         
         cardVisual.GetComponent<CardDrag>().isPlaced = false;
-        
-        foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+
+        if (NetworkManager.Singleton)
         {
-            if (clientIds == NetworkManager.Singleton.LocalClientId) continue;
-            RecallCardRpc(BoardManager.Instance.unitsList.IndexOf(unit),RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+            foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
+            {
+                if (clientIds == NetworkManager.Singleton.LocalClientId) continue;
+                RecallCardRpc(BoardManager.Instance.unitsList.IndexOf(unit),RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+            }
         }
+        
 
         BoardManager.Instance.unitsList.Remove(unit);
 

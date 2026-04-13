@@ -47,8 +47,8 @@ public class TextDialogue : MonoBehaviour
         headerTMP.color = color;
 
         
-        boardMax = CardManager.instance.maxCards;
-        handMax = BoardManager.Instance.maxCardsPerPlayer;
+        boardMax = BoardManager.Instance.maxCardsPerPlayer;
+        handMax = CardManager.instance.maxCards;
     }
 
    

@@ -12,6 +12,7 @@ public class CardDrag : MonoBehaviour
     private Camera cam;
     private SpriteRenderer sr;
     private Collider collider;
+    private OrbitCamera orbitCamera;
 
     private LocalScaleTween growTween;
     private LocalScaleTween shrinkTween;
@@ -44,6 +45,7 @@ public class CardDrag : MonoBehaviour
     private void Awake()
     {
         cam = Camera.main;
+        orbitCamera = cam.GetComponent<OrbitCamera>();
         sr = GetComponent<SpriteRenderer>();
         collider = GetComponent<BoxCollider>();
         animTime = 0.25f;
@@ -66,6 +68,7 @@ public class CardDrag : MonoBehaviour
         if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
         if (isPlaced) return;
         if (CardManager.instance.cardDrawInProgress) return;
+        if (orbitCamera.cameraState == OrbitCamera.CameraState.Free) return;
         isDragged = true;
         isDraggedLocal = true;
         returnPosition = transform.position;
@@ -186,6 +189,7 @@ public class CardDrag : MonoBehaviour
         if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
         if (isPlaced) return;
         if (CardManager.instance.cardDrawInProgress) return;
+        if (orbitCamera.cameraState == OrbitCamera.CameraState.Free) return;
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
@@ -286,11 +290,12 @@ public class CardDrag : MonoBehaviour
         if (isPlaced) return;
         if (isDragged) return;
         if (CardManager.instance.cardDrawInProgress) return;
+        if (orbitCamera.cameraState == OrbitCamera.CameraState.Free) return;
         var pos = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z + 0.01f);
         transform.localPosition = pos;
 
-        sr.sortingOrder = 1;
-        collider.layerOverridePriority = 1;
+        // sr.sortingOrder = 1;
+        // collider.layerOverridePriority = 1;
 
         growTween = new LocalScaleTween
         {
@@ -310,11 +315,12 @@ public class CardDrag : MonoBehaviour
         if (isPlaced) return;
         if (isDragged) return;
         if (CardManager.instance.cardDrawInProgress) return;
+        if (orbitCamera.cameraState == OrbitCamera.CameraState.Free) return;
         var pos = new Vector3(transform.localPosition.x, transform.localPosition.y, 0);
         transform.localPosition = pos;
         
-        sr.sortingOrder = 0;
-        collider.layerOverridePriority = 0;
+        // sr.sortingOrder = 0;
+        // collider.layerOverridePriority = 0;
 
         shrinkTween = new LocalScaleTween()
         {
