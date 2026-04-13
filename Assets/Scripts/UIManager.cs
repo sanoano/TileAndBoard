@@ -139,7 +139,7 @@ public class UIManager : MonoBehaviour
 
         if (TurnManager.instance.isYourTurn)
         {
-            turnTimer.text = ((int)TurnManager.instance.currentTime).ToString();
+            turnTimer.text = String.Format("{0:0}:{1:00}", Mathf.Floor(((int)TurnManager.instance.currentTime) / 60), ((int)TurnManager.instance.currentTime) % 60);
         }
         else
         {
