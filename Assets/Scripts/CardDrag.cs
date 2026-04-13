@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Tweens;
 using UnityEngine;
 
@@ -13,6 +14,8 @@ public class CardDrag : MonoBehaviour
     private SpriteRenderer sr;
     private Collider collider;
     private OrbitCamera orbitCamera;
+    private Canvas canvas;
+    private SpriteRenderer[] canvasChildren;
 
     private LocalScaleTween growTween;
     private LocalScaleTween shrinkTween;
@@ -41,11 +44,16 @@ public class CardDrag : MonoBehaviour
     
     [Header("Anim Settings")] [SerializeField]
     private float animTime;
+    
+    [Header("SR Children")]
+    [SerializeField] private List<SpriteRenderer> srChildren = new List<SpriteRenderer>();
 
     private void Awake()
     {
         cam = Camera.main;
         orbitCamera = cam.GetComponent<OrbitCamera>();
+        canvas = GetComponentInChildren<Canvas>();
+        canvasChildren = canvas.GetComponentsInChildren<SpriteRenderer>(true);
         sr = GetComponent<SpriteRenderer>();
         collider = GetComponent<BoxCollider>();
         animTime = 0.25f;
@@ -294,8 +302,18 @@ public class CardDrag : MonoBehaviour
         var pos = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z + 0.01f);
         transform.localPosition = pos;
 
-        // sr.sortingOrder = 1;
-        // collider.layerOverridePriority = 1;
+        sr.sortingOrder += 10;
+        foreach (var child in srChildren)
+        {
+            child.sortingOrder += 10;
+        }
+        
+        foreach (var child in canvasChildren)
+        {
+            child.sortingOrder += 10;
+        }
+
+        canvas.sortingOrder += 10;
 
         growTween = new LocalScaleTween
         {
@@ -319,8 +337,18 @@ public class CardDrag : MonoBehaviour
         var pos = new Vector3(transform.localPosition.x, transform.localPosition.y, 0);
         transform.localPosition = pos;
         
-        // sr.sortingOrder = 0;
-        // collider.layerOverridePriority = 0;
+        sr.sortingOrder -= 10;
+        foreach (var child in srChildren)
+        {
+            child.sortingOrder -= 10;
+        }
+        
+        foreach (var child in canvasChildren)
+        {
+            child.sortingOrder -= 10;
+        }
+
+        canvas.sortingOrder -= 10;
 
         shrinkTween = new LocalScaleTween()
         {
