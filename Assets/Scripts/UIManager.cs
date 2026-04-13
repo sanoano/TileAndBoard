@@ -266,18 +266,65 @@ public class UIManager : MonoBehaviour
         cardInfoText.text += $"Defense: {unitToDisplay.Defense}" + "\n";
         cardInfoText.text += $"Damage: {unitToDisplay.Damage}" + "\n";*/
 
-        //For the new card info dialogue
+        //Value fields (ie. not headers or icons)
         TextMeshProUGUI cardInfoHeader = cardChildren[1].gameObject.GetComponent<TextMeshProUGUI>();
         TextMeshProUGUI cardInfoHealth = cardChildren[10].gameObject.GetComponent<TextMeshProUGUI>();
         TextMeshProUGUI cardInfoSpeed = cardChildren[11].gameObject.GetComponent<TextMeshProUGUI>();
         TextMeshProUGUI cardInfoDamage = cardChildren[12].gameObject.GetComponent<TextMeshProUGUI>();
         TextMeshProUGUI cardInfoDefence = cardChildren[13].gameObject.GetComponent<TextMeshProUGUI>();
 
+        //Cosmetic headers
+        Image cardIconSpeed = cardChildren[7].gameObject.GetComponent<Image>();
+        Image cardIconDamage = cardChildren[8].gameObject.GetComponent<Image>();
+        Image cardIconDefence = cardChildren[9].gameObject.GetComponent<Image>();
+
+        TextMeshProUGUI cardInfoSpeedHeader = cardChildren[3].gameObject.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI cardInfoDamageHeader = cardChildren[4].gameObject.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI cardInfoDefenceHeader = cardChildren[5].gameObject.GetComponent<TextMeshProUGUI>();
+
         cardInfoHeader.text = "Card Info: " + unitToDisplay.Name;
         cardInfoHealth.text = unitToDisplay.Health.ToString();
-        cardInfoSpeed.text = unitToDisplay.Movement.ToString();
-        cardInfoDamage.text = unitToDisplay.Damage.ToString();
-        cardInfoDefence.text = unitToDisplay.Defense.ToString();
+
+        //These if statements just hide icons+numbers for stats at 0
+        if (unitToDisplay.Movement > 0)
+        {
+            cardInfoSpeed.text = unitToDisplay.Movement.ToString();
+            cardInfoSpeedHeader.text = "Speed:";
+            cardIconSpeed.enabled = true;
+            
+        }
+        else
+        {
+            cardInfoSpeed.text = "";
+            cardInfoSpeedHeader.text = "";
+            cardIconSpeed.enabled = false;
+        }
+
+        if (unitToDisplay.Damage > 0)
+        {
+            cardInfoDamage.text = unitToDisplay.Damage.ToString();
+            cardInfoDamageHeader.text = "Damage:";
+            cardIconDamage.enabled = true;
+        }
+        else
+        {
+            cardInfoDamage.text = "";
+            cardInfoDamageHeader.text = "";
+            cardIconDamage.enabled = false;
+        }
+
+        if (unitToDisplay.Defense > 0)
+        {
+            cardInfoDefence.text = unitToDisplay.Defense.ToString();
+            cardInfoDefenceHeader.text = "Defence:";
+            cardIconDefence.enabled = true;
+        }
+        else
+        {
+            cardInfoDefence.text = "";
+            cardInfoDefenceHeader.text = "";
+            cardIconDefence.enabled = false;
+        }
 
         //nasty nasty way to do this...but idc
         foreach (Vector2Int coord in unitToDisplay.AttackPositions)
@@ -316,17 +363,19 @@ public class UIManager : MonoBehaviour
 
 
 
+
         if (unitToDisplay.ID == GameManager.instance.playerId)
         {
-            actionsInfoPrefabInstance = Instantiate(actionsInfoPrefab, actionsInfoPanelPos.transform.position,
+            /*actionsInfoPrefabInstance = Instantiate(actionsInfoPrefab, actionsInfoPanelPos.transform.position,
                 Quaternion.identity,
-                actionsInfoPanelPos.transform);
+                actionsInfoPanelPos.transform);*/
 
-            Transform[] actionChildren = actionsInfoPrefabInstance.GetComponentsInChildren<Transform>();
+            //Transform[] actionChildren = actionsInfoPrefabInstance.GetComponentsInChildren<Transform>();
 
-            var panel = actionChildren[2].gameObject;
+            //var panel = actionChildren[2].gameObject;
 
-            var buttons = panel.GetComponentsInChildren<Button>();
+            var buttons = cardInfoPrefabInstance.GetComponentsInChildren<Button>();
+
             print(buttons[0].gameObject.name);
             if (unitToDisplay.Damage > 0)
             {
@@ -370,8 +419,8 @@ public class UIManager : MonoBehaviour
             {
                 buttons[2].gameObject.SetActive(false);
             }
-            
-            buttons[3].onClick.AddListener(delegate{CardManager.instance.RecallCard(cardVisual, unitToDisplay);});
+
+            buttons[3].onClick.AddListener(delegate { CardManager.instance.RecallCard(cardVisual, unitToDisplay); });
             if (TacticsManager.instance.currentTacticsPoints <= 0 || !TurnManager.instance.isYourTurn)
             {
                 buttons[3].interactable = false;
@@ -393,10 +442,10 @@ public class UIManager : MonoBehaviour
             DestroyImmediate(cardInfoPrefabInstance);
         }
 
-        if (actionsInfoPrefabInstance)
+        /*if (actionsInfoPrefabInstance)
         {
             DestroyImmediate(actionsInfoPrefabInstance);
-        }
+        }*/
         
     }
 

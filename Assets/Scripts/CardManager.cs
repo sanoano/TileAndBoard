@@ -318,17 +318,50 @@ public class CardManager : NetworkBehaviour
             cardHoldPosition.transform);
 
         var textFields = cardVisual.GetComponentsInChildren<TextMeshProUGUI>();
-        var gridSquares = cardVisual.GetComponentsInChildren<SpriteRenderer>(true);
+        var cardSprites = cardVisual.GetComponentsInChildren<SpriteRenderer>(true);
         
         textFields[0].text = cardData.Name;
         textFields[1].text = cardData.Health.ToString();
-        textFields[2].text = cardData.Speed.ToString();
-        textFields[3].text = cardData.Damage.ToString();
-        textFields[4].text = cardData.Defence.ToString();
+
+        if (cardData.Speed > 0)
+        {
+            textFields[2].text = cardData.Speed.ToString();
+            cardSprites[4].enabled = true;
+
+        }
+        else
+        {
+            textFields[2].text = "";
+            cardSprites[4].enabled = false;
+        }
+
+        if (cardData.Damage > 0)
+        {
+            textFields[3].text = cardData.Damage.ToString();
+            cardSprites[5].enabled = true;
+        }
+        else
+        {
+            textFields[3].text = "";
+            cardSprites[5].enabled = false;
+        }
+
+        if (cardData.Defence > 0)
+        {
+            textFields[4].text = cardData.Defence.ToString();
+            cardSprites[6].enabled = true;
+        }
+        else
+        {
+            textFields[4].text = "";
+            cardSprites[6].enabled = false;
+        }
 
         //I'm not arsed to do something smart rn...will fix this later...maybe...
         //Just wakes up the right squares. Make sure they're all inactive in the prefab before running the game...
-        
+
+
+
         foreach (Vector2Int coord in cardData.Range)
         {// Simple logic tree to find out which squares should show up...inelegant but robust enough...
             int x = coord.x;
@@ -337,29 +370,29 @@ public class CardManager : NetworkBehaviour
             if (y == 0)
             {
                 if (x == 0)
-                    gridSquares[8].gameObject.SetActive(true);
+                    cardSprites[8].gameObject.SetActive(true);
                 else if (x == 1)
-                    gridSquares[9].gameObject.SetActive(true);
+                    cardSprites[9].gameObject.SetActive(true);
                 else if (x == 2)
-                    gridSquares[10].gameObject.SetActive(true);
+                    cardSprites[10].gameObject.SetActive(true);
             }
             else if (y == 1)
             {
                 if (x == 0)
-                    gridSquares[11].gameObject.SetActive(true);
+                    cardSprites[11].gameObject.SetActive(true);
                 else if (x == 1)
-                    gridSquares[12].gameObject.SetActive(true);
+                    cardSprites[12].gameObject.SetActive(true);
                 else if (x == 2)
-                    gridSquares[13].gameObject.SetActive(true);
+                    cardSprites[13].gameObject.SetActive(true);
             }
             else if (y == 2)
             {
                 if (x == 0)
-                    gridSquares[14].gameObject.SetActive(true);
+                    cardSprites[14].gameObject.SetActive(true);
                 else if (x == 1)
-                    gridSquares[15].gameObject.SetActive(true);
+                    cardSprites[15].gameObject.SetActive(true);
                 else if (x == 2)
-                    gridSquares[16].gameObject.SetActive(true);
+                    cardSprites[16].gameObject.SetActive(true);
             }
         }
 
