@@ -59,6 +59,7 @@ public class CardManager : NetworkBehaviour
     public void DrawCardHandler(int amount)
     {
         
+        
         if (!TacticsManager.instance.CanAfford(1))
         {
             TextDialogue.instance.DialogueRecieveStatus(1);
@@ -74,6 +75,11 @@ public class CardManager : NetworkBehaviour
         if (playerHand.Count >= maxCards)
         {
             TextDialogue.instance.DialogueRecieveStatus(4);
+            return;
+        }
+
+        if (BoardManager.Instance.attackInProgress)
+        {
             return;
         }
         

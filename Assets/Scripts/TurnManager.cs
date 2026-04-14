@@ -125,7 +125,7 @@ public class TurnManager : NetworkBehaviour
 
     public void Update()
     {
-        if (isYourTurn)
+        if (isYourTurn && !BoardManager.Instance.attackInProgress)
         {
             currentTime -= Time.deltaTime;
         }
@@ -162,7 +162,7 @@ public class TurnManager : NetworkBehaviour
         
     }
     
-    public void OnTurnChanged(TurnState current)
+    public async void OnTurnChanged(TurnState current)
     {
         Debug.Log("Turn changed to " + current);
 
@@ -186,7 +186,7 @@ public class TurnManager : NetworkBehaviour
                     }
                 }
                 
-                BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player2);
+                await BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player2);
 
                 turnCount += 1;
 
@@ -208,7 +208,7 @@ public class TurnManager : NetworkBehaviour
                     }
                 }
                 
-                BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player1);
+                await BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player1);
 
                 break;
         }
@@ -221,6 +221,7 @@ public class TurnManager : NetworkBehaviour
         currentTime = maxTimePerTurn;
 
         if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
+        if (BoardManager.Instance.attackInProgress) return;
         
         UIManager.Instance.DestroyCurrentInfoInstance();
 

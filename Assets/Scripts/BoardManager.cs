@@ -5,11 +5,13 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using Tweens;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine.Events;
+using Random = UnityEngine.Random;
 
 public class BoardManager : NetworkBehaviour
 {
@@ -113,8 +115,10 @@ public class BoardManager : NetworkBehaviour
 
     private float speed1 = 0;
     private float speed2 = 0;
-    private float maxSpeed = 30.0f;
-    private float acceleration = 5.0f;
+    private const float maxSpeed = 30.0f;
+    private const float acceleration = 5.0f;
+
+    [HideInInspector] public bool attackInProgress;
     
 
     [Header("Layers")] public LayerMask playerSpecificLayer;
@@ -132,6 +136,8 @@ public class BoardManager : NetworkBehaviour
     public int maxCardsPerPlayer;
     public int startingPlayerHealth;
     [SerializeField] private bool boardTakesFullDamage;
+    [Tooltip("This is in milliseconds!")]
+    [SerializeField] private int attackDelay;
 
     [Header("Player Health")] 
     public int player1Health;
@@ -1093,7 +1099,7 @@ public class BoardManager : NetworkBehaviour
         }
 
         Vector3 scale = new Vector3(6, 7, 5);
-
+    
         var positionTween = new PositionTween()
         {
             to = position,
@@ -1435,8 +1441,11 @@ public class BoardManager : NetworkBehaviour
         return adjacent;
     }
 
-    public void EvaluateDamage(Player.PlayerId playerId)
+    public async Task EvaluateDamage(Player.PlayerId playerId)
     {
+
+        attackInProgress = true;
+        
         //Evaluate PLayer 1 Damage
         if (playerId == Player.PlayerId.Player1)
         {
@@ -1446,11 +1455,15 @@ public class BoardManager : NetworkBehaviour
                 {
                     int workingDamage = 0;
 
+                    bool damageInstancePresent = false;
+                    bool defenseInstancePresent = false;
+
                     foreach (var damageInstance in damageInstances)
                     {
                         if (damageInstance.Positions.Contains(new Vector2Int(i, j)) &&
                             damageInstance.ID == Player.PlayerId.Player2)
                         {
+                            damageInstancePresent = true;
                             workingDamage += damageInstance.Damage;
                         }
                     }
@@ -1460,9 +1473,13 @@ public class BoardManager : NetworkBehaviour
                         if (defenseInstance.Positions.Contains(new Vector2Int(i, j)) &&
                             defenseInstance.ID == Player.PlayerId.Player1)
                         {
+                            defenseInstancePresent = true;
                             workingDamage -= defenseInstance.Defense;
                         }
                     }
+
+                    if (!damageInstancePresent && !defenseInstancePresent) continue;
+                    
 
                     if (workingDamage < 0)
                     {
@@ -1495,6 +1512,12 @@ public class BoardManager : NetworkBehaviour
                         }
                         
                     }
+                    
+                    tileColour tc = player1Board.TileTransforms[i, j].GetComponentInChildren<tileColour>();
+                    tc.TileRecieveSignal(0, false);
+                    tc.TileRecieveDamage(0, 0);
+
+                    await Task.Delay(attackDelay);
                 }
             }
 
@@ -1536,11 +1559,15 @@ public class BoardManager : NetworkBehaviour
                 {
                     int workingDamage = 0;
 
+                    bool damageInstancePresent = false;
+                    bool defenseInstancePresent = false;
+
                     foreach (var damageInstance in damageInstances)
                     {
                         if (damageInstance.Positions.Contains(new Vector2Int(i, j)) &&
                             damageInstance.ID == Player.PlayerId.Player1)
                         {
+                            damageInstancePresent = true;
                             workingDamage += damageInstance.Damage;
                         }
                     }
@@ -1550,9 +1577,12 @@ public class BoardManager : NetworkBehaviour
                         if (defenseInstance.Positions.Contains(new Vector2Int(i, j)) &&
                             defenseInstance.ID == Player.PlayerId.Player2)
                         {
+                            defenseInstancePresent = true;
                             workingDamage -= defenseInstance.Defense;
                         }
                     }
+
+                    if (!damageInstancePresent && !defenseInstancePresent) continue;
 
                     if (workingDamage < 0)
                     {
@@ -1585,7 +1615,24 @@ public class BoardManager : NetworkBehaviour
                         }
                         
                     }
+
+                    tileColour tc = player2Board.TileTransforms[i, j].GetComponentInChildren<tileColour>();
+                    tc.TileRecieveSignal(0, false);
+                    tc.TileRecieveDamage(0, 0);
+
+                    int randInt = Random.Range(0, 2);
+                    if (randInt == 0)
+                    {
+                        AudioManager.singleton.PlaySound("combatSword0", true);
+                    }
+                    else
+                    {
+                        AudioManager.singleton.PlaySound("combatSword1", true);
+                    }
+
+                    await Task.Delay(attackDelay);
                 }
+                
             }
 
 
@@ -1630,6 +1677,7 @@ public class BoardManager : NetworkBehaviour
 
         UpdateTileVisuals();
         PruneUnitList();
+        attackInProgress = false;
     }
 
     public void PruneUnitList()

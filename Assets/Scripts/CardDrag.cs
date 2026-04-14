@@ -77,6 +77,7 @@ public class CardDrag : MonoBehaviour
         if (isPlaced) return;
         if (CardManager.instance.cardDrawInProgress) return;
         if (orbitCamera.cameraState == OrbitCamera.CameraState.Free) return;
+        if (BoardManager.Instance.attackInProgress) return;
         isDragged = true;
         isDraggedLocal = true;
         returnPosition = transform.position;
@@ -198,6 +199,7 @@ public class CardDrag : MonoBehaviour
         if (isPlaced) return;
         if (CardManager.instance.cardDrawInProgress) return;
         if (orbitCamera.cameraState == OrbitCamera.CameraState.Free) return;
+        if (BoardManager.Instance.attackInProgress) return;
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
@@ -315,6 +317,7 @@ public class CardDrag : MonoBehaviour
         if (isDragged) return;
         if (CardManager.instance.cardDrawInProgress) return;
         if (orbitCamera.cameraState == OrbitCamera.CameraState.Free) return;
+        if (BoardManager.Instance.attackInProgress) return;
         var pos = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z + 0.01f);
         transform.localPosition = pos;
 
@@ -356,6 +359,7 @@ public class CardDrag : MonoBehaviour
         if (isDragged) return;
         if (CardManager.instance.cardDrawInProgress) return;
         if (orbitCamera.cameraState == OrbitCamera.CameraState.Free) return;
+        if (BoardManager.Instance.attackInProgress) return;
         var pos = new Vector3(transform.localPosition.x, transform.localPosition.y, 0);
         transform.localPosition = pos;
 
