@@ -1395,7 +1395,7 @@ GameObject:
   - component: {fileID: 356407539}
   - component: {fileID: 356407538}
   m_Layer: 5
-  m_Name: TacticsText
+  m_Name: MannaCounter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4342,7 +4342,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4211981923583526440, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 803.4
+      value: 815.3
       objectReference: {fileID: 0}
     - target: {fileID: 4211981923583526440, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -4362,12 +4362,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4782735842205327309, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
       propertyPath: m_Type
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4782735842205327309, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 08df94c675f128e40a1a71d912cf0fba, type: 3}
+      objectReference: {fileID: 21300000, guid: b7bb20f67edb2c1479d602d8128164bb, type: 3}
+    - target: {fileID: 4782735842205327309, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4782735842205327309, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4782735842205327309, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4782735842205327309, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
       propertyPath: m_PixelsPerUnitMultiplier
       value: 5
@@ -4390,15 +4402,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7485443447226310714, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
       propertyPath: m_fontColor.b
-      value: 0.23921569
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7485443447226310714, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
       propertyPath: m_fontColor.g
-      value: 0.23921569
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7485443447226310714, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
       propertyPath: m_fontColor.r
-      value: 0.23921569
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7485443447226310714, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
       propertyPath: m_fontSizeBase
@@ -4410,7 +4422,7 @@ PrefabInstance:
       objectReference: {fileID: 6545047807225982875, guid: 5bc4bf0e189ea6f4497677c3195d985c, type: 2}
     - target: {fileID: 7485443447226310714, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
       propertyPath: m_fontColor32.rgba
-      value: 4282203453
+      value: 4278190080
       objectReference: {fileID: 0}
     - target: {fileID: 7485443447226310714, guid: ba09c7b9a9a284968803dd2dc2e7d334, type: 3}
       propertyPath: m_hasFontAssetChanged
@@ -4615,8 +4627,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -5453,7 +5465,7 @@ GameObject:
   - component: {fileID: 1727934278}
   - component: {fileID: 1727934277}
   m_Layer: 5
-  m_Name: TurnText
+  m_Name: TurnStatus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5745,7 +5757,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1847557323
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6093,7 +6105,7 @@ GameObject:
   - component: {fileID: 1897783505}
   - component: {fileID: 1897783506}
   m_Layer: 5
-  m_Name: TurnText
+  m_Name: RoundCounter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6155,8 +6167,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
