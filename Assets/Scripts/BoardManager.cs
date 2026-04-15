@@ -1098,7 +1098,7 @@ public class BoardManager : NetworkBehaviour
             rotation = Quaternion.Euler(new Vector3(45, 0, 90));
         }
 
-        Vector3 scale = new Vector3(6, 7, 5);
+        Vector3 scale = new Vector3(7, 8, 6);
     
         var positionTween = new PositionTween()
         {
@@ -1203,7 +1203,7 @@ public class BoardManager : NetworkBehaviour
                 tile.transform.position.z);
         }
 
-        Vector3 scale = new Vector3(5, 6, 4);
+        Vector3 scale = new Vector3(7, 8, 6);
 
         cardVisual.transform.position = position;
         cardVisual.transform.localRotation = rotation;

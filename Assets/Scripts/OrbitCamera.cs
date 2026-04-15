@@ -55,49 +55,7 @@ public class OrbitCamera : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.C) && UIManager.Instance.interactionState == UIManager.InteractionState.None)
         {
-            if (cameraState == CameraState.Static)
-            {
-                cameraState = CameraState.Free;
-            }
-            else
-            {
-                cameraState = CameraState.Static;
-            }
-
-            //If static camera  has just been enabled
-            if (cameraState == CameraState.Static)
-            {
-                var positionTween = new PositionTween
-                {
-                    to = cameraStaticPostion,
-                    duration = returnDuration,
-                    easeType = EaseType.ElasticOut,
-                };
-
-                var rotationTween = new RotationTween
-                {
-                    to = cameraStaticRotation,
-                    duration = returnDuration,
-                    easeType = EaseType.ElasticOut
-                };
-
-                gameObject.AddTween(positionTween);
-                gameObject.AddTween(rotationTween);
-                UIManager.Instance.Canvas.SetActive(true);
-                
-
-            }
-            //If free cam has just been enabled
-            else
-            {
-                orbitRadius = 75;
-                yaw = defaultYaw;
-                pitch = defaultPitch;
-                
-                UIManager.Instance.DestroyCurrentInfoInstance();
-                UIManager.Instance.Canvas.SetActive(false);
-            }
-
+            SwapCameraMode();
         }
 
 
@@ -133,6 +91,52 @@ public class OrbitCamera : MonoBehaviour
             
         }
 
+    }
+
+    public void SwapCameraMode()
+    {
+        if (cameraState == CameraState.Static)
+        {
+            cameraState = CameraState.Free;
+        }
+        else
+        {
+            cameraState = CameraState.Static;
+        }
+
+        //If static camera  has just been enabled
+        if (cameraState == CameraState.Static)
+        {
+            var positionTween = new PositionTween
+            {
+                to = cameraStaticPostion,
+                duration = returnDuration,
+                easeType = EaseType.ElasticOut,
+            };
+
+            var rotationTween = new RotationTween
+            {
+                to = cameraStaticRotation,
+                duration = returnDuration,
+                easeType = EaseType.ElasticOut
+            };
+
+            gameObject.AddTween(positionTween);
+            gameObject.AddTween(rotationTween);
+            UIManager.Instance.Canvas.SetActive(true);
+                
+
+        }
+        //If free cam has just been enabled
+        else
+        {
+            orbitRadius = 75;
+            yaw = defaultYaw;
+            pitch = defaultPitch;
+                
+            UIManager.Instance.DestroyCurrentInfoInstance();
+            UIManager.Instance.Canvas.SetActive(false);
+        }
     }
 }
 

@@ -139,6 +139,12 @@ public class TurnManager : NetworkBehaviour
     public void ForceEndTurn()
     {
         UIManager.Instance.interactionState = UIManager.InteractionState.None;
+        OrbitCamera orbitCamera = Camera.main.GetComponent<OrbitCamera>();
+        if (orbitCamera.cameraState == OrbitCamera.CameraState.Free)
+        {
+            orbitCamera.SwapCameraMode();
+        }
+        
         UIManager.Instance.EnableControlsText();
         
         BoardManager.Instance.ClearTiles();
