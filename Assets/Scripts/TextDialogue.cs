@@ -90,7 +90,7 @@ public class TextDialogue : MonoBehaviour
                 break;
             case 7:
                 headerTMP.text = "Invalid Space";
-                dialogueTMP.text = "You can't place a card on your opponent's board!";
+                dialogueTMP.text = "You can't place a card on your opponent's island!";
                 break;
             default:
                 headerTMP.text = "Unknown Error!";
