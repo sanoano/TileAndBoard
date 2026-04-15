@@ -6368,6 +6368,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8775536697471545229, guid: 7e1f86ac4b3af46e6a98c33ec353274b, type: 3}
+      propertyPath: cardDrawCost
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8775536697471545229, guid: 7e1f86ac4b3af46e6a98c33ec353274b, type: 3}
       propertyPath: cardHoldPosition
       value: 
       objectReference: {fileID: 1105000289}
