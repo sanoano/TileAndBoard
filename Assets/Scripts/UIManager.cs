@@ -253,7 +253,8 @@ public class UIManager : MonoBehaviour
         if (!unitFound) return;
 
         cardInfoPrefabInstance = Instantiate(cardInfoPrefab, CardInfoPanelPos.transform.position, Quaternion.identity, CardInfoPanelPos.transform);
-        
+
+        UIDialogueSlide slideScript = CardInfoPanelPos.GetComponent<UIDialogueSlide>();
         Transform[] cardChildren = cardInfoPrefabInstance.GetComponentsInChildren<Transform>(true);
 
         /*TextMeshProUGUI cardInfoText = cardChildren[2].gameObject.GetComponent<TextMeshProUGUI>();
@@ -428,6 +429,8 @@ public class UIManager : MonoBehaviour
             }
 
         }
+
+        slideScript.SlideIn();
 
     }
 

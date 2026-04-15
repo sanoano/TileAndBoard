@@ -17,15 +17,16 @@ public class TextDialogue : MonoBehaviour
     [Header("UI Variables")]
     [SerializeField] private float fadeDelay = 4.0f;
     [SerializeField] private float fadeDuration = 1.0f;
-    private float opacityInactive = 0.0f;
+    /*private float opacityInactive = 0.0f;
     private float opacityActive = 1.0f;
 
     private float lastUpdateTime;
-    private string textLast = "";
+    private string textLast = "";*/
 
     private int boardMax, handMax;
 
     public static TextDialogue instance;
+    private UIDialogueSlide slideScript;
 
     private void Awake()
     {
@@ -41,14 +42,15 @@ public class TextDialogue : MonoBehaviour
 
     void Start()
     {
-        Color color = new Color(255, 255, 255, 0);
+        /*Color color = new Color(255, 255, 255, 0);
         background.color = color;
         dialogueTMP.color = color;
-        headerTMP.color = color;
+        headerTMP.color = color;*/
 
         
         boardMax = BoardManager.Instance.maxCardsPerPlayer;
         handMax = CardManager.instance.maxCards;
+        slideScript = gameObject.GetComponent<UIDialogueSlide>();
     }
 
    
@@ -56,10 +58,10 @@ public class TextDialogue : MonoBehaviour
     public void DialogueRecieveStatus(int code)
     {
         StopAllCoroutines();
-        Color invisible = new Color(255, 255, 255, 0);
-        background.color = invisible;
-        dialogueTMP.color = invisible;
-        headerTMP.color = invisible;
+        //Color invisible = new Color(255, 255, 255, 0);
+        //background.color = invisible;
+        //dialogueTMP.color = invisible;
+        //headerTMP.color = invisible;
 
         AudioManager.singleton.PlaySound("uiError", false);
         switch (code)
@@ -98,25 +100,28 @@ public class TextDialogue : MonoBehaviour
                 break;
         }
 
-        Color opaque = new Color(255, 255, 255, 255);
-        //print("meep");
+        /*Color opaque = new Color(255, 255, 255, 255);
+        print("meep");
 
-       
-        var backgroundTween = new ColorTween {
+
+        var backgroundTween = new ColorTween
+        {
             from = background.color,
             to = opaque,
             duration = fadeDuration,
             easeType = EaseType.ExpoInOut,
             onUpdate = (_, value) => background.color = value,
         };
-        var dialogueTween = new ColorTween {
+        var dialogueTween = new ColorTween
+        {
             from = dialogueTMP.color,
             to = opaque,
             duration = fadeDuration,
             easeType = EaseType.ExpoInOut,
             onUpdate = (_, value) => dialogueTMP.color = value,
         };
-        var headerTween = new ColorTween {
+        var headerTween = new ColorTween
+        {
             from = headerTMP.color,
             to = opaque,
             duration = fadeDuration,
@@ -128,8 +133,19 @@ public class TextDialogue : MonoBehaviour
         headerTMP.gameObject.AddTween(headerTween);
         background.gameObject.AddTween(backgroundTween);
 
-        StartCoroutine(FadeAway());
+        StartCoroutine(FadeAway());*/
 
+        slideScript.SlideIn();
+
+        StartCoroutine(WaitACoupleSecs());
+
+    }
+
+    private IEnumerator WaitACoupleSecs()
+    {
+        yield return new WaitForSeconds(5);
+
+        slideScript.SlideOut();
     }
 
     IEnumerator FadeAway()

@@ -3054,6 +3054,7 @@ GameObject:
   - component: {fileID: 1280255386450231056}
   - component: {fileID: 7206870827240314382}
   - component: {fileID: 6752475854097917018}
+  - component: {fileID: 5900979995974968387}
   m_Layer: 5
   m_Name: CardInfoNew
   m_TagString: Untagged
@@ -3104,7 +3105,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -970.47955, y: -441.39496}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 555.6, y: 309.9}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &7206870827240314382
@@ -3145,6 +3146,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 5.8
+--- !u!114 &5900979995974968387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8099708331046039731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0c43be0b57a2fe47ad2c1772697ebd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIDialogueSlide
+  travelLength: 344
+  directionState: 2
+  tweenDuration: 0.5
 --- !u!1 &8338972234438461661
 GameObject:
   m_ObjectHideFlags: 0
