@@ -66,26 +66,25 @@ public class tileColour : MonoBehaviour
     {// Public function to change the state. Technically requires a 0 signal to be sent when you don't want a tile lit up...oh well.
      // Preview makes a translucent shape appear instead of the tile.
 
-        if (preview)
+        if (newState == 0)
         {
-            if (newState != 0)
+            previewRenderer.enabled = false;
+            mainRenderer.enabled = false;
+        }
+        else
+        {
+            if (preview)
             {
                 previewRenderer.enabled = true;
                 previewRenderer.material.SetFloat("_Mode", newState);
             }
             else
-                previewRenderer.enabled = false;
-        }
-        else
-        {
-            if (newState != 0)
             {
                 mainRenderer.enabled = true;
                 mainRenderer.material.SetFloat("_Mode", newState);
             }
-            else
-                previewRenderer.enabled = false;
-        } 
+            
+        }
     }
 
     public void TileRecieveDamage(int Damage, int Defence)
