@@ -1531,6 +1531,7 @@ GameObject:
   - component: {fileID: 389200148}
   - component: {fileID: 389200152}
   - component: {fileID: 389200151}
+  - component: {fileID: 389200153}
   m_Layer: 5
   m_Name: CardInfoPos
   m_TagString: Untagged
@@ -1554,7 +1555,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1006, y: 1}
+  m_AnchoredPosition: {x: 1006, y: 344}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &389200151
@@ -1595,6 +1596,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 389200147}
   m_CullTransparentMesh: 1
+--- !u!114 &389200153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389200147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0c43be0b57a2fe47ad2c1772697ebd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIDialogueSlide
+  travelLength: 344
+  directionState: 2
+  tweenDuration: 0.5
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -4808,8 +4824,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -4945,8 +4961,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -5324,8 +5340,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -762.1, y: -397.4}
-  m_SizeDelta: {x: 63.3, y: 111}
+  m_AnchoredPosition: {x: -952, y: -397.4}
+  m_SizeDelta: {x: 107.9, y: 78.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1712178167
 MonoBehaviour:
@@ -5351,12 +5367,12 @@ MonoBehaviour:
   m_Type: 2
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 0
+  m_FillMethod: 4
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 15.1
+  m_PixelsPerUnitMultiplier: 30
 --- !u!222 &1712178168
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6495,7 +6511,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIDialogueSlide
   travelLength: 573
   directionState: 1
-  tweenDuration: 1
+  tweenDuration: 0.5
 --- !u!1 &1980040124
 GameObject:
   m_ObjectHideFlags: 0
