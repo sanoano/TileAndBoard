@@ -528,9 +528,9 @@ public class BoardManager : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            //TacticsManager.instance.RemoveTacticsPoints(1);
-
-            TacticsManager.instance.currentActions -= 1;
+           
+            
+            ManaManager.instance.RemoveManaPoints(currentlySelectedUnit.AttackPositions.Count);
 
 
             UIManager.Instance.interactionState = UIManager.InteractionState.None;
@@ -640,8 +640,9 @@ public class BoardManager : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            //TacticsManager.instance.RemoveTacticsPoints(1);
-            TacticsManager.instance.currentActions -= 1;
+            
+            
+            ManaManager.instance.RemoveManaPoints(currentlySelectedUnit.AttackPositions.Count);
 
             UIManager.Instance.interactionState = UIManager.InteractionState.None;
             UIManager.Instance.EnableControlsText();
@@ -1214,8 +1215,7 @@ public class BoardManager : NetworkBehaviour
 
     public void PrepareAttack()
     {
-        // if (!TacticsManager.instance.CanAfford(1)) return;
-
+        
         UIManager.Instance.DestroyCurrentInfoInstance();
 
         foreach (Unit unit in unitsList)
@@ -1226,7 +1226,8 @@ public class BoardManager : NetworkBehaviour
                 currentlySelectedUnit = unit;
             }
         }
-
+        
+        
         if (workingPositions == null) return;
         
         // foreach (var tile in enemyBoard.TileTransforms)
@@ -1251,7 +1252,6 @@ public class BoardManager : NetworkBehaviour
 
     public void PrepareDefense()
     {
-        // if (!TacticsManager.instance.CanAfford(1)) return;
 
         UIManager.Instance.DestroyCurrentInfoInstance();
 
@@ -1263,6 +1263,8 @@ public class BoardManager : NetworkBehaviour
                 currentlySelectedUnit = unit;
             }
         }
+        
+        
 
         if (workingPositions == null) return;
 
@@ -1283,7 +1285,7 @@ public class BoardManager : NetworkBehaviour
     {
         // if (!TacticsManager.instance.CanAfford(1)) return;
 
-        TacticsManager.instance.currentActions -= 1;
+        
         UIManager.Instance.DestroyCurrentInfoInstance();
 
         foreach (Unit unit in unitsList)
@@ -1294,7 +1296,8 @@ public class BoardManager : NetworkBehaviour
                 currentlySelectedUnit = unit;
             }
         }
-
+        
+        ManaManager.instance.RemoveManaPoints(currentlySelectedUnit.AttackPositions.Count);
         if (workingPositions == null) return;
 
         ClearTiles();

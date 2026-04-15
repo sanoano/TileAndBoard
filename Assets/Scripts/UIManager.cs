@@ -130,8 +130,7 @@ public class UIManager : MonoBehaviour
             DestroyCurrentInfoInstance();
         }
 
-        tacticsText.text = $"Manna: {TacticsManager.instance.currentTacticsPoints}";
-        actionsText.text = $"Card Actions: {TacticsManager.instance.currentActions}";
+        tacticsText.text = $"Manna: {ManaManager.instance.currentManaPoints}";
 
         handAmount.text = $"{CardManager.instance.playerHand.Count} / {CardManager.instance.maxCards}";
 
@@ -375,12 +374,14 @@ public class UIManager : MonoBehaviour
             //var panel = actionChildren[2].gameObject;
 
             var buttons = cardInfoPrefabInstance.GetComponentsInChildren<Button>();
+            
+            buttons[3].GetComponentInChildren<TextMeshProUGUI>().text = $"Recall (-{unitToDisplay.AttackPositions.Count} Mna)";
 
             print(buttons[0].gameObject.name);
             if (unitToDisplay.Damage > 0)
             {
                 buttons[0].onClick.AddListener(BoardManager.Instance.PrepareAttack);
-                if (TacticsManager.instance.currentActions <= 0 || !TurnManager.instance.isYourTurn ||
+                if (!ManaManager.instance.CanAfford(unitToDisplay.AttackPositions.Count) || !TurnManager.instance.isYourTurn ||
                     unitToDisplay.HasActed)
                 {
                     buttons[0].interactable = false;
@@ -395,7 +396,7 @@ public class UIManager : MonoBehaviour
             if (unitToDisplay.Defense > 0)
             {
                 buttons[1].onClick.AddListener(BoardManager.Instance.PrepareDefense);
-                if (TacticsManager.instance.currentActions <= 0 || !TurnManager.instance.isYourTurn ||
+                if (!ManaManager.instance.CanAfford(unitToDisplay.AttackPositions.Count) || !TurnManager.instance.isYourTurn ||
                     unitToDisplay.HasActed)
                 {
                     buttons[1].interactable = false;
@@ -409,7 +410,7 @@ public class UIManager : MonoBehaviour
             if (unitToDisplay.Movement > 0)
             {
                 buttons[2].onClick.AddListener(BoardManager.Instance.PrepareMovement);
-                if (TacticsManager.instance.currentActions <= 0 || !TurnManager.instance.isYourTurn ||
+                if (!ManaManager.instance.CanAfford(unitToDisplay.AttackPositions.Count) || !TurnManager.instance.isYourTurn ||
                     unitToDisplay.HasActed)
                 {
                     buttons[2].interactable = false;
@@ -421,7 +422,7 @@ public class UIManager : MonoBehaviour
             }
 
             buttons[3].onClick.AddListener(delegate { CardManager.instance.RecallCard(cardVisual, unitToDisplay); });
-            if (TacticsManager.instance.currentTacticsPoints <= 0 || !TurnManager.instance.isYourTurn)
+            if (!ManaManager.instance.CanAfford(unitToDisplay.AttackPositions.Count) || !TurnManager.instance.isYourTurn)
             {
                 buttons[3].interactable = false;
             }

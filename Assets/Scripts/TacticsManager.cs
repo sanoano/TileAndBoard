@@ -1,18 +1,16 @@
 using System;
 using UnityEngine;
 
-public class TacticsManager : MonoBehaviour
+public class ManaManager : MonoBehaviour
 {
-    public static TacticsManager instance;
+    public static ManaManager instance;
 
-    public int currentTacticsPoints;
+    public int currentManaPoints;
 
     [Header("Parameters")] 
-    [SerializeField] private int maxTacticPoints;
-    [SerializeField] private int startingTacticPoints;
-    public int tacticsPointsPerTurn;
-    public int actionsPerTurn;
-    public int currentActions;
+    [SerializeField] private int maxMana;
+    [SerializeField] private int startingMana;
+    
     
     
     
@@ -27,40 +25,39 @@ public class TacticsManager : MonoBehaviour
             Destroy(this);
         }
 
-        currentTacticsPoints = startingTacticPoints;
-        currentActions = actionsPerTurn;
+        currentManaPoints = startingMana;
 
     }
 
-    public void AddTacticsPoints(int amount)
+    public void AddManaPoints(int amount)
     {
 
-        var temp = currentTacticsPoints + amount;
+        var temp = currentManaPoints + amount;
 
-        if (temp > maxTacticPoints)
+        if (temp > maxMana)
         {
-            currentTacticsPoints = maxTacticPoints;
+            currentManaPoints = maxMana;
         }
         else
         {
-            currentTacticsPoints = temp;
+            currentManaPoints = temp;
         }
 
 
     }
 
-    public void RemoveTacticsPoints(int amount)
+    public void RemoveManaPoints(int amount)
     {
 
-        var temp = currentTacticsPoints - amount;
+        var temp = currentManaPoints - amount;
 
-        currentTacticsPoints = temp;
+        currentManaPoints = temp;
 
     }
 
     public bool CanAfford(int amount)
     {
-        if (currentTacticsPoints - amount < 0)
+        if (currentManaPoints - amount < 0)
         {
             return false;
         }

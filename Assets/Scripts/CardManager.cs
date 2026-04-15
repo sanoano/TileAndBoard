@@ -28,6 +28,7 @@ public class CardManager : NetworkBehaviour
     [SerializeField] private int initialDrawAmount;
     [SerializeField] private float cardDisplayOffset;
     [SerializeField] private float cardLayoutTime;
+    [SerializeField] private int cardDrawCost;
     public bool cardDrawInProgress;
     
     
@@ -60,8 +61,8 @@ public class CardManager : NetworkBehaviour
     {
         
         
-        if (!TacticsManager.instance.CanAfford(1))
-        {
+        if (!ManaManager.instance.CanAfford(cardDrawCost))
+        {   
             TextDialogue.instance.DialogueRecieveStatus(1);
             return;
         }
@@ -83,7 +84,7 @@ public class CardManager : NetworkBehaviour
             return;
         }
         
-        TacticsManager.instance.RemoveTacticsPoints(1);
+        ManaManager.instance.RemoveManaPoints(cardDrawCost);
         StartCoroutine(DrawCard(amount));
         
     }
@@ -167,7 +168,9 @@ public class CardManager : NetworkBehaviour
     public void RecallCard(GameObject cardVisual, BoardManager.Unit unit)
     {
         
-        TacticsManager.instance.RemoveTacticsPoints(1);
+        ManaManager.instance.RemoveManaPoints(unit.AttackPositions.Count);
+        
+        AudioManager.singleton.PlaySound("cardPlace", true);
         
         UIManager.Instance.DestroyCurrentInfoInstance();
         

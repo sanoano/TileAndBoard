@@ -225,7 +225,7 @@ public class CardDrag : MonoBehaviour
                 return;
             }
 
-            if (!TacticsManager.instance.CanAfford(1))
+            if (!ManaManager.instance.CanAfford(GetRangeCount())) 
             {
                 PlaceFailed(1);
                 return;
@@ -240,7 +240,7 @@ public class CardDrag : MonoBehaviour
 
             isDragged = false;
             isDraggedLocal = false;
-            TacticsManager.instance.RemoveTacticsPoints(1);
+            ManaManager.instance.RemoveManaPoints(GetRangeCount());
             BoardManager.Instance.PlaceCard(this.gameObject,
                 CardManager.instance.playerHand[position],
                 hit.transform.gameObject);
@@ -391,5 +391,10 @@ public class CardDrag : MonoBehaviour
         };
         
         gameObject.AddTween(shrinkTween);
+    }
+
+    private int GetRangeCount()
+    {
+        return CardManager.instance.playerHand[CardManager.instance.playerHandVisuals.IndexOf(gameObject)].Range.Count;
     }
 }
