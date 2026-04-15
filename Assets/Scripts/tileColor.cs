@@ -1,30 +1,37 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
 
 public class tileColour : MonoBehaviour
 {// For use with materials that use _shaderTileSelection. Script assigned to the tile itself to receive signals.
     //[SerializeField] private int state = 0; //0 is no vfx, 1 is attack (red), 2 is defend (blue), 3 is move (yellow)
-    private Renderer mainRenderer;
-    private float defaultEmmission = 1.0f;
-    private float previewEmmission = 0f;
+    private Renderer mainRenderer, previewRenderer;
+    //private float defaultEmmission = 1.0f;
+    //private float previewEmmission = 0f;
+
+    [SerializeField] private GameObject previewSpace;
 
     [Header("Damage Numbers")]
     private Camera mainCamera;
-    [SerializeField] GameObject grossDamageGO, netDamageGO;
-    [SerializeField] TextMeshProUGUI grossDamageTMP, netDamageTMP;
+    [SerializeField] private GameObject grossDamage, netDamage;
+    private TextMeshProUGUI grossDamageTMP, netDamageTMP;
 
     void Start()
     {// Sets to default colour...kinda unnessesary but just a safeguard if the shader/mat defaults get edited somehow.
         mainCamera = Camera.main;
         TryGetComponent<Renderer>(out mainRenderer);
+        previewRenderer = previewSpace.GetComponent<Renderer>();
+
 
         if (mainRenderer != null)
             TileRecieveSignal(0, false);
 
+        grossDamageTMP = grossDamage.GetComponent<TextMeshProUGUI>();
+        netDamageTMP = netDamage.GetComponent<TextMeshProUGUI>();
 
-        grossDamageGO.SetActive(false);
-        netDamageGO.SetActive(false);
+        grossDamage.SetActive(false);
+        netDamage.SetActive(false);
         
         // if (gameObject.layer == LayerMask.NameToLayer("Player2Tile"))
         // {
@@ -38,39 +45,47 @@ public class tileColour : MonoBehaviour
         //     
         // }
         
-        grossDamageGO.gameObject.transform.localScale = new Vector3(-grossDamageGO.gameObject.transform.localScale.x,
-            grossDamageGO.gameObject.transform.localScale.y,
-            grossDamageGO.gameObject.transform.localScale.z);
+        grossDamage.gameObject.transform.localScale = new Vector3(-grossDamage.gameObject.transform.localScale.x,
+            grossDamage.gameObject.transform.localScale.y,
+            grossDamage.gameObject.transform.localScale.z);
         
-        netDamageGO.gameObject.transform.localScale = new Vector3(-netDamageGO.gameObject.transform.localScale.x,
-            netDamageGO.gameObject.transform.localScale.y,
-            netDamageGO.gameObject.transform.localScale.z);
+        netDamage.gameObject.transform.localScale = new Vector3(-netDamage.gameObject.transform.localScale.x,
+            netDamage.gameObject.transform.localScale.y,
+            netDamage.gameObject.transform.localScale.z);
     }
 
     void Update()
     {
-        grossDamageGO.transform.LookAt(mainCamera.transform);
-        netDamageGO.transform.LookAt(mainCamera.transform);
+        grossDamage.transform.LookAt(mainCamera.transform);
+        netDamage.transform.LookAt(mainCamera.transform);
 
         
     }
 
     public void TileRecieveSignal(int newState, bool preview)
     {// Public function to change the state. Technically requires a 0 signal to be sent when you don't want a tile lit up...oh well.
-     // Preview just makes tiles emmit a lower glow for when card actions aren't confirmed.
+     // Preview makes a translucent shape appear instead of the tile.
 
-        mainRenderer.material.SetFloat("_Mode", newState);
-
-        if (newState == 0)
-            mainRenderer.enabled = false;
-        else
-            mainRenderer.enabled = true;
-
-        //We don't need to check for if the tile is in state 0 to turn of emmission as the shader handles that automatically c:
         if (preview)
-            mainRenderer.material.SetFloat("_Emmission_Intensity", previewEmmission);
-        else if (!preview)
-            mainRenderer.material.SetFloat("_Emmission_Intensity", defaultEmmission);
+        {
+            if (newState != 0)
+            {
+                previewRenderer.enabled = true;
+                previewRenderer.material.SetFloat("_Mode", newState);
+            }
+            else
+                previewRenderer.enabled = false;
+        }
+        else
+        {
+            if (newState != 0)
+            {
+                mainRenderer.enabled = true;
+                mainRenderer.material.SetFloat("_Mode", newState);
+            }
+            else
+                previewRenderer.enabled = false;
+        } 
     }
 
     public void TileRecieveDamage(int Damage, int Defence)
@@ -81,40 +96,40 @@ public class tileColour : MonoBehaviour
         
         if (Damage > Defence && Defence != 0 && Damage != 0)
         {// Dmg is larger than Def (red)
-            grossDamageGO.SetActive(true);
-            netDamageGO.SetActive(true);
+            grossDamage.SetActive(true);
+            netDamage.SetActive(true);
 
             grossDamageTMP.text = Damage.ToString();
             netDamageTMP.text = netAmount.ToString();
         }
         else if (Defence >= Damage && Defence != 0 && Damage !=0)
         {// Def is larger than Dmg (blue)
-            grossDamageGO.SetActive(true);
-            netDamageGO.SetActive(true);
+            grossDamage.SetActive(true);
+            netDamage.SetActive(true);
 
             grossDamageTMP.text = Damage.ToString();
             netDamageTMP.text = "0";
         }
         else if (Damage > 0 && Defence == 0)
         {// Dmg with no Def at all (red)
-            grossDamageGO.SetActive(false);
-            netDamageGO.SetActive(true);
+            grossDamage.SetActive(false);
+            netDamage.SetActive(true);
 
             grossDamageTMP.text = "";
             netDamageTMP.text = Damage.ToString();
         }
         else if (Damage == 0 && Defence > 0)
         {// Def with no Dmg
-            grossDamageGO.SetActive(false);
-            netDamageGO.SetActive(true);
+            grossDamage.SetActive(false);
+            netDamage.SetActive(true);
 
             grossDamageTMP.text = "";
-            netDamageTMP.text = "0";
+            netDamageTMP.text = "";
         }
         else if(Damage == 0 && Defence == 0)
         {//Nothing
-            grossDamageGO.SetActive(false);
-            netDamageGO.SetActive(false);
+            grossDamage.SetActive(false);
+            netDamage.SetActive(false);
 
             grossDamageTMP.text = "";
             netDamageTMP.text = "";

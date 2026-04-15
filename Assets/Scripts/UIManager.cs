@@ -130,7 +130,7 @@ public class UIManager : MonoBehaviour
             DestroyCurrentInfoInstance();
         }
 
-        tacticsText.text = $"Tactics Points: {TacticsManager.instance.currentTacticsPoints}";
+        tacticsText.text = $"Manna: {TacticsManager.instance.currentTacticsPoints}";
         actionsText.text = $"Card Actions: {TacticsManager.instance.currentActions}";
 
         handAmount.text = $"{CardManager.instance.playerHand.Count} / {CardManager.instance.maxCards}";

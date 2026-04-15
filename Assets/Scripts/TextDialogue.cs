@@ -65,10 +65,10 @@ public class TextDialogue : MonoBehaviour
         switch (code)
         {
             case 1:
-                headerTMP.text = "Insufficient TP";
-                dialogueTMP.text = "You do not have enough Tactics Points for this action!";
+                headerTMP.text = "Insufficient Manna";
+                dialogueTMP.text = "You do not have enough Manna for this action!";
                 break;
-            case 2:
+            case 2://Obsolete, just refer to case 1
                 headerTMP.text = "Insufficient Card Actions";
                 dialogueTMP.text = "You cannot perform any more Card Actions this turn!";
                 break;
