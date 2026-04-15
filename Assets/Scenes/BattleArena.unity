@@ -5536,7 +5536,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 756.5, y: -33.1}
+  m_AnchoredPosition: {x: 756.5, y: -33.100098}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1727934277
@@ -7451,6 +7451,10 @@ PrefabInstance:
     - target: {fileID: 7599052890681973211, guid: bfe3c2c4d9e1e4302a1607207895dc64, type: 3}
       propertyPath: placeAnimationTime
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7599052890681973211, guid: bfe3c2c4d9e1e4302a1607207895dc64, type: 3}
+      propertyPath: boardTakesFullDamage
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7599052890681973211, guid: bfe3c2c4d9e1e4302a1607207895dc64, type: 3}
       propertyPath: startingPlayerHealth
