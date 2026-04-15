@@ -176,9 +176,6 @@ public class TurnManager : NetworkBehaviour
         {
             case TurnState.Player1Turn:
                 
-                TacticsManager.instance.AddTacticsPoints(TacticsManager.instance.tacticsPointsPerTurn);
-                TacticsManager.instance.currentActions = TacticsManager.instance.actionsPerTurn;
-                
                 if (GameManager.instance.playerId == Player.PlayerId.Player1)
                 {
                     foreach (var unit in BoardManager.Instance.unitsList)
@@ -190,6 +187,8 @@ public class TurnManager : NetworkBehaviour
                             unit.Movement = data.Speed;
                         }
                     }
+                    
+                    ManaManager.instance.AddManaPoints(9 - BoardManager.Instance.GetCardAmount(Player.PlayerId.Player1));
                 }
                 
                 await BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player2);
@@ -212,6 +211,9 @@ public class TurnManager : NetworkBehaviour
                             unit.Movement = data.Speed;
                         }
                     }
+                    
+                    ManaManager.instance.AddManaPoints(9 - BoardManager.Instance.GetCardAmount(Player.PlayerId.Player2));
+
                 }
                 
                 await BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player1);
