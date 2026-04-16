@@ -16,10 +16,16 @@ public class GameManager : NetworkBehaviour
     private NetworkObject headInstanceNO;
 
     public static GameManager instance;
+    private static readonly int Rotation = Shader.PropertyToID("_Rotation");
 
     public Player.PlayerId playerId;
 
     private string playerName;
+
+    [SerializeField] private Material skybox;
+
+    [Header("Parameters")] 
+    [SerializeField] private float rotationSpeed;
 
     
     private void Awake()
@@ -112,7 +118,7 @@ public class GameManager : NetworkBehaviour
 
     private void Update()
     {
-        
+        skybox.SetFloat(Rotation, Time.time * rotationSpeed);
     }
 
     
