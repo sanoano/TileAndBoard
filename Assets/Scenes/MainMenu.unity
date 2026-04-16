@@ -5381,7 +5381,7 @@ MonoBehaviour:
   joinCodeInput: {fileID: 624408301}
   createGameButton: {fileID: 3036734703203258879}
   createButton: {fileID: 0}
-  joinButton: {fileID: 0}
+  joinButton: {fileID: 948203879}
   statusText: {fileID: 1874718961}
   sessionListContent: {fileID: 1070877491}
   sessionList: {fileID: 1462687322}

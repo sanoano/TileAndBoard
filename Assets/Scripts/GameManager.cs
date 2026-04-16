@@ -116,7 +116,7 @@ public class GameManager : NetworkBehaviour
 
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         skybox.SetFloat(Rotation, Time.time * rotationSpeed);
     }

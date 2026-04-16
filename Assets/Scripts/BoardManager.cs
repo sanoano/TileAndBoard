@@ -138,6 +138,7 @@ public class BoardManager : NetworkBehaviour
     [SerializeField] private bool boardTakesFullDamage;
     [Tooltip("This is in milliseconds!")]
     [SerializeField] private int attackDelay;
+    [SerializeField] private float cardVerticalOffset;
 
     [Header("Player Health")] 
     public int player1Health;
@@ -790,7 +791,7 @@ public class BoardManager : NetworkBehaviour
                 localBoard.TileTransforms[currentAdjacentPositions[direction].x, currentAdjacentPositions[direction].y]
                     .transform.position.x,
                 localBoard.TileTransforms[currentAdjacentPositions[direction].x, currentAdjacentPositions[direction].y]
-                    .transform.position.y + 0.5f,
+                    .transform.position.y + cardVerticalOffset,
                 localBoard.TileTransforms[currentAdjacentPositions[direction].x, currentAdjacentPositions[direction].y]
                     .transform.position.z);
 
@@ -852,7 +853,7 @@ public class BoardManager : NetworkBehaviour
         Unit unitToMove = unitsList[index];
 
         Vector3 position = new Vector3(enemyBoard.TileTransforms[newPos.x, newPos.y].transform.position.x,
-            enemyBoard.TileTransforms[newPos.x, newPos.y].transform.position.y + 0.5f,
+            enemyBoard.TileTransforms[newPos.x, newPos.y].transform.position.y + cardVerticalOffset,
             enemyBoard.TileTransforms[newPos.x, newPos.y].transform.position.z
         );
 
@@ -1088,13 +1089,13 @@ public class BoardManager : NetworkBehaviour
 
         if (unit.ID == Player.PlayerId.Player1)
         {
-            position = new Vector3(tile.transform.position.x, tile.transform.position.y + 0.5f,
+            position = new Vector3(tile.transform.position.x, tile.transform.position.y + cardVerticalOffset,
                 tile.transform.position.z);
             rotation = Quaternion.Euler(new Vector3(45, 0, -90));
         }
         else
         {
-            position = new Vector3(tile.transform.position.x, tile.transform.position.y + 0.5f,
+            position = new Vector3(tile.transform.position.x, tile.transform.position.y + cardVerticalOffset,
                 tile.transform.position.z);
             rotation = Quaternion.Euler(new Vector3(45, 0, 90));
         }
@@ -1193,14 +1194,14 @@ public class BoardManager : NetworkBehaviour
         {
             player1Board.Visuals[unit.Position.x, unit.Position.y] = cardVisual;
             rotation = Quaternion.Euler(new Vector3(45, 0, -90));
-            position = new Vector3(tile.transform.position.x, tile.transform.position.y + 0.5f,
+            position = new Vector3(tile.transform.position.x, tile.transform.position.y + cardVerticalOffset,
                 tile.transform.position.z);
         }
         else
         {
             player2Board.Visuals[unit.Position.x, unit.Position.y] = cardVisual;
             rotation = Quaternion.Euler(new Vector3(45, 0, 90));
-            position = new Vector3(tile.transform.position.x, tile.transform.position.y + 0.5f,
+            position = new Vector3(tile.transform.position.x, tile.transform.position.y + cardVerticalOffset,
                 tile.transform.position.z);
         }
 
@@ -1623,16 +1624,35 @@ public class BoardManager : NetworkBehaviour
                     tc.TileRecieveSignal(0, false);
                     tc.TileRecieveDamage(0, 0);
 
-                    int randInt = Random.Range(0, 2);
-                    if (randInt == 0)
+
+                    if (attackBlocked)
                     {
-                        AudioManager.singleton.PlaySound("combatSword0", true);
+                        //Play board attack sounds
                     }
                     else
                     {
-                        AudioManager.singleton.PlaySound("combatSword1", true);
+                        if (workingDamage > 0)
+                        {
+                            //Play card attack sounds
+                            int randInt = Random.Range(0, 2);
+                            if (randInt == 0)
+                            {
+                                AudioManager.singleton.PlaySound("combatSword0", true);
+                            }
+                            else
+                            {
+                                AudioManager.singleton.PlaySound("combatSword1", true);
+                            }
+                        }
+                        else
+                        {
+                            //Play card defend sounds
+                            
+                        }
                     }
-
+                    
+                    
+                    PruneUnitList();
                     await Task.Delay(attackDelay);
                 }
                 
