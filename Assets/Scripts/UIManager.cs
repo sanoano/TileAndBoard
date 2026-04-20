@@ -75,6 +75,9 @@ public class UIManager : MonoBehaviour
     [Header("Settings Menu")] 
     public GameObject settingsMenu;
 
+    [Header("Victory Text")] 
+    [SerializeField] private TextMeshProUGUI victoryText;
+
     [Header("Lens Cap")] 
     [SerializeField] private Image lensCap;
     [SerializeField] private float fadeDuration;
@@ -486,6 +489,22 @@ public class UIManager : MonoBehaviour
 
                 break;
         }
+    }
+
+    public void DisplayEndGameScreen(Player.PlayerId id)
+    {
+        victoryText.gameObject.SetActive(true);
+        
+        if (id == Player.PlayerId.Player1)
+        {
+            victoryText.text = "Player 1 wins!";
+        }
+        else
+        {
+            victoryText.text = "Player 2 wins!";
+        }
+        
+        Invoke(nameof(GameManager.instance.DisconnectUser), 5.0f);
     }
     
 }

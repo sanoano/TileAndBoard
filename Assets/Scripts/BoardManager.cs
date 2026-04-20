@@ -141,8 +141,8 @@ public class BoardManager : NetworkBehaviour
     [SerializeField] private float cardVerticalOffset;
 
     [Header("Player Health")] 
-    public int player1Health;
-    public int player2Health;
+    [HideInInspector] public int player1Health;
+    [HideInInspector] public int player2Health;
 
     [Header("Events")]
     public UnityEvent cardPlaced;
@@ -231,6 +231,8 @@ public class BoardManager : NetworkBehaviour
         player2Health = startingPlayerHealth;
 
         currentSelectedTileGameObject = null;
+        
+        damageTaken.Invoke();
     }
 
     private void Update()
@@ -1740,8 +1742,8 @@ public class BoardManager : NetworkBehaviour
             player1Health -= damage;
 
             if (player1Health <= 0)
-            {
-                //do stuff
+            {   
+                UIManager.Instance.DisplayEndGameScreen(Player.PlayerId.Player2);
             }
 
             if (player1Health <= (player1Health / 2) && !board1DoOnce)
@@ -1753,7 +1755,7 @@ public class BoardManager : NetworkBehaviour
 
             if (player2Health <= 0)
             {
-                //do stuff
+                UIManager.Instance.DisplayEndGameScreen(Player.PlayerId.Player1);
             }
 
             if (player2Health <= (player2Health / 2) && !board2DoOnce)

@@ -91,8 +91,7 @@ public class CardDrag : MonoBehaviour
         };
 
         gameObject.AddTween(shrinkTween);
-
-        BoardManager.Instance.ClearTiles();
+        
 
         // foreach (var unit in BoardManager.Instance.unitsList)
         // {
@@ -127,7 +126,8 @@ public class CardDrag : MonoBehaviour
                     }
                     else
                     {
-                        currentHoveredTile.GetComponent<tileColour>().TileRecieveSignal(0, true);
+                        BoardManager.Instance.ClearTiles();
+                        BoardManager.Instance.UpdateTileVisuals();
                         currentHoveredTile = hit.transform.gameObject;
                         currentHoveredTile.GetComponent<tileColour>().TileRecieveSignal(3, true);
                     }
@@ -136,7 +136,8 @@ public class CardDrag : MonoBehaviour
                 {
                     if (currentHoveredTile != null)
                     {
-                        currentHoveredTile.GetComponent<tileColour>().TileRecieveSignal(0, true);
+                        BoardManager.Instance.ClearTiles();
+                        BoardManager.Instance.UpdateTileVisuals();
                         currentHoveredTile = null;
                     }
                 }
@@ -246,7 +247,7 @@ public class CardDrag : MonoBehaviour
                 hit.transform.gameObject);
             if (currentHoveredTile != null)
             {
-                currentHoveredTile.GetComponent<tileColour>().TileRecieveSignal(0, true);
+                //currentHoveredTile.GetComponent<tileColour>().TileRecieveSignal(0, true);
                 currentHoveredTile = null;
             }
         }
