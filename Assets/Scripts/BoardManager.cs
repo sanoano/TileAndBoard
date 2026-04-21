@@ -1082,25 +1082,16 @@ public class BoardManager : NetworkBehaviour
         CardManager.instance.playerHand.Remove(cardData);
 
         localBoard.Visuals[coordinates.x, coordinates.y] = cardVisual;
-
-        // cardVisual.transform.parent = tile.transform;
-
+        
         Vector3 position;
 
         Quaternion rotation;
-
-        if (unit.ID == Player.PlayerId.Player1)
-        {
-            position = new Vector3(tile.transform.position.x, tile.transform.position.y + cardVerticalOffset,
+        
+        position = new Vector3(tile.transform.position.x, tile.transform.position.y + cardVerticalOffset,
                 tile.transform.position.z);
-            rotation = Quaternion.Euler(new Vector3(45, 0, -90));
-        }
-        else
-        {
-            position = new Vector3(tile.transform.position.x, tile.transform.position.y + cardVerticalOffset,
-                tile.transform.position.z);
-            rotation = Quaternion.Euler(new Vector3(45, 0, 90));
-        }
+        rotation = Quaternion.Euler(new Vector3(45, 0, -90));
+        
+        
 
         Vector3 scale = new Vector3(7, 8, 6);
     
@@ -1122,10 +1113,14 @@ public class BoardManager : NetworkBehaviour
         {
             to = scale,
             duration = placeAnimationTime,
-            easeType = EaseType.ExpoOut
+            easeType = EaseType.ExpoOut,
+            onEnd = (Instance) =>
+            {
+                cardVisual.gameObject.transform.parent = tile.transform;
+            }
         };
 
-        cardVisual.AddTween(positionTween, rotationTween, scaleTween);
+        var instances = cardVisual.AddTween(positionTween, rotationTween, scaleTween);
 
         cardVisual.GetComponent<CardDrag>().isPlaced = true;
         
@@ -1141,6 +1136,9 @@ public class BoardManager : NetworkBehaviour
                 PlaceCardRpc(cardData.ID, unit.ID, unit.Position, cardData.Health, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
             }
         }
+        
+       
+
         
     }
 
@@ -1188,24 +1186,21 @@ public class BoardManager : NetworkBehaviour
 
         cardVisual.GetComponent<CardDrag>().isPlaced = true;
 
-        Vector3 position;
-
-        Quaternion rotation;
-
+        
         if (unit.ID == Player.PlayerId.Player1)
         {
             player1Board.Visuals[unit.Position.x, unit.Position.y] = cardVisual;
-            rotation = Quaternion.Euler(new Vector3(45, 0, -90));
-            position = new Vector3(tile.transform.position.x, tile.transform.position.y + cardVerticalOffset,
-                tile.transform.position.z);
+           
         }
         else
         {
             player2Board.Visuals[unit.Position.x, unit.Position.y] = cardVisual;
-            rotation = Quaternion.Euler(new Vector3(45, 0, 90));
-            position = new Vector3(tile.transform.position.x, tile.transform.position.y + cardVerticalOffset,
-                tile.transform.position.z);
+            
         }
+        
+        Quaternion rotation = Quaternion.Euler(new Vector3(45, 0, 90));
+        Vector3 position = new Vector3(tile.transform.position.x, tile.transform.position.y + cardVerticalOffset,
+            tile.transform.position.z);
 
         Vector3 scale = new Vector3(7, 8, 6);
 

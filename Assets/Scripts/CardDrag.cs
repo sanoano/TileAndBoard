@@ -58,8 +58,8 @@ public class CardDrag : MonoBehaviour
         collider = GetComponent<BoxCollider>();
         animTime = 0.25f;
         normalScale = transform.localScale;
-        bigScale = new Vector3(transform.localScale.x + 1.5f, transform.localScale.y + 1.5f,
-            transform.localScale.z + 1.5f);
+        bigScale = new Vector3(transform.localScale.x + 1f, transform.localScale.y + 1f,
+            transform.localScale.z + 1f);
         smallScale = new Vector3(transform.localScale.x - 1.5f, transform.localScale.y - 1.5f,
             transform.localScale.z - 1.5f);
         isDragged = false;
