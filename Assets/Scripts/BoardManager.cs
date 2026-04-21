@@ -1208,6 +1208,8 @@ public class BoardManager : NetworkBehaviour
         cardVisual.transform.localRotation = rotation;
         cardVisual.transform.localScale = scale;
 
+        cardVisual.transform.parent = tile.transform;
+
         cardPlaced.Invoke();
     }
 

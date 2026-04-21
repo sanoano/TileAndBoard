@@ -35,6 +35,11 @@ public class OrbitCamera : MonoBehaviour
 
     private void Awake()
     {
+        
+    }
+
+    void Start()
+    {
         cameraStaticPostion = transform.position;
         cameraStaticRotation = transform.rotation;
         defaultPitch = transform.eulerAngles.x;
@@ -42,10 +47,6 @@ public class OrbitCamera : MonoBehaviour
 
 
         cameraState = CameraState.Static;
-    }
-
-    void Start()
-    {
         yaw = transform.eulerAngles.y;
         pitch = transform.eulerAngles.x;
     }

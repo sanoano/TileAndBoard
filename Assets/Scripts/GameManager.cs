@@ -41,6 +41,15 @@ public class GameManager : NetworkBehaviour
         
         playerId = Player.AssignPlayerID();
         
+        if (playerId == Player.PlayerId.Player2)
+        {
+            Vector3 pos = new Vector3(-39.7999992f, 36.6399994f, -1.20000005f);
+            Quaternion rot = Quaternion.Euler(45, 90, 0);
+
+            Camera.main.transform.position = pos;
+            Camera.main.transform.rotation = rot;
+        }
+        
         Application.targetFrameRate = 60;
 
     }
@@ -60,14 +69,7 @@ public class GameManager : NetworkBehaviour
         
         GetPlayerName();
 
-        if (playerId == Player.PlayerId.Player2)
-        {
-            Vector3 pos = new Vector3(-39.7999992f, 36.6399994f, -1.20000005f);
-            Quaternion rot = Quaternion.Euler(45, 90, 0);
-
-            Camera.main.transform.position = pos;
-            Camera.main.transform.rotation = rot;
-        }
+        
         
     }
     
