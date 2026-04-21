@@ -132,8 +132,15 @@ public class GameManager : NetworkBehaviour
 
     public async void DisconnectUser()
     {
-        await NetworkManager.Singleton.gameObject.GetComponent<Lobby>().LeaveSessionAsync();
-
+        if (NetworkManager.Singleton)
+        {
+            await NetworkManager.Singleton.gameObject.GetComponent<Lobby>().LeaveSessionAsync();
+        }
+        else
+        {
+            print("Game Ended");
+        }
+        StopAllCoroutines();
     }
 
     private void Start()

@@ -1738,7 +1738,7 @@ public class BoardManager : NetworkBehaviour
 
             if (player1Health <= 0)
             {   
-                UIManager.Instance.DisplayEndGameScreen(Player.PlayerId.Player2);
+                StartCoroutine(UIManager.Instance.DisplayEndGameScreen(Player.PlayerId.Player2));
             }
 
             if (player1Health <= (player1Health / 2) && !board1DoOnce)
@@ -1750,7 +1750,7 @@ public class BoardManager : NetworkBehaviour
 
             if (player2Health <= 0)
             {
-                UIManager.Instance.DisplayEndGameScreen(Player.PlayerId.Player1);
+                StartCoroutine(UIManager.Instance.DisplayEndGameScreen(Player.PlayerId.Player1));
             }
 
             if (player2Health <= (player2Health / 2) && !board2DoOnce)

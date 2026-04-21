@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Collections;
@@ -152,22 +153,48 @@ public class UIManager : MonoBehaviour
 
     void UpdateHealthDisplay()
     {
-        player1HealthDisplay.text =
-            $"Life Points: {BoardManager.Instance.player1Health} / {BoardManager.Instance.startingPlayerHealth}";
+        if (GameManager.instance.playerId == Player.PlayerId.Player1)
+        {
+            player1HealthDisplay.text =
+                $"Life Points: {BoardManager.Instance.player1Health} / {BoardManager.Instance.startingPlayerHealth}";
         
-        player2HealthDisplay.text =
-            $"Life Points: {BoardManager.Instance.player2Health} / {BoardManager.Instance.startingPlayerHealth}";
+            player2HealthDisplay.text =
+                $"Life Points: {BoardManager.Instance.player2Health} / {BoardManager.Instance.startingPlayerHealth}";
+        }
+        else
+        {
+            player1HealthDisplay.text =
+                $"Life Points: {BoardManager.Instance.player2Health} / {BoardManager.Instance.startingPlayerHealth}";
+        
+            player2HealthDisplay.text =
+                $"Life Points: {BoardManager.Instance.player1Health} / {BoardManager.Instance.startingPlayerHealth}";
+        }
+       
     }
 
     void UpdateCardAmountDisplay()
     {
-        player1CardAmount.text =
-            $"Cards: {BoardManager.Instance.GetCardAmount(Player.PlayerId.Player1)} / {BoardManager.Instance.maxCardsPerPlayer}"
-            ;
+        if (GameManager.instance.playerId == Player.PlayerId.Player1)
+        {
+            player1CardAmount.text =
+                $"Cards: {BoardManager.Instance.GetCardAmount(Player.PlayerId.Player1)} / {BoardManager.Instance.maxCardsPerPlayer}"
+                ;
         
-        player2CardAmount.text =
-            $"Cards: {BoardManager.Instance.GetCardAmount(Player.PlayerId.Player2)} / {BoardManager.Instance.maxCardsPerPlayer}"
-            ;
+            player2CardAmount.text =
+                $"Cards: {BoardManager.Instance.GetCardAmount(Player.PlayerId.Player2)} / {BoardManager.Instance.maxCardsPerPlayer}"
+                ;
+        }
+        else
+        {
+            player1CardAmount.text =
+                $"Cards: {BoardManager.Instance.GetCardAmount(Player.PlayerId.Player2)} / {BoardManager.Instance.maxCardsPerPlayer}"
+                ;
+        
+            player2CardAmount.text =
+                $"Cards: {BoardManager.Instance.GetCardAmount(Player.PlayerId.Player1)} / {BoardManager.Instance.maxCardsPerPlayer}"
+                ;
+        }
+        
     }
 
     public void CreateInfoPanel(Vector2Int position, Player.PlayerId playerId)
@@ -491,7 +518,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void DisplayEndGameScreen(Player.PlayerId id)
+    public IEnumerator DisplayEndGameScreen(Player.PlayerId id)
     {
         victoryText.gameObject.SetActive(true);
         
@@ -503,8 +530,13 @@ public class UIManager : MonoBehaviour
         {
             victoryText.text = "Player 2 wins!";
         }
+
+        yield return new WaitForSeconds(5.0f);
         
-        Invoke(nameof(GameManager.instance.DisconnectUser), 5.0f);
+        GameManager.instance.DisconnectUser();
+
+        yield return null;
     }
+    
     
 }
