@@ -124,6 +124,7 @@ public class OrbitCamera : MonoBehaviour
             gameObject.AddTween(positionTween);
             gameObject.AddTween(rotationTween);
             UIManager.Instance.Canvas.SetActive(true);
+            CardManager.instance.cardHoldPosition.SetActive(true);
                 
 
         }
@@ -136,6 +137,7 @@ public class OrbitCamera : MonoBehaviour
                 
             UIManager.Instance.DestroyCurrentInfoInstance();
             UIManager.Instance.Canvas.SetActive(false);
+            CardManager.instance.cardHoldPosition.SetActive(false);
         }
     }
 }

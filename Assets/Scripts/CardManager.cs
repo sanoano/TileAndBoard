@@ -195,7 +195,7 @@ public class CardManager : NetworkBehaviour
         playerHand.Add(cardData);
         playerHandVisuals.Add(cardVisual);
 
-        
+        cardVisual.transform.parent = cardHoldPosition.transform;
         
         if (playerHand.Count != 1)
         {
