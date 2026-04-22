@@ -504,7 +504,7 @@ public class BoardManager : NetworkBehaviour
             foreach (Vector2Int position in workingPositions)
             {
                 enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                    .TileRecieveSignal(3, true);
+                    .TileRecieveSignal(1, true);
             }
         }
 
@@ -616,7 +616,7 @@ public class BoardManager : NetworkBehaviour
             foreach (Vector2Int position in workingPositions)
             {
                 localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>()
-                    .TileRecieveSignal(3, true);
+                    .TileRecieveSignal(2, true);
             }
         }
 
@@ -1242,7 +1242,7 @@ public class BoardManager : NetworkBehaviour
 
         foreach (Vector2Int position in workingPositions)
         {
-            enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(3, true);
+            enemyBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(1, true);
         }
 
         UIManager.Instance.interactionState = UIManager.InteractionState.Attacking;
@@ -1273,7 +1273,7 @@ public class BoardManager : NetworkBehaviour
 
         foreach (Vector2Int position in workingPositions)
         {
-            localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(3, true);
+            localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(2, true);
         }
 
         UIManager.Instance.interactionState = UIManager.InteractionState.Defending;
@@ -1517,6 +1517,16 @@ public class BoardManager : NetworkBehaviour
                     }
                     
                     tileColour tc = player1Board.TileTransforms[i, j].GetComponentInChildren<tileColour>();
+
+                    if (attackBlocked)
+                    {
+                        tc.TileRecievePopup(workingDamage, 0);
+                    }
+                    else
+                    {
+                        tc.TileRecievePopup(workingDamage, 2);
+                    }
+                    
                     tc.TileRecieveSignal(0, false);
                     tc.TileRecieveDamage(0, 0);
 

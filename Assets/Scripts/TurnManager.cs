@@ -189,6 +189,10 @@ public class TurnManager : NetworkBehaviour
                     }
                     
                     ManaManager.instance.AddManaPoints(9 - BoardManager.Instance.GetCardAmount(Player.PlayerId.Player1));
+                    foreach (var tile in BoardManager.Instance.localBoard.TileTransforms)
+                    {
+                        tile.GetComponent<tileColour>().TileRecievePopup(1, 1);
+                    }
                 }
                 
                 await BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player2);
@@ -213,7 +217,10 @@ public class TurnManager : NetworkBehaviour
                     }
                     
                     ManaManager.instance.AddManaPoints(9 - BoardManager.Instance.GetCardAmount(Player.PlayerId.Player2));
-
+                    foreach (var tile in BoardManager.Instance.localBoard.TileTransforms)
+                    {
+                        tile.GetComponent<tileColour>().TileRecievePopup(1, 1);
+                    }
                 }
                 
                 await BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player1);

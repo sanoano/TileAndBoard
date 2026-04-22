@@ -167,6 +167,8 @@ public class CardManager : NetworkBehaviour
 
     public void RecallCard(GameObject cardVisual, BoardManager.Unit unit)
     {
+
+        if (playerHand.Count >= maxCards) return;
         
         ManaManager.instance.RemoveManaPoints(unit.AttackPositions.Count);
         

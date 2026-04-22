@@ -453,7 +453,8 @@ public class UIManager : MonoBehaviour
             }
 
             buttons[3].onClick.AddListener(delegate { CardManager.instance.RecallCard(cardVisual, unitToDisplay); });
-            if (!ManaManager.instance.CanAfford(unitToDisplay.AttackPositions.Count) || !TurnManager.instance.isYourTurn)
+            if (!ManaManager.instance.CanAfford(unitToDisplay.AttackPositions.Count) || !TurnManager.instance.isYourTurn
+                || CardManager.instance.playerHand.Count >= CardManager.instance.maxCards)
             {
                 buttons[3].interactable = false;
             }
