@@ -15,7 +15,7 @@ public class UIPopupNumbers : MonoBehaviour
 
     public void Setup(float amount, int type)
     {
-        numbersTMP.SetText(amount.ToString());
+        numbersTMP.text = amount.ToString();
 
         if (type < 2)
             icon.sprite = icons[type];
@@ -37,7 +37,7 @@ public class UIPopupNumbers : MonoBehaviour
     private void Update()
     {
         float moveY = 7.5f;
-        transform.position += new Vector3(0, moveY) * Time.deltaTime;
+        transform.position += new Vector3(transform.position.x, moveY, transform.position.z) * Time.deltaTime;
 
         disappearTimer -= Time.deltaTime;
         if (disappearTimer < 0)

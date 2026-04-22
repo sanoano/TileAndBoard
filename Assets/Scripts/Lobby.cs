@@ -1,13 +1,14 @@
 using System;
 using System.Threading.Tasks;
+using TMPro;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Multiplayer;
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using TMPro;
 
 public class Lobby : MonoBehaviour
 {
@@ -18,7 +19,8 @@ public class Lobby : MonoBehaviour
    public ISession _session;
    [HideInInspector] public NetworkManager m_NetworkManager;
 
-   [Header("UI References")]
+    [Header("UI References")]
+    [SerializeField] private UIManagerMainMenu UIManagerScript;
    [SerializeField] private TMP_InputField username;
    [SerializeField] private TMP_InputField sessionName;
    [SerializeField] private TMP_InputField joinCodeInput;
@@ -30,7 +32,7 @@ public class Lobby : MonoBehaviour
    [SerializeField] private GameObject sessionList;
    [SerializeField] private Button backButton;
    [SerializeField] private Button refreshButton;
-   [SerializeField] private Button joinDirectButton;
+   //[SerializeField] private Button joinDirectButton;
    [SerializeField] private Button joinGameDirectButton;
    [SerializeField] private Button backButtonJoin;
    [SerializeField] private Toggle privateToggle;
@@ -157,19 +159,11 @@ public class Lobby : MonoBehaviour
 
     private void StartSession()
     {
-        username.gameObject.SetActive(false);
-        sessionName.gameObject.SetActive(false);
-        createGameButton.gameObject.SetActive(false);
-        backButton.gameObject.SetActive(false);
-        privateToggle.gameObject.SetActive(false);
+        UIManagerScript.SetMenuScreen(8);
         
         if (_sessionName == String.Empty)
         {
-            username.gameObject.SetActive(true);
-            sessionName.gameObject.SetActive(true);
-            createGameButton.gameObject.SetActive(true);
-            backButton.gameObject.SetActive(true);
-            privateToggle.gameObject.SetActive(true);
+            UIManagerScript.SetMenuScreen(3);
             statusText.text = "You must set a session name before creating a session.";
             return;
         }
@@ -179,17 +173,11 @@ public class Lobby : MonoBehaviour
     
     private void JoinGameByJoinCode()
     {
-        joinCodeInput.gameObject.SetActive(false);
-        joinGameDirectButton.gameObject.SetActive(false);
-        backButtonJoin.gameObject.SetActive(false);
-        username.gameObject.SetActive(false);
+        UIManagerScript.SetMenuScreen(8);
         
         if (_sessionJoinCode == String.Empty)
         {
-            joinCodeInput.gameObject.SetActive(true);
-            joinGameDirectButton.gameObject.SetActive(true);
-            backButtonJoin.gameObject.SetActive(true);
-            username.gameObject.SetActive(true);
+            UIManagerScript.SetMenuScreen(5);
             statusText.text = "You must provide a join code.";
             return;
         }
@@ -373,11 +361,10 @@ public class Lobby : MonoBehaviour
 
    public async Task JoinSessionAsync(string id)
    {
-       
-       sessionList.SetActive(false);
-       username.gameObject.SetActive(false);
 
-       statusText.text = "Joining session...";
+        UIManagerScript.SetMenuScreen(8);
+
+        statusText.text = "Joining session...";
        
        try
        {
@@ -392,9 +379,7 @@ public class Lobby : MonoBehaviour
            Debug.LogException(e);
            NetworkManager.Singleton.Shutdown();
            statusText.text = "Failed to connect. Please try again.";
-           username.gameObject.SetActive(true);
-           joinButton.gameObject.SetActive(true);
-           createButton.gameObject.SetActive(true);
+            UIManagerScript.SetMenuScreen(5);
        }
 
       
@@ -416,11 +401,8 @@ public class Lobby : MonoBehaviour
            Debug.LogException(e);
            NetworkManager.Singleton.Shutdown();
            statusText.text = "Failed to connect. Check join code and try again.";
-           joinCodeInput.gameObject.SetActive(true);
-           joinGameDirectButton.gameObject.SetActive(true);
-           backButtonJoin.gameObject.SetActive(true);
-           username.gameObject.SetActive(true);
-       }
+           UIManagerScript.SetMenuScreen(5);
+        }
        
        
    }
@@ -461,11 +443,8 @@ public class Lobby : MonoBehaviour
            Debug.LogException(e);
            NetworkManager.Singleton.Shutdown();
            statusText.text = "Failed to create session. Please try again.";
-           username.gameObject.SetActive(true);
-           sessionName.gameObject.SetActive(true);
-           createGameButton.gameObject.SetActive(true);
-           backButton.gameObject.SetActive(true);
-           privateToggle.gameObject.SetActive(true);
+
+           UIManagerScript.SetMenuScreen(0);
        }
        
    }
@@ -473,12 +452,10 @@ public class Lobby : MonoBehaviour
    void OnTransportFailure()
    {
        NetworkManager.Singleton.Shutdown();
-       
-       username.gameObject.SetActive(true);
-       sessionName.gameObject.SetActive(true);
-       createGameButton.gameObject.SetActive(true);
 
-       statusText.text = "Transport failure! Please try again. If problem persists, please restart game.";
+        UIManagerScript.SetMenuScreen(5);
+
+        statusText.text = "Transport failure! Please try again. If problem persists, please restart game.";
 
    }
 }

@@ -14,6 +14,7 @@ public class UIManagerMainMenu : MonoBehaviour
 
     [SerializeField] private GameObject title;//Title graphic
     [SerializeField] private GameObject status;//Connection status messages
+    [SerializeField] private GameObject[] playerNameElements;
     private TextMeshProUGUI statusTMP;
 
     [SerializeField] private GameObject[] presstostart; //(0)
@@ -22,16 +23,17 @@ public class UIManagerMainMenu : MonoBehaviour
     [SerializeField] private GameObject[] buttons2;//Create Game, Join Private Game, Find Game, Back (2)
 
     [SerializeField] private GameObject[] createGame;//(3)
-    [SerializeField] private GameObject[] joinGame;//(4) obsolete, direct join is now in findGame (5)
+    private GameObject[] joinGame;//(4) obsolete, direct join is now in findGame (5)
     [SerializeField] private GameObject[] findGame;//(5)
     [SerializeField] private GameObject[] options;//(6)
     [SerializeField] private GameObject[] tutorial;//(7)
+    [SerializeField] private GameObject[] loading;//(8)
 
     GameObject[][] UIlist;
     private int currentState = 0;
     void Start()
     {
-        UIlist = new GameObject[][] {presstostart, buttons1, buttons2, createGame, joinGame, findGame, options};
+        UIlist = new GameObject[][] {presstostart, buttons1, buttons2, createGame, joinGame, findGame, options, tutorial, loading};
 
         statusTMP = status.GetComponent<TextMeshProUGUI>();
         statusTMP.text = "";
@@ -89,6 +91,15 @@ public class UIManagerMainMenu : MonoBehaviour
             status.SetActive(false);
             statusTMP.text = "";
         }
+
+        //Player name input stuff yknow
+        if (newState == 3 || newState == 5 || newState == 2)
+            foreach (GameObject element in playerNameElements)
+                element.SetActive(true);
+        else
+            foreach (GameObject element in playerNameElements)
+                element.SetActive(false);
+
 
         //camera stuff
         if (newState == 3 || newState == 4)

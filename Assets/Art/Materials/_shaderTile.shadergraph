@@ -533,6 +533,9 @@
             "m_Id": "0fcfab73b15a47ce9f4d4112fc215a90"
         },
         {
+            "m_Id": "ae221135e50249f9b1601375bf906d42"
+        },
+        {
             "m_Id": "a0d6858238d04abd81964fa90f9ca1b8"
         }
     ],
@@ -547,11 +550,13 @@
     "m_SerializedSubGraph": "{\n    \"subGraph\": {\n        \"fileID\": -5475051401550479605,\n        \"guid\": \"291a02e7a380d214f9512b9854fb77d4\",\n        \"type\": 3\n    }\n}",
     "m_PropertyGuids": [
         "30d7353b-a471-466f-bc17-6c5e235da15b",
-        "b0af8007-acc7-4564-a252-219f93484bc6"
+        "b0af8007-acc7-4564-a252-219f93484bc6",
+        "505f59be-1f1e-43a3-a2c9-3cf8fd33d03a"
     ],
     "m_PropertyIds": [
         1937103829,
-        -1398720783
+        -1398720783,
+        -787432193
     ],
     "m_Dropdowns": [],
     "m_DropdownSelectedEntries": []
@@ -889,6 +894,9 @@
             "m_Id": "93787be4b04b40c7b62cc210f0729d56"
         },
         {
+            "m_Id": "4aa251c9dcd044a793e90e9cc360c477"
+        },
+        {
             "m_Id": "0a44397d3d614a64be794515190e79d6"
         }
     ],
@@ -903,11 +911,13 @@
     "m_SerializedSubGraph": "{\n    \"subGraph\": {\n        \"fileID\": -5475051401550479605,\n        \"guid\": \"291a02e7a380d214f9512b9854fb77d4\",\n        \"type\": 3\n    }\n}",
     "m_PropertyGuids": [
         "30d7353b-a471-466f-bc17-6c5e235da15b",
-        "b0af8007-acc7-4564-a252-219f93484bc6"
+        "b0af8007-acc7-4564-a252-219f93484bc6",
+        "505f59be-1f1e-43a3-a2c9-3cf8fd33d03a"
     ],
     "m_PropertyIds": [
         1937103829,
-        -1398720783
+        -1398720783,
+        -787432193
     ],
     "m_Dropdowns": [],
     "m_DropdownSelectedEntries": []
@@ -927,6 +937,27 @@
     "m_DefaultValue": 0.0,
     "m_Labels": [],
     "m_LiteralMode": true
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector2MaterialSlot",
+    "m_ObjectId": "4aa251c9dcd044a793e90e9cc360c477",
+    "m_Id": -787432193,
+    "m_DisplayName": "UV Scaling",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "_UV_Scaling",
+    "m_StageCapability": 2,
+    "m_Value": {
+        "x": 2.0,
+        "y": 2.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0
+    },
+    "m_Labels": []
 }
 
 {
@@ -1919,6 +1950,27 @@
     "m_DefaultValue": 0.0,
     "m_Labels": [],
     "m_LiteralMode": false
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector2MaterialSlot",
+    "m_ObjectId": "ae221135e50249f9b1601375bf906d42",
+    "m_Id": -787432193,
+    "m_DisplayName": "UV Scaling",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "_UV_Scaling",
+    "m_StageCapability": 2,
+    "m_Value": {
+        "x": 2.0,
+        "y": 2.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0
+    },
+    "m_Labels": []
 }
 
 {
