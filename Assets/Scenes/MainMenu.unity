@@ -1228,6 +1228,7 @@ MonoBehaviour:
   findGame:
   - {fileID: 1462687322}
   options: []
+  tutorial: []
 --- !u!4 &451512464
 Transform:
   m_ObjectHideFlags: 0
@@ -1395,8 +1396,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Version:'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 5bc4bf0e189ea6f4497677c3195d985c, type: 2}
-  m_sharedMaterial: {fileID: 6545047807225982875, guid: 5bc4bf0e189ea6f4497677c3195d985c, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: e2e27534f6cc30e48af57eca383b5503, type: 2}
+  m_sharedMaterial: {fileID: 6599617980793990009, guid: e2e27534f6cc30e48af57eca383b5503, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -6439,8 +6440,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u200B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 5bc4bf0e189ea6f4497677c3195d985c, type: 2}
-  m_sharedMaterial: {fileID: 6545047807225982875, guid: 5bc4bf0e189ea6f4497677c3195d985c, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: e2e27534f6cc30e48af57eca383b5503, type: 2}
+  m_sharedMaterial: {fileID: 6599617980793990009, guid: e2e27534f6cc30e48af57eca383b5503, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

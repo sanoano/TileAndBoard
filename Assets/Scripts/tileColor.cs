@@ -134,4 +134,9 @@ public class tileColour : MonoBehaviour
             netDamageTMP.text = "";
         }
     }
+
+    public void TileRecievePopup(int amount, int type)
+    {//0 is HP, 1 is Manna, 2 is LP
+        UIPopupNumbers.Create(transform.position, amount, type);
+    }
 }
