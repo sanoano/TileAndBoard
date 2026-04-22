@@ -25,6 +25,7 @@ public class UIManagerMainMenu : MonoBehaviour
     [SerializeField] private GameObject[] joinGame;//(4) obsolete, direct join is now in findGame (5)
     [SerializeField] private GameObject[] findGame;//(5)
     [SerializeField] private GameObject[] options;//(6)
+    [SerializeField] private GameObject[] tutorial;//(7)
 
     GameObject[][] UIlist;
     private int currentState = 0;

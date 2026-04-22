@@ -124,6 +124,8 @@ public class UIManager : MonoBehaviour
         };
 
         var instance = lensCap.gameObject.AddTween(backgroundTween);
+
+        UIPopupNumbers.Create(transform.position, 100, 0);
     }
 
     private void Update()
