@@ -23,7 +23,7 @@ public class UIManagerMainMenu : MonoBehaviour
     [SerializeField] private GameObject[] buttons2;//Create Game, Join Private Game, Find Game, Back (2)
 
     [SerializeField] private GameObject[] createGame;//(3)
-    private GameObject[] joinGame;//(4) obsolete, direct join is now in findGame (5)
+    [SerializeField] private GameObject[] joinGame;//(4) obsolete, direct join is now in findGame (5)
     [SerializeField] private GameObject[] findGame;//(5)
     [SerializeField] private GameObject[] options;//(6)
     [SerializeField] private GameObject[] tutorial;//(7)
@@ -113,7 +113,7 @@ public class UIManagerMainMenu : MonoBehaviour
         //camera stuff
         if (newState == 3 || newState == 4)
             cameraScript.SetCameraState(2);
-        else if (newState == 5)
+        else if (newState == 5 || newState == 8)
             cameraScript.SetCameraState(1);
         else
             cameraScript.SetCameraState(0); 
