@@ -33,7 +33,7 @@ public class UIManagerMainMenu : MonoBehaviour
     private int currentState = 0;
     void Start()
     {
-        UIlist = new GameObject[][] {presstostart, buttons1, buttons2, createGame, joinGame, findGame, options, tutorial, loading};
+        UIlist = new GameObject[][] {presstostart, buttons1, buttons2, createGame, findGame, options, tutorial, loading};
 
         statusTMP = status.GetComponent<TextMeshProUGUI>();
         statusTMP.text = "";
@@ -43,13 +43,22 @@ public class UIManagerMainMenu : MonoBehaviour
 
     public void SetMenuScreen(int newState)
     {//Each screen has an ID. When setting up buttons, you just need to know the code for what screen you want a button to bring up.
-        foreach (GameObject[] array in UIlist)
-        {
-            foreach (GameObject element in array)
+
+        // try
+        // {
+            foreach (GameObject[] array in UIlist)
             {
-                element.SetActive(false);
+                foreach (GameObject element in array)
+                {
+                    element.SetActive(false);
+                }
             }
-        }
+        //}
+        // catch (Exception e)
+        // {
+        //     
+        // }
+        
 
         foreach (GameObject element in UIlist[newState])
         {

@@ -235,7 +235,11 @@ public class TurnManager : NetworkBehaviour
 
         currentTime = maxTimePerTurn;
 
-        if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
+        if (UIManager.Instance.interactionState != UIManager.InteractionState.None)
+        {
+            TextDialogue.instance.DialogueRecieveStatus(8);
+            return; 
+        } 
         if (BoardManager.Instance.attackInProgress) return;
         
         UIManager.Instance.DestroyCurrentInfoInstance();

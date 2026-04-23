@@ -12,6 +12,7 @@ using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine.Events;
 using Random = UnityEngine.Random;
+using UnityEngine.SocialPlatforms;
 
 public class BoardManager : NetworkBehaviour
 {
@@ -466,7 +467,7 @@ public class BoardManager : NetworkBehaviour
 
     void Attacking()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetMouseButtonDown(1))
         {
             
             foreach (Vector2Int position in workingPositions)
@@ -529,7 +530,7 @@ public class BoardManager : NetworkBehaviour
             UpdateTileVisuals();
         }
 
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetMouseButtonDown(0))
         {
            
             
@@ -578,7 +579,7 @@ public class BoardManager : NetworkBehaviour
 
     public void Defending()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetMouseButton(1))
         {
             foreach (Vector2Int position in workingPositions)
             {
@@ -591,7 +592,7 @@ public class BoardManager : NetworkBehaviour
 
             for (int i = 0; i < workingPositions.Count; i++)
             {
-                print(workingPositions[i]);
+                
                 float xpos = workingPositions[i].x;
                 float ypos = workingPositions[i].y;
 
@@ -602,11 +603,6 @@ public class BoardManager : NetworkBehaviour
                 rotX = (xpos - 1) * Mathf.Cos(angleRad) - (ypos - 1) * Mathf.Sin(angleRad) + 1;
                 rotY = (xpos - 1) * Mathf.Sin(angleRad) + (ypos - 1) * Mathf.Cos(angleRad) + 1;
 
-                print(rotX);
-                print(rotY);
-
-                // rotX = Mathf.Clamp(rotX, 0f, 2.0f);
-                // rotY = Mathf.Clamp(rotY, 0f, 2.0f);
 
                 Vector2Int newCoords = new Vector2Int(Mathf.RoundToInt(rotX), Mathf.RoundToInt(rotY));
                 print(newCoords);
@@ -641,7 +637,7 @@ public class BoardManager : NetworkBehaviour
             UpdateTileVisuals();
         }
 
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetMouseButtonDown(0))
         {
             
             
@@ -702,39 +698,58 @@ public class BoardManager : NetworkBehaviour
             UpdateTileVisuals();
         }
 
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            MoveCard(3);
-        }
+        // if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+        // {
+        //     MoveCard(3);
+        // }
 
-        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            if (GameManager.instance.playerId == Player.PlayerId.Player1)
-            {
-                MoveCard(0);
-            }
-            else
-            {
-                MoveCard(1);
-            }
-        }
+        // if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+        // {
+        //     if (GameManager.instance.playerId == Player.PlayerId.Player1)
+        //     {
+        //         MoveCard(0);
+        //     }
+        //     else
+        //     {
+        //         MoveCard(1);
+        //     }
+        // }
 
-        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            MoveCard(2);
-        }
+        // if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+        // {
+        //     MoveCard(2);
+        // }
 
-        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+        // if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+        // {
+        //     if (GameManager.instance.playerId == Player.PlayerId.Player1)
+        //     {
+        //         MoveCard(1);
+        //     }
+        //     else
+        //     {
+        //         MoveCard(0);
+        //     }
+        // }
+
+         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+         RaycastHit hit;
+
+        if (Input.GetMouseButtonDown(0)) 
         {
-            if (GameManager.instance.playerId == Player.PlayerId.Player1)
+          if (Physics.Raycast(ray, out hit, Mathf.Infinity, playerSpecificLayer))
             {
-                MoveCard(1);
-            }
-            else
-            {
-                MoveCard(0);
-            }
+                for(int i = 0; i < currentAdjacentPositions.Length; i++)
+                {
+                    if (currentAdjacentPositions[i].Equals(new Vector2Int(-1, -1))) continue;
+                    if (localBoard.TileTransforms[currentAdjacentPositions[i].x, currentAdjacentPositions[i].y] == hit.transform.gameObject)
+                    {
+                        MoveCard(i);
+                    }
+                }
+            }  
         }
+        
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {

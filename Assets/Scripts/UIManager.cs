@@ -356,6 +356,8 @@ public class UIManager : MonoBehaviour
             cardIconDefence.enabled = false;
         }
 
+        StopAllCoroutines();
+
         //nasty nasty way to do this...but idc
         foreach (Vector2Int coord in unitToDisplay.AttackPositions)
         {// Simple logic tree to find out which squares should show up...inelegant but robust enough...
@@ -391,7 +393,7 @@ public class UIManager : MonoBehaviour
             }
         }
 
-
+        StartCoroutine(RotateGridShape(cardChildren, new List<Vector2Int>(unitToDisplay.AttackPositions)));
 
 
         if (unitToDisplay.ID == GameManager.instance.playerId)
@@ -477,6 +479,8 @@ public class UIManager : MonoBehaviour
             DestroyImmediate(cardInfoPrefabInstance);
         }
 
+        StopAllCoroutines();
+
         /*if (actionsInfoPrefabInstance)
         {
             DestroyImmediate(actionsInfoPrefabInstance);
@@ -491,7 +495,7 @@ public class UIManager : MonoBehaviour
             case InteractionState.Attacking:
                 
                 controlsText.gameObject.SetActive(true);
-                controlsText.text = "R to Rotate\nEnter to Confirm\nEsc to Cancel";
+                controlsText.text = "Right Click to Rotate\nLeft Click to Confirm\nEsc to Cancel";
 
 
                 break;
@@ -499,7 +503,7 @@ public class UIManager : MonoBehaviour
             case InteractionState.Defending:
 
                 controlsText.gameObject.SetActive(true);
-                controlsText.text = "R to Rotate\nEnter to Confirm\nEsc to Cancel";
+                controlsText.text = "Right Click to Rotate\nLeft Click to Confirm\nEsc to Cancel";
 
                 break;
             
@@ -507,7 +511,7 @@ public class UIManager : MonoBehaviour
             case InteractionState.Moving:
 
                 controlsText.gameObject.SetActive(true);
-                controlsText.text = "WASD/Arrows to Move\nEsc to Cancel";
+                controlsText.text = "Click on Tile to move\nEsc to Cancel";
 
                 break;
             
@@ -539,5 +543,77 @@ public class UIManager : MonoBehaviour
         yield return null;
     }
     
-    
+    private IEnumerator RotateGridShape(Transform[] children, List<Vector2Int> positions)
+    {
+
+
+        float angle = 90.0f;
+
+        while (true)
+        {
+            
+            yield return new WaitForSeconds(3.0f);
+
+            for (int i = 0; i < positions.Count; i++)
+            {
+
+                float xpos = positions[i].x;
+                float ypos = positions[i].y;
+
+                float angleRad = angle * Mathf.Deg2Rad;
+
+                float rotY;
+                float rotX;
+                rotX = (xpos - 1) * Mathf.Cos(angleRad) - (ypos - 1) * Mathf.Sin(angleRad) + 1;
+                rotY = (xpos - 1) * Mathf.Sin(angleRad) + (ypos - 1) * Mathf.Cos(angleRad) + 1;
+
+
+                Vector2Int newCoords = new Vector2Int(Mathf.RoundToInt(rotX), Mathf.RoundToInt(rotY));
+                print(newCoords);
+                positions[i] = newCoords;
+            }
+
+            for (int j = 15; j < 24; j++)
+            {
+                children[j].gameObject.SetActive(false);
+            }
+
+            foreach (Vector2Int coord in positions)
+            {// Simple logic tree to find out which squares should show up...inelegant but robust enough...
+                int x = coord.x;
+                int y = coord.y;
+
+                if (y == 0)
+                {
+                    if (x == 0)
+                        children[15].gameObject.SetActive(true);
+                    else if (x == 1)
+                        children[16].gameObject.SetActive(true);
+                    else if (x == 2)
+                        children[17].gameObject.SetActive(true);
+                }
+                else if (y == 1)
+                {
+                    if (x == 0)
+                        children[18].gameObject.SetActive(true);
+                    else if (x == 1)
+                        children[19].gameObject.SetActive(true);
+                    else if (x == 2)
+                        children[20].gameObject.SetActive(true);
+                }
+                else if (y == 2)
+                {
+                    if (x == 0)
+                        children[21].gameObject.SetActive(true);
+                    else if (x == 1)
+                        children[22].gameObject.SetActive(true);
+                    else if (x == 2)
+                        children[23].gameObject.SetActive(true);
+                }
+            }
+        }
+
+        yield return null;
+    }
 }
+          

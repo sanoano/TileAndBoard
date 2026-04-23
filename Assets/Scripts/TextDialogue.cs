@@ -94,6 +94,10 @@ public class TextDialogue : MonoBehaviour
                 headerTMP.text = "Invalid Space";
                 dialogueTMP.text = "You can't place a card on your opponent's island!";
                 break;
+            case 8:
+                headerTMP.text = "Can't End Turn";
+                dialogueTMP.text = "You must finish your current action before ending your turn.";
+                break;
             default:
                 headerTMP.text = "Unknown Error!";
                 dialogueTMP.text = "idk what's going on!";
