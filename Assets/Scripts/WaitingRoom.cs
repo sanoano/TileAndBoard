@@ -17,7 +17,9 @@ public class WaitingRoom : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI sessionNameText;
     [SerializeField] private TextMeshProUGUI joinCodeText;
     [SerializeField] private TextMeshProUGUI playerListText;
-    [SerializeField] private Button startGameButton;
+    [SerializeField] private GameObject waitingText;
+    [SerializeField] private GameObject startGameButtonObject;
+    private Button startGameButton;
     [SerializeField] private Button leaveGameButton;
     [SerializeField] private Image lensCap;
 
@@ -27,6 +29,8 @@ public class WaitingRoom : NetworkBehaviour
 
     private void Start()
     {
+        startGameButton = startGameButtonObject.GetComponent<Button>();
+
         lobby = NetworkManager.Singleton.gameObject.GetComponent<Lobby>();
         startGameButton.onClick.AddListener(StartGame);
         leaveGameButton.onClick.AddListener(LeaveGame);
@@ -39,11 +43,13 @@ public class WaitingRoom : NetworkBehaviour
     {
         if (NetworkManager.Singleton.LocalClient.IsSessionOwner && NetworkManager.Singleton.ConnectedClientsIds.Count == 2)
         {
-            startGameButton.interactable = true;
+            startGameButtonObject.SetActive(true);
+            waitingText.SetActive(false);
         }
         else
         {
-            startGameButton.interactable = false;
+            startGameButtonObject.SetActive(false);
+            waitingText.SetActive(true);
         }
         
         UpdatePlayerList();
@@ -59,7 +65,9 @@ public class WaitingRoom : NetworkBehaviour
         foreach (var player in lobby._session.Players)
         {
             var name = player.GetPlayerName() ?? "Unknown";
-            playerListText.text += $"{name}\n";
+            string trimmedName = name.Substring(0, name.Length - 5); // Removes the username suffix ie. #XXXX
+
+            playerListText.text += $"{trimmedName}\n";
         }
     }
 

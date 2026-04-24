@@ -33,7 +33,7 @@ public class UIManagerMainMenu : MonoBehaviour
     private int currentState = 0;
     void Start()
     {
-        UIlist = new GameObject[][] {presstostart, buttons1, buttons2, createGame, findGame, options, tutorial, loading};
+        UIlist = new GameObject[][] {presstostart, buttons1, buttons2, createGame, joinGame, findGame, options, tutorial, loading};
 
         statusTMP = status.GetComponent<TextMeshProUGUI>();
         statusTMP.text = "";
