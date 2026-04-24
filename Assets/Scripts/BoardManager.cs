@@ -1532,6 +1532,37 @@ public class BoardManager : NetworkBehaviour
                     }
                     
                     tileColour tc = player1Board.TileTransforms[i, j].GetComponentInChildren<tileColour>();
+                    tc.TileRecieveSignal(0, false);
+                    tc.TileRecieveDamage(0, 0);
+
+
+                    if (attackBlocked)
+                    {
+                        //Play card attack sounds
+                        int randInt = Random.Range(0, 2);
+                            if (randInt == 0)
+                            {
+                                AudioManager.singleton.PlaySound("combatSword0", true);
+                            }
+                            else
+                            {
+                                AudioManager.singleton.PlaySound("combatSword1", true);
+                            }
+                    }
+                    else
+                    {
+                        if (workingDamage > 0)
+                        {
+                            //Play board attack sounds
+                            AudioManager.singleton.PlaySound("boardAttack", true);
+                            
+                        }
+                        else
+                        {
+                            //Play card defend sounds
+                            AudioManager.singleton.PlaySound("shieldBlock", true);
+                        }
+                    }
 
                     if (attackBlocked)
                     {
@@ -1541,9 +1572,6 @@ public class BoardManager : NetworkBehaviour
                     {
                         tc.TileRecievePopup(workingDamage, 2);
                     }
-                    
-                    tc.TileRecieveSignal(0, false);
-                    tc.TileRecieveDamage(0, 0);
 
                     await Task.Delay(attackDelay);
                 }
@@ -1651,14 +1679,8 @@ public class BoardManager : NetworkBehaviour
 
                     if (attackBlocked)
                     {
-                        //Play board attack sounds
-                    }
-                    else
-                    {
-                        if (workingDamage > 0)
-                        {
-                            //Play card attack sounds
-                            int randInt = Random.Range(0, 2);
+                        //Play card attack sounds
+                        int randInt = Random.Range(0, 2);
                             if (randInt == 0)
                             {
                                 AudioManager.singleton.PlaySound("combatSword0", true);
@@ -1667,12 +1689,29 @@ public class BoardManager : NetworkBehaviour
                             {
                                 AudioManager.singleton.PlaySound("combatSword1", true);
                             }
+                    }
+                    else
+                    {
+                        if (workingDamage > 0)
+                        {
+                            //Play board attack sounds
+                            AudioManager.singleton.PlaySound("boardAttack", true);
+                            
                         }
                         else
                         {
                             //Play card defend sounds
-                            
+                            AudioManager.singleton.PlaySound("shieldBlock", true);
                         }
+                    }
+
+                    if (attackBlocked)
+                    {
+                        tc.TileRecievePopup(workingDamage, 0);
+                    }
+                    else
+                    {
+                        tc.TileRecievePopup(workingDamage, 2);
                     }
                     
                     
