@@ -319,6 +319,7 @@ public class CardManager : NetworkBehaviour
         
     }
     
+
     public GameObject BuildCard(CardDeck.CardData cardData)
     {// Probably a nicer way to do this... Oh well...
         
@@ -367,6 +368,9 @@ public class CardManager : NetworkBehaviour
             textFields[4].text = "";
             cardSprites[6].enabled = false;
         }
+
+
+        cardSprites[8].sprite = Resources.Load<Sprite>($"CardArt/{cardData.Name}");
 
         //I'm not arsed to do something smart rn...will fix this later...maybe...
         //Just wakes up the right squares. Make sure they're all inactive in the prefab before running the game...
