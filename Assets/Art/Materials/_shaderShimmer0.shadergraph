@@ -1702,6 +1702,27 @@
 }
 
 {
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector2MaterialSlot",
+    "m_ObjectId": "665c1803019a4516ae11f504e591e8d2",
+    "m_Id": -787432193,
+    "m_DisplayName": "UV Scaling",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "_UV_Scaling",
+    "m_StageCapability": 2,
+    "m_Value": {
+        "x": 2.0,
+        "y": 2.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0
+    },
+    "m_Labels": []
+}
+
+{
     "m_SGVersion": 3,
     "m_Type": "UnityEditor.ShaderGraph.Internal.ColorShaderProperty",
     "m_ObjectId": "6b696bd301254bd4817192d19b5c89df",
@@ -2448,6 +2469,27 @@
     },
     "m_Labels": [],
     "m_Space": 0
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector2MaterialSlot",
+    "m_ObjectId": "a922af5bbf74471597f300b3e8b731f0",
+    "m_Id": -787432193,
+    "m_DisplayName": "UV Scaling",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "_UV_Scaling",
+    "m_StageCapability": 2,
+    "m_Value": {
+        "x": 2.0,
+        "y": 2.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0
+    },
+    "m_Labels": []
 }
 
 {
@@ -3327,6 +3369,9 @@
             "m_Id": "b32b1c547de34581a6646615dda99433"
         },
         {
+            "m_Id": "a922af5bbf74471597f300b3e8b731f0"
+        },
+        {
             "m_Id": "db9bc439f5ee4430bdac345600c1efdf"
         }
     ],
@@ -3341,11 +3386,13 @@
     "m_SerializedSubGraph": "{\n    \"subGraph\": {\n        \"fileID\": -5475051401550479605,\n        \"guid\": \"291a02e7a380d214f9512b9854fb77d4\",\n        \"type\": 3\n    }\n}",
     "m_PropertyGuids": [
         "30d7353b-a471-466f-bc17-6c5e235da15b",
-        "b0af8007-acc7-4564-a252-219f93484bc6"
+        "b0af8007-acc7-4564-a252-219f93484bc6",
+        "505f59be-1f1e-43a3-a2c9-3cf8fd33d03a"
     ],
     "m_PropertyIds": [
         1937103829,
-        -1398720783
+        -1398720783,
+        -787432193
     ],
     "m_Dropdowns": [],
     "m_DropdownSelectedEntries": []
@@ -3390,6 +3437,9 @@
             "m_Id": "ce0f4be430994978baa31fa237599c55"
         },
         {
+            "m_Id": "665c1803019a4516ae11f504e591e8d2"
+        },
+        {
             "m_Id": "535ead0ddf4c49d0b74298be5bd1d372"
         }
     ],
@@ -3404,11 +3454,13 @@
     "m_SerializedSubGraph": "{\n    \"subGraph\": {\n        \"fileID\": -5475051401550479605,\n        \"guid\": \"291a02e7a380d214f9512b9854fb77d4\",\n        \"type\": 3\n    }\n}",
     "m_PropertyGuids": [
         "30d7353b-a471-466f-bc17-6c5e235da15b",
-        "b0af8007-acc7-4564-a252-219f93484bc6"
+        "b0af8007-acc7-4564-a252-219f93484bc6",
+        "505f59be-1f1e-43a3-a2c9-3cf8fd33d03a"
     ],
     "m_PropertyIds": [
         1937103829,
-        -1398720783
+        -1398720783,
+        -787432193
     ],
     "m_Dropdowns": [],
     "m_DropdownSelectedEntries": []

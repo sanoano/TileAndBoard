@@ -50,7 +50,7 @@ public class GameManager : NetworkBehaviour
             Camera.main.transform.rotation = rot;
         }
         
-        Application.targetFrameRate = 60;
+        //Application.targetFrameRate = 60;
 
     }
 
