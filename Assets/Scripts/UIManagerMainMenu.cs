@@ -12,11 +12,13 @@ public class UIManagerMainMenu : MonoBehaviour
 
     [SerializeField] private CameraMainMenu cameraScript;
 
+    [Header("Components")]
     [SerializeField] private GameObject title;//Title graphic
     [SerializeField] private GameObject status;//Connection status messages
     [SerializeField] private GameObject[] playerNameElements;
     private TextMeshProUGUI statusTMP;
 
+    [Header("Screens")]
     [SerializeField] private GameObject[] presstostart; //(0)
 
     [SerializeField] private GameObject[] buttons1;//Play, Options, Quit (no options for now) (1)
@@ -28,12 +30,13 @@ public class UIManagerMainMenu : MonoBehaviour
     [SerializeField] private GameObject[] options;//(6)
     [SerializeField] private GameObject[] tutorial;//(7)
     [SerializeField] private GameObject[] loading;//(8)
+    [SerializeField] private GameObject[] credits;//(9)
 
     GameObject[][] UIlist;
     private int currentState = 0;
     void Start()
     {
-        UIlist = new GameObject[][] {presstostart, buttons1, buttons2, createGame, joinGame, findGame, options, tutorial, loading};
+        UIlist = new GameObject[][] {presstostart, buttons1, buttons2, createGame, joinGame, findGame, options, tutorial, loading, credits};
 
         statusTMP = status.GetComponent<TextMeshProUGUI>();
         statusTMP.text = "";
@@ -111,7 +114,7 @@ public class UIManagerMainMenu : MonoBehaviour
 
 
         //camera stuff
-        if (newState == 3 || newState == 4)
+        if (newState == 3 || newState == 4 || newState == 9)
             cameraScript.SetCameraState(2);
         else if (newState == 5 || newState == 8)
             cameraScript.SetCameraState(1);

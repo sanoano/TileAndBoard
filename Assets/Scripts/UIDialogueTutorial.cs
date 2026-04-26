@@ -20,6 +20,8 @@ public class UIDialogueTutorial : MonoBehaviour
     [SerializeField] private GameObject[] page2;
     [SerializeField] private GameObject[] page3;
     [SerializeField] private GameObject[] page4;
+    [SerializeField] private GameObject[] page5;
+    [SerializeField] private GameObject[] page6;
     //Right now we have to manually add pages/content.
 
     GameObject[][] pages;
@@ -27,7 +29,7 @@ public class UIDialogueTutorial : MonoBehaviour
 
     void Start()
     {
-        pages = new GameObject[][] { page0, page1, page2, page3, page4 };
+        pages = new GameObject[][] { page0, page1, page2, page3, page4, page5, page6 };
 
         foreach (GameObject[] array in pages)
         {
@@ -77,5 +79,6 @@ public class UIDialogueTutorial : MonoBehaviour
         }
 
         headerTMP.text = headers[pageIndex];
+        //Debug.Log(pageIndex);
     }
 }
