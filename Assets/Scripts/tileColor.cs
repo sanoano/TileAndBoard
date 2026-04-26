@@ -14,6 +14,7 @@ public class tileColour : MonoBehaviour
 
     [Header("Damage Numbers")]
     private Camera mainCamera;
+    private Canvas mainCanvas;
     [SerializeField] private GameObject grossDamage, netDamage;
     private TextMeshProUGUI grossDamageTMP, netDamageTMP;
 
@@ -22,6 +23,7 @@ public class tileColour : MonoBehaviour
         mainCamera = Camera.main;
         TryGetComponent<Renderer>(out mainRenderer);
         previewRenderer = previewSpace.GetComponent<Renderer>();
+        mainCanvas = gameObject.GetComponentInChildren<Canvas>();
 
 
         if (mainRenderer != null)
@@ -137,6 +139,6 @@ public class tileColour : MonoBehaviour
 
     public void TileRecievePopup(int amount, int type)
     {//0 is HP, 1 is Manna, 2 is LP
-        UIPopupNumbers.Create(transform.position, amount, type);
+        UIPopupNumbers.Create(mainCanvas.transform.position, mainCanvas.transform, amount, type);
     }
 }

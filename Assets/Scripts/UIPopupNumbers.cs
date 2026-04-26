@@ -25,9 +25,9 @@ public class UIPopupNumbers : MonoBehaviour
         //remind me to add code that makes negative numbers red
             
     }
-    public static UIPopupNumbers Create(Vector3 position, float amount, int type)
+    public static UIPopupNumbers Create(Vector3 position, Transform parent, float amount, int type)
     {
-        Transform popupTransform = Instantiate(GameAssets.i.prefabPopupNumbers.transform, position, Quaternion.identity);
+        Transform popupTransform = Instantiate(GameAssets.i.prefabPopupNumbers.transform, parent, true);
 
         UIPopupNumbers popupNumbers = popupTransform.GetComponent<UIPopupNumbers>();
         popupNumbers.Setup(amount, type); 
