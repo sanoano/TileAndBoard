@@ -139,6 +139,6 @@ public class tileColour : MonoBehaviour
 
     public void TileRecievePopup(int amount, int type)
     {//0 is HP, 1 is Manna, 2 is LP
-        UIPopupNumbers.Create(mainCanvas.transform.position, mainCanvas.transform, amount, type);
+        UIPopupNumbers.Create(Vector3.zero, mainCanvas.transform, amount, type);
     }
 }

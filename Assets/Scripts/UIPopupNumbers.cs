@@ -15,12 +15,23 @@ public class UIPopupNumbers : MonoBehaviour
 
     public void Setup(float amount, int type)
     {
-        numbersTMP.text = amount.ToString();
+        if (type == 0 || type == 2)
+            if (amount > 0)
+                numbersTMP.text = "-" + amount.ToString();//need 2 fix this if it's a positive value ie successfully defended
+            else
+                numbersTMP.text = amount.ToString();
+        else
+                numbersTMP.text = "+" + amount.ToString();
+
+
 
         if (type < 2)
+        {
+            icon.enabled = true;
             icon.sprite = icons[type];
+        }
         else
-            icon.sprite = null;
+            icon.enabled = false;
 
         //remind me to add code that makes negative numbers red
             
@@ -28,6 +39,7 @@ public class UIPopupNumbers : MonoBehaviour
     public static UIPopupNumbers Create(Vector3 position, Transform parent, float amount, int type)
     {
         Transform popupTransform = Instantiate(GameAssets.i.prefabPopupNumbers.transform, parent, true);
+        popupTransform.localPosition = Vector3.zero;
 
         UIPopupNumbers popupNumbers = popupTransform.GetComponent<UIPopupNumbers>();
         popupNumbers.Setup(amount, type); 
@@ -37,7 +49,7 @@ public class UIPopupNumbers : MonoBehaviour
     private void Update()
     {
         float moveY = 7.5f;
-        transform.position += new Vector3(transform.position.x, moveY, transform.position.z) * Time.deltaTime;
+        transform.position += new Vector3(0.0f, moveY, 0.0f) * Time.deltaTime;
 
         disappearTimer -= Time.deltaTime;
         if (disappearTimer < 0)
@@ -53,7 +65,6 @@ public class UIPopupNumbers : MonoBehaviour
             }
         }
 
-        numbersTMP.transform.LookAt(Camera.main.transform);
-        icon.transform.LookAt(Camera.main.transform);
+        gameObject.transform.LookAt(transform.position + Camera.main.transform.rotation * Vector3.forward, Camera.main.transform.rotation * Vector3.up);
     }
 }
