@@ -467,7 +467,7 @@ public class BoardManager : NetworkBehaviour
 
     void Attacking()
     {
-        if (Input.GetMouseButtonUp(1))
+        if (Input.GetMouseButtonDown(1))
         {
             
             foreach (Vector2Int position in workingPositions)
@@ -530,7 +530,7 @@ public class BoardManager : NetworkBehaviour
             UpdateTileVisuals();
         }
 
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonDown(0))
         {
            
             
@@ -579,7 +579,7 @@ public class BoardManager : NetworkBehaviour
 
     public void Defending()
     {
-        if (Input.GetMouseButtonUp(1))
+        if (Input.GetMouseButtonDown(1))
         {
             foreach (Vector2Int position in workingPositions)
             {
@@ -637,7 +637,7 @@ public class BoardManager : NetworkBehaviour
             UpdateTileVisuals();
         }
 
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonDown(0))
         {
             
             

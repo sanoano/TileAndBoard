@@ -369,8 +369,10 @@ public class CardManager : NetworkBehaviour
             cardSprites[6].enabled = false;
         }
 
-
-        cardSprites[8].sprite = Resources.Load<Sprite>($"CardArt/{cardData.Name}");
+        var op = Resources.LoadAsync<Sprite>($"CardArt/{cardData.Name}");
+        var sprite = op.asset as Sprite;
+        cardSprites[8].sprite = sprite;
+        Debug.Log(sprite != null ? "Card art loaded succesfully" : $"No art found for card {cardData.Name}");
 
         //I'm not arsed to do something smart rn...will fix this later...maybe...
         //Just wakes up the right squares. Make sure they're all inactive in the prefab before running the game...
