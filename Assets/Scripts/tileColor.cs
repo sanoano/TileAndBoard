@@ -138,8 +138,8 @@ public class tileColour : MonoBehaviour
     }
 
     public void TileRecievePopup(int amount, int type)
-    {//0 is HP, 1 is Manna, 2 is LP
-        if (amount != 0)
+    {//0 is HP, 1 is Manna, 2 is LP, 3 is card death
+        if (amount != 0 || type != 3)
         {
             UIPopupNumbers.Create(Vector3.zero, mainCanvas.transform, amount, type);
         }
