@@ -776,6 +776,7 @@ MonoBehaviour:
   startGameButtonObject: {fileID: 163190127}
   leaveGameButton: {fileID: 1248128319}
   lensCap: {fileID: 1859245313}
+  otherIsland: {fileID: 1548158664}
   fadeDuration: 1.5
 --- !u!4 &675599269
 Transform:
@@ -1242,6 +1243,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8016279118582386333, guid: 6e380b5979942f6408bff1a8426612e0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1050041245}
+    - targetCorrespondingSourceObject: {fileID: 8016279118582386333, guid: 6e380b5979942f6408bff1a8426612e0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1548158665}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3267775517745589754, guid: 6e380b5979942f6408bff1a8426612e0, type: 3}
       insertIndex: -1
@@ -1395,7 +1399,7 @@ GameObject:
   - component: {fileID: 1050041245}
   - component: {fileID: 1050041246}
   m_Layer: 0
-  m_Name: islandPivot
+  m_Name: islandPivot1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1430,6 +1434,76 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::envPassiveRotate
   rotateSpeed: 1.5
+--- !u!1001 &1192951015
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1548158665}
+    m_Modifications:
+    - target: {fileID: 1527118590332513236, guid: 67c7b20828f75c54d87cbf6cef5c2051, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1527118590332513236, guid: 67c7b20828f75c54d87cbf6cef5c2051, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1527118590332513236, guid: 67c7b20828f75c54d87cbf6cef5c2051, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1527118590332513236, guid: 67c7b20828f75c54d87cbf6cef5c2051, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 105.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1527118590332513236, guid: 67c7b20828f75c54d87cbf6cef5c2051, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1527118590332513236, guid: 67c7b20828f75c54d87cbf6cef5c2051, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -65.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1527118590332513236, guid: 67c7b20828f75c54d87cbf6cef5c2051, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.27320394
+      objectReference: {fileID: 0}
+    - target: {fileID: 1527118590332513236, guid: 67c7b20828f75c54d87cbf6cef5c2051, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1527118590332513236, guid: 67c7b20828f75c54d87cbf6cef5c2051, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.96195614
+      objectReference: {fileID: 0}
+    - target: {fileID: 1527118590332513236, guid: 67c7b20828f75c54d87cbf6cef5c2051, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1527118590332513236, guid: 67c7b20828f75c54d87cbf6cef5c2051, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1527118590332513236, guid: 67c7b20828f75c54d87cbf6cef5c2051, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -148.29
+      objectReference: {fileID: 0}
+    - target: {fileID: 1527118590332513236, guid: 67c7b20828f75c54d87cbf6cef5c2051, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2196273277248893294, guid: 67c7b20828f75c54d87cbf6cef5c2051, type: 3}
+      propertyPath: m_Name
+      value: envIsland
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 4077497313411710536, guid: 67c7b20828f75c54d87cbf6cef5c2051, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 67c7b20828f75c54d87cbf6cef5c2051, type: 3}
 --- !u!1 &1228082769
 GameObject:
   m_ObjectHideFlags: 0
@@ -1802,6 +1876,52 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1 &1548158664
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1548158665}
+  - component: {fileID: 1548158666}
+  m_Layer: 0
+  m_Name: islandPivot2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1548158665
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1548158664}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.5849579, z: -0, w: -0.8110637}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1792248488}
+  m_Father: {fileID: 850076085}
+  m_LocalEulerAnglesHint: {x: 0, y: 288.4, z: 0}
+--- !u!114 &1548158666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1548158664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e697023880989d48b2fa17664c2aae7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::envPassiveRotate
+  rotateSpeed: -1.5
 --- !u!1 &1661627686 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3267775517745589754, guid: 6e380b5979942f6408bff1a8426612e0, type: 3}
@@ -2037,6 +2157,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1782312580}
   m_CullTransparentMesh: 1
+--- !u!4 &1792248488 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1527118590332513236, guid: 67c7b20828f75c54d87cbf6cef5c2051, type: 3}
+  m_PrefabInstance: {fileID: 1192951015}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1798608379
 GameObject:
   m_ObjectHideFlags: 0
@@ -2191,7 +2316,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1859245312
 RectTransform:
   m_ObjectHideFlags: 0

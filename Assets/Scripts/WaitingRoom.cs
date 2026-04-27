@@ -22,6 +22,7 @@ public class WaitingRoom : NetworkBehaviour
     private Button startGameButton;
     [SerializeField] private Button leaveGameButton;
     [SerializeField] private Image lensCap;
+    [SerializeField] private GameObject otherIsland;
 
     [Header("Parameters")] 
     [SerializeField] private float fadeDuration;
@@ -35,8 +36,8 @@ public class WaitingRoom : NetworkBehaviour
         startGameButton.onClick.AddListener(StartGame);
         leaveGameButton.onClick.AddListener(LeaveGame);
         lobby.m_NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
-        
-        
+
+        otherIsland.SetActive(false);
     }
 
     private void Update()
@@ -45,6 +46,7 @@ public class WaitingRoom : NetworkBehaviour
         {
             startGameButtonObject.SetActive(true);
             waitingText.SetActive(false);
+            otherIsland.SetActive(true);
         }
         else
         {

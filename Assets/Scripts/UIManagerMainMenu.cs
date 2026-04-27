@@ -34,6 +34,12 @@ public class UIManagerMainMenu : MonoBehaviour
 
     GameObject[][] UIlist;
     private int currentState = 0;
+
+    //credits stuff
+    private Vector2 startPos;
+    [SerializeField] private RectTransform creditsListTrans;
+    [SerializeField] private float crawlSpeed;
+    private float crawlRate;
     void Start()
     {
         UIlist = new GameObject[][] {presstostart, buttons1, buttons2, createGame, joinGame, findGame, options, tutorial, loading, credits};
@@ -42,6 +48,8 @@ public class UIManagerMainMenu : MonoBehaviour
         statusTMP.text = "";
 
         SetMenuLevel(0);
+
+        startPos = creditsListTrans.anchoredPosition;
     }
 
     public void SetMenuScreen(int newState)
@@ -49,50 +57,57 @@ public class UIManagerMainMenu : MonoBehaviour
 
         // try
         // {
-            foreach (GameObject[] array in UIlist)
+        foreach (GameObject[] array in UIlist)
+        {
+            foreach (GameObject element in array)
             {
-                foreach (GameObject element in array)
-                {
-                    element.SetActive(false);
-                }
+                element.SetActive(false);
             }
+        }
         //}
         // catch (Exception e)
         // {
         //     
         // }
-        
 
-        foreach (GameObject element in UIlist[newState])
+
+        if (newState != 9)
+        { 
+            foreach (GameObject element in UIlist[newState])
+            {
+                element.SetActive(true);
+
+                if (newState == 1)
+                {
+                    foreach (GameObject button in buttons1)
+                    {
+                        UIDialogueSlide buttons1SlideScript = button.GetComponent<UIDialogueSlide>();
+                        if (buttons1SlideScript != null)
+                            StartCoroutine(PlaySlideNextFrame(buttons1SlideScript, true));
+
+                    }
+                }
+                else if (newState == 2)
+                {
+                    foreach (GameObject button in buttons2)
+                    {
+                        UIDialogueSlide buttons2SlideScript = button.GetComponent<UIDialogueSlide>();
+                        if (buttons2SlideScript != null)
+                            StartCoroutine(PlaySlideNextFrame(buttons2SlideScript, true));
+                    }
+
+                    foreach (GameObject button in buttons1)
+                    {// This won't work because buttons1 is disabled atp. oh well.
+                        UIDialogueSlide buttons1SlideScript = button.GetComponent<UIDialogueSlide>();
+                        if (buttons1SlideScript != null)
+                            StartCoroutine(PlaySlideNextFrame(buttons1SlideScript, false));
+                    }
+                }
+            }
+        }
+        else
         {
-            element.SetActive(true);
-
-            if (newState == 1)
-            {
-                foreach (GameObject button in buttons1)
-                {
-                    UIDialogueSlide buttons1SlideScript = button.GetComponent<UIDialogueSlide>();
-                    if (buttons1SlideScript != null)
-                        StartCoroutine(PlaySlideNextFrame(buttons1SlideScript, true));
-
-                }
-            }
-            else if (newState == 2)
-            {
-                foreach (GameObject button in buttons2)
-                {
-                    UIDialogueSlide buttons2SlideScript = button.GetComponent<UIDialogueSlide>();
-                    if (buttons2SlideScript != null)
-                        StartCoroutine(PlaySlideNextFrame(buttons2SlideScript, true));
-                }
-
-                foreach (GameObject button in buttons1)
-                {// This won't work because buttons1 is disabled atp. oh well.
-                    UIDialogueSlide buttons1SlideScript = button.GetComponent<UIDialogueSlide>();
-                    if (buttons1SlideScript != null)
-                        StartCoroutine(PlaySlideNextFrame(buttons1SlideScript, false));
-                }
-            }
+            StartCredits();
         }
 
         //Makes sure the status messages don't clog up the nice views of irrelevant menus
@@ -148,10 +163,25 @@ public class UIManagerMainMenu : MonoBehaviour
             SetMenuScreen(1);
             SetMenuLevel(1);
         }
+
+        crawlRate = crawlSpeed * Time.deltaTime;
+
+        creditsListTrans.anchoredPosition += Vector2.up * crawlRate;
+
     }
 
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    private void StartCredits()
+    {
+        creditsListTrans.anchoredPosition = startPos;
+
+        foreach (GameObject element in UIlist[9])
+        {
+            element.SetActive(true);
+        }
     }
 }
