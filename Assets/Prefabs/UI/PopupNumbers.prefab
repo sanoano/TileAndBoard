@@ -271,6 +271,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fdd2b83bde0eac4a84bd786d81099c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIPopupNumbers
+  disappearSpeed: 12
   numbersTMP: {fileID: 5458556303231858228}
   icon: {fileID: 5147229297704565345}
   icons:

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class UIPopupNumbers : MonoBehaviour
 {
+    [SerializeField] private float disappearSpeed = 6.0f;
     [SerializeField] private TextMeshProUGUI numbersTMP;
     [SerializeField] private Image icon;
     private float disappearTimer = .5f;
@@ -17,9 +18,12 @@ public class UIPopupNumbers : MonoBehaviour
     {
         if (type == 0 || type == 2)
             if (amount > 0)
-                numbersTMP.text = "-" + amount.ToString();//need 2 fix this if it's a positive value ie successfully defended
+                if (type == 2)
+                    numbersTMP.text = "-" + amount.ToString() + " LP";
+                else
+                    numbersTMP.text = "-" + amount.ToString();
             else
-                numbersTMP.text = amount.ToString();
+                    numbersTMP.text = amount.ToString();
         else
                 numbersTMP.text = "+" + amount.ToString();
 
@@ -54,8 +58,6 @@ public class UIPopupNumbers : MonoBehaviour
         disappearTimer -= Time.deltaTime;
         if (disappearTimer < 0)
         {
-            //start disappearing
-            float disappearSpeed = 6f;
             textColor.a -= disappearSpeed * Time.deltaTime;
             numbersTMP.color = textColor;
             icon.color = textColor;

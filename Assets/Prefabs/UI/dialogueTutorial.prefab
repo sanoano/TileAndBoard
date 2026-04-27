@@ -3187,7 +3187,7 @@ MonoBehaviour:
     this, players use their cards to take actions using Manna (Mna). \r\n\r\nEach
     player has their own pool of Mna that they use to perform all of their actions.
     Each turn the player gains Mna equal to the number of empty spaces on their board
-    at the start of each round. "
+    at the start of each round. \n "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e2e27534f6cc30e48af57eca383b5503, type: 2}
   m_sharedMaterial: {fileID: -839596086599361176, guid: e2e27534f6cc30e48af57eca383b5503, type: 2}
@@ -3598,9 +3598,14 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Each player has an island with 9 spaces where they can place their own
-    cards. \r\n\r\nPlayers have a hand of cards (max 6) from where they can play
-    them on their island. "
+  m_text: 'Each player has an island with 9 spaces where they can place their own
+    cards. Using their cards, players seek to Attack empty spaces on their enemy''s
+    island to reduce their LP. Enemy cards can also be attacked.
+
+    
+
+    Players
+    have a hand of cards (max 6) from where they can play them on their island. '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e2e27534f6cc30e48af57eca383b5503, type: 2}
   m_sharedMaterial: {fileID: -839596086599361176, guid: e2e27534f6cc30e48af57eca383b5503, type: 2}

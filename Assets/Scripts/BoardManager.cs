@@ -113,6 +113,7 @@ public class BoardManager : NetworkBehaviour
 
     private bool board1DoOnce = false;
     private bool board2DoOnce = false;
+    private int criticalHealthThreshold;
 
     private float speed1 = 0;
     private float speed2 = 0;
@@ -230,6 +231,8 @@ public class BoardManager : NetworkBehaviour
 
         player1Health = startingPlayerHealth;
         player2Health = startingPlayerHealth;
+
+        criticalHealthThreshold = startingPlayerHealth/2;
 
         currentSelectedTileGameObject = null;
         
@@ -1807,7 +1810,7 @@ public class BoardManager : NetworkBehaviour
                 StartCoroutine(UIManager.Instance.DisplayEndGameScreen(Player.PlayerId.Player2));
             }
 
-            if (player1Health <= (player1Health / 2) && !board1DoOnce)
+            if (player1Health <= criticalHealthThreshold && !board1DoOnce)
                 board1DoOnce = true;
         }
         else
@@ -1819,7 +1822,7 @@ public class BoardManager : NetworkBehaviour
                 StartCoroutine(UIManager.Instance.DisplayEndGameScreen(Player.PlayerId.Player1));
             }
 
-            if (player2Health <= (player2Health / 2) && !board2DoOnce)
+            if (player2Health <= criticalHealthThreshold && !board2DoOnce)
                 board2DoOnce = true;
         }
 
