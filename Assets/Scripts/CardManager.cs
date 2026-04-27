@@ -387,29 +387,29 @@ public class CardManager : NetworkBehaviour
             if (y == 0)
             {
                 if (x == 0)
-                    cardSprites[8].gameObject.SetActive(true);
-                else if (x == 1)
                     cardSprites[9].gameObject.SetActive(true);
-                else if (x == 2)
+                else if (x == 1)
                     cardSprites[10].gameObject.SetActive(true);
+                else if (x == 2)
+                    cardSprites[11].gameObject.SetActive(true);
             }
             else if (y == 1)
             {
                 if (x == 0)
-                    cardSprites[11].gameObject.SetActive(true);
-                else if (x == 1)
                     cardSprites[12].gameObject.SetActive(true);
-                else if (x == 2)
+                else if (x == 1)
                     cardSprites[13].gameObject.SetActive(true);
+                else if (x == 2)
+                    cardSprites[14].gameObject.SetActive(true);
             }
             else if (y == 2)
             {
                 if (x == 0)
-                    cardSprites[14].gameObject.SetActive(true);
-                else if (x == 1)
                     cardSprites[15].gameObject.SetActive(true);
-                else if (x == 2)
+                else if (x == 1)
                     cardSprites[16].gameObject.SetActive(true);
+                else if (x == 2)
+                    cardSprites[17].gameObject.SetActive(true);
             }
         }
 
