@@ -3,7 +3,7 @@
     "ID": 0,
     "Name": "Cloud Buffer",
     "Health": 20,
-    "Cost": 1,
+    "Cost": 9,
     "Speed": 6,
     "Defence": 0,
     "Range": [
@@ -12,8 +12,7 @@
         1
       ]
     ],
-    "Damage": 0,
-    "": ""
+    "Damage": 0
   },
   {
     "ID": 1,
@@ -28,8 +27,7 @@
         1
       ]
     ],
-    "Damage": 0,
-    "": ""
+    "Damage": 0
   },
   {
     "ID": 2,
@@ -44,8 +42,7 @@
         1
       ]
     ],
-    "Damage": 12,
-    "": ""
+    "Damage": 12
   },
   {
     "ID": 3,
@@ -60,8 +57,7 @@
         0
       ]
     ],
-    "Damage": 6,
-    "": ""
+    "Damage": 6
   },
   {
     "ID": 4,
@@ -76,8 +72,7 @@
         0
       ]
     ],
-    "Damage": 3,
-    "": ""
+    "Damage": 3
   },
   {
     "ID": 5,
@@ -96,8 +91,7 @@
         2
       ]
     ],
-    "Damage": 0,
-    "": ""
+    "Damage": 0
   },
   {
     "ID": 6,
@@ -116,8 +110,7 @@
         2
       ]
     ],
-    "Damage": 6,
-    "": ""
+    "Damage": 6
   },
   {
     "ID": 7,
@@ -136,8 +129,7 @@
         1
       ]
     ],
-    "Damage": 1,
-    "": ""
+    "Damage": 1
   },
   {
     "ID": 8,
@@ -156,8 +148,7 @@
         0
       ]
     ],
-    "Damage": 5,
-    "": ""
+    "Damage": 5
   },
   {
     "ID": 9,
@@ -176,8 +167,7 @@
         1
       ]
     ],
-    "Damage": 4,
-    "": ""
+    "Damage": 4
   },
   {
     "ID": 10,
@@ -196,12 +186,11 @@
         1
       ]
     ],
-    "Damage": 2,
-    "": ""
+    "Damage": 2
   },
   {
     "ID": 11,
-    "Name": "TEST11",
+    "Name": "Shield Angel",
     "Health": 1,
     "Cost": 3,
     "Speed": 3,
@@ -220,8 +209,7 @@
         2
       ]
     ],
-    "Damage": 0,
-    "": ""
+    "Damage": 0
   },
   {
     "ID": 12,
@@ -244,12 +232,11 @@
         2
       ]
     ],
-    "Damage": 4,
-    "": ""
+    "Damage": 4
   },
   {
     "ID": 13,
-    "Name": "TEST13",
+    "Name": "Angelic Captain",
     "Health": 2,
     "Cost": 3,
     "Speed": 2,
@@ -268,12 +255,11 @@
         1
       ]
     ],
-    "Damage": 3,
-    "": ""
+    "Damage": 3
   },
   {
     "ID": 14,
-    "Name": "TEST14",
+    "Name": "Angelic Seer",
     "Health": 2,
     "Cost": 3,
     "Speed": 2,
@@ -292,8 +278,7 @@
         2
       ]
     ],
-    "Damage": 1,
-    "": ""
+    "Damage": 1
   },
   {
     "ID": 15,
@@ -316,8 +301,7 @@
         1
       ]
     ],
-    "Damage": 2,
-    "": ""
+    "Damage": 2
   },
   {
     "ID": 16,
@@ -340,8 +324,7 @@
         1
       ]
     ],
-    "Damage": 1,
-    "": ""
+    "Damage": 1
   },
   {
     "ID": 17,
@@ -364,12 +347,11 @@
         1
       ]
     ],
-    "Damage": 0,
-    "": ""
+    "Damage": 0
   },
   {
     "ID": 18,
-    "Name": "TEST18",
+    "Name": "Principality",
     "Health": 3,
     "Cost": 3,
     "Speed": 4,
@@ -388,12 +370,11 @@
         0
       ]
     ],
-    "Damage": 3,
-    "": ""
+    "Damage": 3
   },
   {
     "ID": 19,
-    "Name": "TEST19",
+    "Name": "Ophanim",
     "Health": 6,
     "Cost": 3,
     "Speed": 4,
@@ -412,8 +393,7 @@
         2
       ]
     ],
-    "Damage": 0,
-    "": ""
+    "Damage": 0
   },
   {
     "ID": 20,
@@ -436,12 +416,11 @@
         2
       ]
     ],
-    "Damage": 2,
-    "": ""
+    "Damage": 2
   },
   {
     "ID": 21,
-    "Name": "Angelic Ballistae",
+    "Name": "Field of Blood",
     "Health": 3,
     "Cost": 4,
     "Speed": 0,
@@ -464,8 +443,7 @@
         2
       ]
     ],
-    "Damage": 3,
-    "": ""
+    "Damage": 3
   },
   {
     "ID": 22,
@@ -492,8 +470,7 @@
         2
       ]
     ],
-    "Damage": 0,
-    "": ""
+    "Damage": 0
   },
   {
     "ID": 23,
@@ -520,8 +497,7 @@
         1
       ]
     ],
-    "Damage": 2,
-    "": ""
+    "Damage": 2
   },
   {
     "ID": 24,
@@ -548,8 +524,7 @@
         2
       ]
     ],
-    "Damage": 0,
-    "": ""
+    "Damage": 0
   },
   {
     "ID": 25,
@@ -576,8 +551,7 @@
         2
       ]
     ],
-    "Damage": 0,
-    "": ""
+    "Damage": 0
   },
   {
     "ID": 26,
@@ -604,8 +578,7 @@
         2
       ]
     ],
-    "Damage": 1,
-    "": ""
+    "Damage": 1
   },
   {
     "ID": 27,
@@ -632,8 +605,7 @@
         1
       ]
     ],
-    "Damage": 1,
-    "": ""
+    "Damage": 1
   },
   {
     "ID": 28,
@@ -660,8 +632,7 @@
         2
       ]
     ],
-    "Damage": 1,
-    "": ""
+    "Damage": 1
   },
   {
     "ID": 29,
@@ -688,8 +659,7 @@
         1
       ]
     ],
-    "Damage": 2,
-    "": ""
+    "Damage": 2
   },
   {
     "ID": 30,
@@ -716,8 +686,7 @@
         1
       ]
     ],
-    "Damage": 0,
-    "": ""
+    "Damage": 0
   },
   {
     "ID": 31,
@@ -744,8 +713,7 @@
         2
       ]
     ],
-    "Damage": 0,
-    "": ""
+    "Damage": 0
   },
   {
     "ID": 32,
@@ -772,7 +740,6 @@
         2
       ]
     ],
-    "Damage": 1,
-    "": ""
+    "Damage": 1
   }
 ]

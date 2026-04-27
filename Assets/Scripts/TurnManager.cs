@@ -191,11 +191,9 @@ public class TurnManager : NetworkBehaviour
                     foreach (var tile in BoardManager.Instance.localBoard.TileTransforms)
                     {
                         var coords = BoardManager.Instance.CoordinatesOf<GameObject>(BoardManager.Instance.localBoard.TileTransforms, tile);
-                        print(coords);
                         bool cardFound = false;
                         foreach(BoardManager.Unit unit in BoardManager.Instance.unitsList)
                         {
-                            print(unit.Position);
                            if (Equals(unit.Position, coords))
                             {
                                 cardFound = true;
@@ -234,11 +232,9 @@ public class TurnManager : NetworkBehaviour
                     foreach (var tile in BoardManager.Instance.localBoard.TileTransforms)
                     {
                         var coords = BoardManager.Instance.CoordinatesOf<GameObject>(BoardManager.Instance.localBoard.TileTransforms, tile);
-                        print(coords);
                         bool cardFound = false;
                         foreach(BoardManager.Unit unit in BoardManager.Instance.unitsList)
                         {
-                            print(unit.Position);
                            if (Equals(unit.Position, coords))
                             {
                                 cardFound = true;
