@@ -16,6 +16,7 @@ public class UIManagerMainMenu : MonoBehaviour
     [SerializeField] private GameObject title;//Title graphic
     [SerializeField] private GameObject status;//Connection status messages
     [SerializeField] private GameObject[] playerNameElements;
+    //[SerializeField] private GameObject versionText;
     private TextMeshProUGUI statusTMP;
 
     [Header("Screens")]
@@ -35,7 +36,7 @@ public class UIManagerMainMenu : MonoBehaviour
     GameObject[][] UIlist;
     private int currentState = 0;
 
-    //credits stuff
+    [Header("Credits")]
     private Vector2 startPos;
     [SerializeField] private RectTransform creditsListTrans;
     [SerializeField] private float crawlSpeed;

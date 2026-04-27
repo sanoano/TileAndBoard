@@ -1922,6 +1922,63 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::envPassiveRotate
   rotateSpeed: -1.5
+--- !u!1001 &1654224353
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 968356669661072757, guid: faa27ec4365c9a948a1c1e7d8d23bff8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 949.16187
+      objectReference: {fileID: 0}
+    - target: {fileID: 968356669661072757, guid: faa27ec4365c9a948a1c1e7d8d23bff8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3111.7605
+      objectReference: {fileID: 0}
+    - target: {fileID: 968356669661072757, guid: faa27ec4365c9a948a1c1e7d8d23bff8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -761.2414
+      objectReference: {fileID: 0}
+    - target: {fileID: 968356669661072757, guid: faa27ec4365c9a948a1c1e7d8d23bff8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 968356669661072757, guid: faa27ec4365c9a948a1c1e7d8d23bff8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 968356669661072757, guid: faa27ec4365c9a948a1c1e7d8d23bff8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 968356669661072757, guid: faa27ec4365c9a948a1c1e7d8d23bff8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 968356669661072757, guid: faa27ec4365c9a948a1c1e7d8d23bff8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 968356669661072757, guid: faa27ec4365c9a948a1c1e7d8d23bff8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 968356669661072757, guid: faa27ec4365c9a948a1c1e7d8d23bff8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3222800300413666543, guid: faa27ec4365c9a948a1c1e7d8d23bff8, type: 3}
+      propertyPath: m_Name
+      value: SkyboxRotator
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: faa27ec4365c9a948a1c1e7d8d23bff8, type: 3}
 --- !u!1 &1661627686 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3267775517745589754, guid: 6e380b5979942f6408bff1a8426612e0, type: 3}
@@ -2527,3 +2584,4 @@ SceneRoots:
   - {fileID: 461822215}
   - {fileID: 675599269}
   - {fileID: 981201123}
+  - {fileID: 1654224353}

@@ -5,6 +5,7 @@ using TMPro;
 using Tweens;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class CardManager : NetworkBehaviour
@@ -331,7 +332,8 @@ public class CardManager : NetworkBehaviour
 
         var textFields = cardVisual.GetComponentsInChildren<TextMeshProUGUI>();
         var cardSprites = cardVisual.GetComponentsInChildren<SpriteRenderer>(true);
-        
+        var cardManna = cardVisual.GetComponentsInChildren<Image>(true);
+
         textFields[0].text = cardData.Name;
         textFields[1].text = cardData.Health.ToString();
 
@@ -413,7 +415,24 @@ public class CardManager : NetworkBehaviour
             }
         }
 
+        //Manna cost display
+
+        int mannaCost = 0;
+        foreach (Vector2Int space in cardData.Range)
+            mannaCost++;
+
+        if (mannaCost >= 1)
+            cardManna[1].gameObject.SetActive(true);
+
+        if (mannaCost >= 2)
+            cardManna[2].gameObject.SetActive(true);
+
+        if (mannaCost >= 3)
+            cardManna[3].gameObject.SetActive(true);
+
+        if (mannaCost >= 4)
+            cardManna[4].gameObject.SetActive(true);
+
         return cardVisual;
     }
-    
 }
