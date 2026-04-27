@@ -230,10 +230,25 @@ public class TurnManager : NetworkBehaviour
                         }
                     }
                     
-                    ManaManager.instance.AddManaPoints(9 - BoardManager.Instance.GetCardAmount(Player.PlayerId.Player2));
+                    ManaManager.instance.AddManaPoints(9 - BoardManager.Instance.GetCardAmount(Player.PlayerId.Player1));
                     foreach (var tile in BoardManager.Instance.localBoard.TileTransforms)
                     {
-                        tile.GetComponent<tileColour>().TileRecievePopup(1, 1);
+                        var coords = BoardManager.Instance.CoordinatesOf<GameObject>(BoardManager.Instance.localBoard.TileTransforms, tile);
+                        print(coords);
+                        bool cardFound = false;
+                        foreach(BoardManager.Unit unit in BoardManager.Instance.unitsList)
+                        {
+                            print(unit.Position);
+                           if (Equals(unit.Position, coords))
+                            {
+                                cardFound = true;
+                            }
+                        }
+                        if (!cardFound)
+                        {
+                            tile.GetComponent<tileColour>().TileRecievePopup(1, 1);
+                        } 
+                        
                     }
                 }
                 
