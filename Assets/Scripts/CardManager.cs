@@ -371,7 +371,7 @@ public class CardManager : NetworkBehaviour
             cardSprites[6].enabled = false;
         }
 
-        var op = Resources.LoadAsync<Sprite>($"CardArt/{cardData.Name}");
+        var op = Resources.LoadAsync<Sprite>($"CardArt/{cardData.ID}");
         var sprite = op.asset as Sprite;
         cardSprites[8].sprite = sprite;
         Debug.Log(sprite != null ? "Card art loaded succesfully" : $"No art found for card {cardData.Name}");
