@@ -198,7 +198,7 @@ public class TurnManager : NetworkBehaviour
                         bool cardFound = false;
                         foreach(BoardManager.Unit unit in BoardManager.Instance.unitsList)
                         {
-                           if (Equals(unit.Position, coords))
+                           if (Equals(unit.Position, coords) && unit.ID == Player.PlayerId.Player1)
                             {
                                 cardFound = true;
                             }
@@ -220,7 +220,7 @@ public class TurnManager : NetworkBehaviour
             
             case TurnState.Player2Turn:
                 
-                if (GameManager.instance.playerId == Player.PlayerId.Player2)
+                if (GameManager.instance.playerId == Player.PlayerId.Player2 && turnCount != 1)
                 {
                     foreach (var unit in BoardManager.Instance.unitsList)
                     {
@@ -244,7 +244,7 @@ public class TurnManager : NetworkBehaviour
                         bool cardFound = false;
                         foreach(BoardManager.Unit unit in BoardManager.Instance.unitsList)
                         {
-                           if (Equals(unit.Position, coords))
+                           if (Equals(unit.Position, coords) && unit.ID == Player.PlayerId.Player2)
                             {
                                 cardFound = true;
                             }
@@ -268,8 +268,6 @@ public class TurnManager : NetworkBehaviour
     {
 
         currentTime = maxTimePerTurn;
-
-        AudioManager.singleton.PlaySound("stonePush", false);
 
         if (UIManager.Instance.interactionState != UIManager.InteractionState.None)
         {

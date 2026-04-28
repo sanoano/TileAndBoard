@@ -111,6 +111,8 @@ public class UIManager : MonoBehaviour
         UpdateCardAmountDisplay();
         
         Color invisible = new Color(0, 0, 0, 0);
+
+        lensCap.gameObject.SetActive(true);
         
         var backgroundTween = new ColorTween {
             from = lensCap.color,
