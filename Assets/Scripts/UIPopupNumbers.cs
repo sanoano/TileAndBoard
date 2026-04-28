@@ -7,25 +7,39 @@ using UnityEngine.UI;
 
 public class UIPopupNumbers : MonoBehaviour
 {
-    [SerializeField] private float disappearSpeed = 6.0f;
-    [SerializeField] private TextMeshProUGUI numbersTMP;
-    [SerializeField] private Image icon;
-    private float disappearTimer = .5f;
-    private Color textColor;
+    [SerializeField] private float disappearSpeed = .1f;
+    [SerializeField] public TextMeshProUGUI numbersTMP;
+    [SerializeField] public Image icon;
+    private float disappearTimer = 1.0f;
+    public Color textColor;
     [SerializeField] private Sprite[] icons;//0 is HP, 1 is Manna. LP don't have no icon
 
     public void Setup(float amount, int type)
     {
-        if (type == 0 || type == 2)
-            if (amount > 0)
+        if (type == 0 || type == 2) {
+            if (amount > 0) 
+            {
                 if (type == 2)
+                {
                     numbersTMP.text = "-" + amount.ToString() + " LP";
+                    numbersTMP.color = Color.red;
+                }
                 else
+                {
                     numbersTMP.text = "-" + amount.ToString();
+                    numbersTMP.color = Color.red;
+                }
+            }  
             else
-                    numbersTMP.text = amount.ToString();
+            {
+                numbersTMP.text = amount.ToString();
+            }          
+        }
         else
-                numbersTMP.text = "+" + amount.ToString();
+        {
+            numbersTMP.text = "+" + amount.ToString();
+        }
+                
 
 
 
@@ -52,21 +66,23 @@ public class UIPopupNumbers : MonoBehaviour
     }
     private void Update()
     {
-        float moveY = 7.5f;
-        transform.position += new Vector3(0.0f, moveY, 0.0f) * Time.deltaTime;
+        // float moveY = 7.5f;
+        // transform.position += new Vector3(0.0f, moveY, 0.0f) * Time.deltaTime;
 
-        disappearTimer -= Time.deltaTime;
-        if (disappearTimer < 0)
-        {
-            textColor.a -= disappearSpeed * Time.deltaTime;
-            numbersTMP.color = textColor;
-            icon.color = textColor;
-            if (textColor.a < 0) 
-            {
-                Destroy(gameObject);
-            }
-        }
+        // disappearTimer -= Time.deltaTime;
+        // if (disappearTimer < 0)
+        // {
+        //     textColor.a -= disappearSpeed * Time.deltaTime;
+        //     numbersTMP.color = textColor;
+        //     icon.color = textColor;
+        //     if (textColor.a < 0) 
+        //     {
+        //         Destroy(gameObject);
+        //     }
+        // }
 
+        // numbersTMP.color = textColor;
+        // icon.color = textColor;
         gameObject.transform.LookAt(transform.position + Camera.main.transform.rotation * Vector3.forward, Camera.main.transform.rotation * Vector3.up);
     }
 }

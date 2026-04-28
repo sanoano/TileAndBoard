@@ -1,5 +1,7 @@
 using TMPro;
+using Tweens;
 using Unity.VisualScripting;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
 
@@ -141,7 +143,49 @@ public class tileColour : MonoBehaviour
     {//0 is HP, 1 is Manna, 2 is LP, 3 is card death
         if (amount != 0 || type != 3)
         {
-            UIPopupNumbers.Create(Vector3.zero, mainCanvas.transform, amount, type);
+            var popUpInstance = UIPopupNumbers.Create(Vector3.zero, mainCanvas.transform, amount, type);
+
+            var textInvisible = new Color(popUpInstance.numbersTMP.color.r, popUpInstance.numbersTMP.color.g, popUpInstance.numbersTMP.color.b, 0);
+            var iconInvisible = new Color(popUpInstance.icon.color.r, popUpInstance.icon.color.g, popUpInstance.icon.color.b, 0 );
+
+            var textDisappearTween = new ColorTween
+            {
+                from = popUpInstance.numbersTMP.color,
+                to = textInvisible,
+                duration = 0.25f,
+                easeType = EaseType.SineOut,
+                onUpdate = (_, value) => popUpInstance.numbersTMP.color = value,
+            };
+
+            var iconDisappearTween = new ColorTween
+            {
+                from = popUpInstance.icon.color,
+                to = iconInvisible,
+                duration = 0.25f,
+                easeType = EaseType.SineOut,
+                onUpdate = (_, value) => popUpInstance.icon.color = value,
+                onEnd = (instance) =>
+                {
+                    Destroy(popUpInstance.gameObject);
+                }
+            };
+
+            var riseTween = new PositionYTween
+            {
+                to = popUpInstance.transform.position.y + 5.5f,
+                duration = 1.25f,
+                easeType = EaseType.SineInOut,
+                onEnd = (instance) =>
+                {
+                   popUpInstance.gameObject.AddTween(textDisappearTween);
+                    popUpInstance.gameObject.AddTween(iconDisappearTween);
+                },
+            };
+            
+            popUpInstance.gameObject.AddTween(riseTween);
+            
+
+
         }
     }
 }

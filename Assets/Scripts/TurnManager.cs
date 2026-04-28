@@ -186,9 +186,12 @@ public class TurnManager : NetworkBehaviour
                             unit.Movement = data.Speed;
                         }
                     }
-                    
-                    ManaManager.instance.AddManaPoints(9 - BoardManager.Instance.GetCardAmount(Player.PlayerId.Player1));
-                    AudioManager.singleton.PlaySound("manaGain", false);
+                    var manaToGain = 9 - BoardManager.Instance.GetCardAmount(Player.PlayerId.Player1);
+                    ManaManager.instance.AddManaPoints(manaToGain);
+                    if (manaToGain > 0)
+                    {
+                        AudioManager.singleton.PlaySound("manaGain", false);
+                    }
                     foreach (var tile in BoardManager.Instance.localBoard.TileTransforms)
                     {
                         var coords = BoardManager.Instance.CoordinatesOf<GameObject>(BoardManager.Instance.localBoard.TileTransforms, tile);
@@ -229,8 +232,12 @@ public class TurnManager : NetworkBehaviour
                         }
                     }
                     
-                    ManaManager.instance.AddManaPoints(9 - BoardManager.Instance.GetCardAmount(Player.PlayerId.Player2));
-                    AudioManager.singleton.PlaySound("manaGain", false);
+                    var manaToGain = 9 - BoardManager.Instance.GetCardAmount(Player.PlayerId.Player2);
+                    ManaManager.instance.AddManaPoints(manaToGain);
+                    if (manaToGain > 0)
+                    {
+                        AudioManager.singleton.PlaySound("manaGain", false);
+                    }
                     foreach (var tile in BoardManager.Instance.localBoard.TileTransforms)
                     {
                         var coords = BoardManager.Instance.CoordinatesOf<GameObject>(BoardManager.Instance.localBoard.TileTransforms, tile);
@@ -261,6 +268,8 @@ public class TurnManager : NetworkBehaviour
     {
 
         currentTime = maxTimePerTurn;
+
+        AudioManager.singleton.PlaySound("stonePush", false);
 
         if (UIManager.Instance.interactionState != UIManager.InteractionState.None)
         {
@@ -311,7 +320,7 @@ public class TurnManager : NetworkBehaviour
         currentTurn = turn;
         UpdateTurnText(currentTurn);
         OnTurnChanged(currentTurn);
-        AudioManager.singleton.PlaySound("roundChange", false);
+        //AudioManager.singleton.PlaySound("roundChange", false);
         isYourTurn = !isYourTurn;
     }
     

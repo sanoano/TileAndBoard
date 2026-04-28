@@ -74,6 +74,7 @@ public class CardDrag : MonoBehaviour
     private void OnMouseDown()
     {
         if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
+        if (UIManager.Instance.settingsMenu.activeSelf) return;
         if (isPlaced) return;
         if (CardManager.instance.cardDrawInProgress) return;
         if (orbitCamera.cameraState == OrbitCamera.CameraState.Free) return;
@@ -197,6 +198,7 @@ public class CardDrag : MonoBehaviour
     private void OnMouseUp()
     {
         if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
+        if (UIManager.Instance.settingsMenu.activeSelf) return;
         if (isPlaced) return;
         if (CardManager.instance.cardDrawInProgress) return;
         if (orbitCamera.cameraState == OrbitCamera.CameraState.Free) return;
@@ -314,6 +316,7 @@ public class CardDrag : MonoBehaviour
     private void OnMouseEnter()
     {
         if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
+        if (UIManager.Instance.settingsMenu.activeSelf) return;
         if (isPlaced) return;
         if (isDragged) return;
         if (CardManager.instance.cardDrawInProgress) return;
@@ -356,6 +359,7 @@ public class CardDrag : MonoBehaviour
     private void OnMouseExit()
     {
         if (UIManager.Instance.interactionState != UIManager.InteractionState.None) return;
+        if (UIManager.Instance.settingsMenu.activeSelf) return;
         if (isPlaced) return;
         if (isDragged) return;
         if (CardManager.instance.cardDrawInProgress) return;
