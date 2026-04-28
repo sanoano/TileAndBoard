@@ -188,6 +188,7 @@ public class TurnManager : NetworkBehaviour
                     }
                     
                     ManaManager.instance.AddManaPoints(9 - BoardManager.Instance.GetCardAmount(Player.PlayerId.Player1));
+                    AudioManager.singleton.PlaySound("manaGain", false);
                     foreach (var tile in BoardManager.Instance.localBoard.TileTransforms)
                     {
                         var coords = BoardManager.Instance.CoordinatesOf<GameObject>(BoardManager.Instance.localBoard.TileTransforms, tile);
@@ -228,7 +229,8 @@ public class TurnManager : NetworkBehaviour
                         }
                     }
                     
-                    ManaManager.instance.AddManaPoints(9 - BoardManager.Instance.GetCardAmount(Player.PlayerId.Player1));
+                    ManaManager.instance.AddManaPoints(9 - BoardManager.Instance.GetCardAmount(Player.PlayerId.Player2));
+                    AudioManager.singleton.PlaySound("manaGain", false);
                     foreach (var tile in BoardManager.Instance.localBoard.TileTransforms)
                     {
                         var coords = BoardManager.Instance.CoordinatesOf<GameObject>(BoardManager.Instance.localBoard.TileTransforms, tile);

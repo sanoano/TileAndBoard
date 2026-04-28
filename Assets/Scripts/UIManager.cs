@@ -255,6 +255,7 @@ public class UIManager : MonoBehaviour
         totalText.text = total.ToString();
 
 
+
     }
 
     public void CreateCardInfoPanel(Vector2Int position, Player.PlayerId playerId)
@@ -463,6 +464,7 @@ public class UIManager : MonoBehaviour
 
         }
 
+        AudioManager.singleton.PlaySound("scrollOpen", true);
         slideScript.SlideIn();
 
     }
