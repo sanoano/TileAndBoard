@@ -16,6 +16,8 @@ public class Hourglass : MonoBehaviour
     [SerializeField] private GameObject half2Empty;
     [SerializeField] private GameObject half2Fill;
 
+    [SerializeField] private GameObject cloud;
+
     private bool flippedUp = false;
     private float defaultScaleValue = 0.9f;
     private Vector3 defaultScale;
@@ -23,14 +25,15 @@ public class Hourglass : MonoBehaviour
     [SerializeField] private float moveSpeed = 5.0f;
 
     //This is for all the stuff in switching from left to right
-    [SerializeField] private Transform position1, position2;
+    //[SerializeField] private Transform position1, position2;
     private Transform player1Position, player2Position;
+    private Vector3 player1PositionCloud, player2PositionCloud;
     private bool positionsAssigned = false;
 
     void Start()
     {
-        if (!positionsAssigned)
-            AssignPositions(true);
+        //if (!positionsAssigned)
+        //    AssignPositions(true);
     }
 
     private void Update()
@@ -39,23 +42,21 @@ public class Hourglass : MonoBehaviour
         //    FlipHourglass(5f);
     }
 
-    public void AssignPositions(bool firstPlayerLeft)
+    public void AssignPositions(Transform leftPos, Transform rightPos)
     {
-        if (firstPlayerLeft)
-        {
-            player1Position = position1;
-            player2Position = position2;
-        }
-        else
-        {
-            player1Position = position2;
-            player2Position = position1;
-        }
+        player1Position = leftPos;
+        player2Position = rightPos;
+
+        player1PositionCloud = new Vector3(player1Position.position.x, player1Position.position.y - 5, player1Position.position.z);
+        player2PositionCloud = new Vector3(player2Position.position.x, player2Position.position.y - 5, player2Position.position.z);
+
+        gameObject.transform.position = player1Position.position;
+        cloud.transform.position = player1PositionCloud;
     }
 
     public void FlipHourglass(float timerLength)
     {
-        Debug.Log(flippedUp);
+        //Debug.Log(flippedUp);
 
         Quaternion originalRot = Quaternion.identity;
         Quaternion flippedRot = new Quaternion(originalRot.x + 180.0f, originalRot.y, originalRot.z, 1);
@@ -91,7 +92,16 @@ public class Hourglass : MonoBehaviour
                 easeType = EaseType.ExpoOut
             };
 
+            var tweenCloudPos1 = new PositionTween()
+            {
+                from = player1PositionCloud,
+                to = player2PositionCloud,
+                duration = moveSpeed / 3,
+                easeType = EaseType.Linear
+            };
+
             gameObject.AddTween(tweenPos1);
+            cloud.AddTween(tweenCloudPos1);
 
             flippedUp = false;
         }
@@ -114,10 +124,21 @@ public class Hourglass : MonoBehaviour
                 easeType = EaseType.ExpoOut
             };
 
+            var tweenCloudPos2 = new PositionTween()
+            {
+                from = player2PositionCloud,
+                to = player1PositionCloud,
+                duration = moveSpeed / 3,
+                easeType = EaseType.Linear
+            };
+
             gameObject.AddTween(tweenPos2);
+            cloud.AddTween(tweenCloudPos2);
 
             flippedUp = true;
         }
+
+
     }
 
     private IEnumerator InitiateTimer(float timerLength)

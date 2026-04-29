@@ -41,6 +41,12 @@ public class UIManagerMainMenu : MonoBehaviour
     [SerializeField] private RectTransform creditsListTrans;
     [SerializeField] private float crawlSpeed;
     private float crawlRate;
+
+    [Header("Audio")]
+    [SerializeField] private AudioClip parchment;
+    [SerializeField] private AudioClip stone;
+    private AudioSource source;
+
     void Start()
     {
         UIlist = new GameObject[][] {presstostart, buttons1, buttons2, createGame, joinGame, findGame, options, tutorial, loading, credits};
@@ -51,6 +57,8 @@ public class UIManagerMainMenu : MonoBehaviour
         SetMenuLevel(0);
 
         startPos = creditsListTrans.anchoredPosition;
+
+        source = gameObject.GetComponent<AudioSource>();
     }
 
     public void SetMenuScreen(int newState)
@@ -184,5 +192,15 @@ public class UIManagerMainMenu : MonoBehaviour
         {
             element.SetActive(true);
         }
+    }
+
+    //Audio events
+    public void AudioParchment()
+    {
+        source.PlayOneShot(parchment);
+    }
+    public void AudioStone()
+    {
+        source.PlayOneShot(stone);
     }
 }

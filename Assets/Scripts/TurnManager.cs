@@ -32,6 +32,13 @@ public class TurnManager : NetworkBehaviour
     [Header("Turn Timer")] 
     public float maxTimePerTurn = 180f;
     public float currentTime;
+
+    [Header("Hourglass Stuff")]
+    [SerializeField] private GameObject hourglass;
+    private Hourglass hourglassScript;
+    [HideInInspector] public bool isSide1 = true;
+    [SerializeField] private Transform[] side1Transforms;//0 is on the left, 1 on the right
+    [SerializeField] private Transform[] side2Transforms;
     
     
     
@@ -48,9 +55,8 @@ public class TurnManager : NetworkBehaviour
 
         
         turnButton.onClick.AddListener(ChangeTurn);
-        
-    }
-    
+
+    }    
 
     public override void OnNetworkSpawn()
     {
@@ -114,6 +120,23 @@ public class TurnManager : NetworkBehaviour
             isYourTurn = true;
             UpdateTurnText(currentTurn);
         }
+
+        hourglassScript = hourglass.GetComponent<Hourglass>();
+
+        if (isSide1)
+        {
+            hourglassScript.AssignPositions(side1Transforms[0], side1Transforms[1]);
+            //Debug.Log(side1Transforms[0]);
+            //Debug.Log(side1Transforms[1]);
+        }
+        else
+        {
+            hourglassScript.AssignPositions(side2Transforms[0], side2Transforms[1]);
+            //Debug.Log(side2Transforms[0]);
+            //Debug.Log(side2Transforms[1]);
+        }
+
+        hourglassScript.FlipHourglass(maxTimePerTurn);
     }
 
     public enum TurnState : byte
@@ -274,6 +297,8 @@ public class TurnManager : NetworkBehaviour
     {
 
         currentTime = maxTimePerTurn;
+
+        hourglassScript.FlipHourglass(maxTimePerTurn);
 
         if (UIManager.Instance.interactionState != UIManager.InteractionState.None)
         {
