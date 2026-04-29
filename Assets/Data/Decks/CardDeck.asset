@@ -15,116 +15,125 @@ MonoBehaviour:
   cardIds: 00000000020000000300000004000000050000000600000007000000
   Cards:
   - ID: 0
-    Name: TEST0
-    Health: 10
-    Cost: 0
-    Speed: 4
+    Name: Cloud Buffer
+    Health: 20
+    Cost: 9
+    Speed: 6
     Defence: 0
     Range:
     - {x: 1, y: 1}
     Damage: 0
   - ID: 1
-    Name: TEST1
-    Health: 1
-    Cost: 0
-    Speed: 3
+    Name: Holy Well
+    Health: 6
+    Cost: 1
+    Speed: 0
+    Defence: 12
+    Range:
+    - {x: 1, y: 1}
+    Damage: 0
+  - ID: 2
+    Name: Brimstone Pit
+    Health: 6
+    Cost: 1
+    Speed: 0
+    Defence: 0
+    Range:
+    - {x: 1, y: 1}
+    Damage: 12
+  - ID: 3
+    Name: Gryphon
+    Health: 7
+    Cost: 1
+    Speed: 2
+    Defence: 3
+    Range:
+    - {x: 1, y: 0}
+    Damage: 6
+  - ID: 4
+    Name: Proto-Angel
+    Health: 7
+    Cost: 1
+    Speed: 2
+    Defence: 6
+    Range:
+    - {x: 0, y: 0}
+    Damage: 3
+  - ID: 5
+    Name: Guardian Angel
+    Health: 4
+    Cost: 2
+    Speed: 1
+    Defence: 6
+    Range:
+    - {x: 1, y: 0}
+    - {x: 1, y: 2}
+    Damage: 0
+  - ID: 6
+    Name: Dominion
+    Health: 4
+    Cost: 2
+    Speed: 1
+    Defence: 0
+    Range:
+    - {x: 0, y: 0}
+    - {x: 2, y: 2}
+    Damage: 6
+  - ID: 7
+    Name: Valkyrie
+    Health: 3
+    Cost: 2
+    Speed: 2
     Defence: 5
     Range:
-    - {x: 1, y: 1}
-    Damage: 5
-  - ID: 2
-    Name: TEST2
-    Health: 4
-    Cost: 0
-    Speed: 3
-    Defence: 3
-    Range:
-    - {x: 1, y: 0}
-    Damage: 4
-  - ID: 3
-    Name: TEST3
-    Health: 4
-    Cost: 0
-    Speed: 3
-    Defence: 4
-    Range:
-    - {x: 0, y: 0}
-    Damage: 3
-  - ID: 4
-    Name: TEST4
-    Health: 2
-    Cost: 0
-    Speed: 4
-    Defence: 4
-    Range:
-    - {x: 1, y: 0}
-    - {x: 1, y: 2}
-    Damage: 2
-  - ID: 5
-    Name: TEST5
-    Health: 2
-    Cost: 0
-    Speed: 4
-    Defence: 2
-    Range:
-    - {x: 0, y: 0}
-    - {x: 2, y: 2}
-    Damage: 4
-  - ID: 6
-    Name: TEST6
-    Health: 5
-    Cost: 0
-    Speed: 3
-    Defence: 1
-    Range:
     - {x: 1, y: 0}
     - {x: 0, y: 1}
-    Damage: 4
-  - ID: 7
-    Name: TEST7
-    Health: 5
-    Cost: 0
-    Speed: 3
-    Defence: 3
+    Damage: 1
+  - ID: 8
+    Name: Seraph
+    Health: 3
+    Cost: 2
+    Speed: 2
+    Defence: 1
     Range:
     - {x: 0, y: 0}
     - {x: 2, y: 0}
-    Damage: 2
-  - ID: 8
-    Name: TEST8
-    Health: 6
-    Cost: 0
-    Speed: 2
-    Defence: 4
+    Damage: 5
+  - ID: 9
+    Name: Cherub
+    Health: 1
+    Cost: 2
+    Speed: 4
+    Defence: 2
     Range:
     - {x: 1, y: 0}
     - {x: 1, y: 1}
-    Damage: 1
-  - ID: 9
-    Name: TEST9
-    Health: 6
-    Cost: 0
-    Speed: 2
-    Defence: 2
+    Damage: 4
+  - ID: 10
+    Name: Archangel
+    Health: 1
+    Cost: 2
+    Speed: 4
+    Defence: 4
     Range:
     - {x: 0, y: 0}
     - {x: 1, y: 1}
-    Damage: 3
-  - ID: 10
-    Name: TEST10
-    Health: 4
-    Cost: 0
-    Speed: 3
-    Defence: 2
-    Range:
-    - {x: 1, y: 0}
-    - {x: 1, y: 1}
-    - {x: 1, y: 2}
     Damage: 2
   - ID: 11
-    Name: TEST11
-    Health: 4
-    Cost: 0
+    Name: Shield Angel
+    Health: 1
+    Cost: 3
+    Speed: 3
+    Defence: 4
+    Range:
+    - {x: 1, y: 0}
+    - {x: 1, y: 1}
+    - {x: 1, y: 2}
+    Damage: 0
+  - ID: 12
+    Name: Fury
+    Health: 1
+    Cost: 3
     Speed: 3
     Defence: 0
     Range:
@@ -132,99 +141,99 @@ MonoBehaviour:
     - {x: 1, y: 1}
     - {x: 2, y: 2}
     Damage: 4
-  - ID: 12
-    Name: TEST12
-    Health: 6
-    Cost: 0
+  - ID: 13
+    Name: Angelic Captain
+    Health: 2
+    Cost: 3
     Speed: 2
-    Defence: 3
+    Defence: 1
     Range:
     - {x: 1, y: 0}
     - {x: 0, y: 1}
     - {x: 2, y: 1}
-    Damage: 1
-  - ID: 13
-    Name: TEST13
-    Health: 6
-    Cost: 0
-    Speed: 2
-    Defence: 2
-    Range:
-    - {x: 0, y: 0}
-    - {x: 2, y: 0}
-    - {x: 0, y: 2}
-    Damage: 2
-  - ID: 14
-    Name: TEST14
-    Health: 5
-    Cost: 0
-    Speed: 2
-    Defence: 4
-    Range:
-    - {x: 1, y: 0}
-    - {x: 0, y: 1}
-    - {x: 1, y: 1}
-    Damage: 0
-  - ID: 15
-    Name: TEST15
-    Health: 5
-    Cost: 0
-    Speed: 2
-    Defence: 1
-    Range:
-    - {x: 0, y: 0}
-    - {x: 2, y: 0}
-    - {x: 1, y: 1}
     Damage: 3
-  - ID: 16
-    Name: TEST16
-    Health: 8
-    Cost: 0
-    Speed: 2
-    Defence: 1
-    Range:
-    - {x: 0, y: 0}
-    - {x: 1, y: 0}
-    - {x: 0, y: 1}
-    Damage: 2
-  - ID: 17
-    Name: TEST17
-    Health: 8
-    Cost: 0
+  - ID: 14
+    Name: Angelic Seer
+    Health: 2
+    Cost: 3
     Speed: 2
     Defence: 3
     Range:
     - {x: 0, y: 0}
-    - {x: 1, y: 0}
     - {x: 2, y: 0}
+    - {x: 0, y: 2}
+    Damage: 1
+  - ID: 15
+    Name: Power
+    Health: 3
+    Cost: 3
+    Speed: 4
+    Defence: 1
+    Range:
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    Damage: 2
+  - ID: 16
+    Name: Virtue
+    Health: 3
+    Cost: 3
+    Speed: 4
+    Defence: 2
+    Range:
+    - {x: 0, y: 0}
+    - {x: 2, y: 0}
+    - {x: 1, y: 1}
+    Damage: 1
+  - ID: 17
+    Name: Zephyr
+    Health: 3
+    Cost: 3
+    Speed: 4
+    Defence: 3
+    Range:
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
     Damage: 0
   - ID: 18
-    Name: TEST18
-    Health: 5
-    Cost: 0
-    Speed: 3
+    Name: Principality
+    Health: 3
+    Cost: 3
+    Speed: 4
     Defence: 0
     Range:
+    - {x: 0, y: 0}
     - {x: 1, y: 0}
-    - {x: 0, y: 1}
-    - {x: 2, y: 2}
+    - {x: 2, y: 0}
     Damage: 3
   - ID: 19
-    Name: TEST19
-    Health: 5
-    Cost: 0
-    Speed: 3
+    Name: Ophanim
+    Health: 6
+    Cost: 3
+    Speed: 4
     Defence: 2
+    Range:
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    - {x: 2, y: 2}
+    Damage: 0
+  - ID: 20
+    Name: Throne
+    Health: 6
+    Cost: 3
+    Speed: 4
+    Defence: 0
     Range:
     - {x: 0, y: 0}
     - {x: 2, y: 0}
     - {x: 1, y: 2}
-    Damage: 1
-  - ID: 20
-    Name: TEST20
-    Health: 1
-    Cost: 0
-    Speed: 4
+    Damage: 2
+  - ID: 21
+    Name: Field of Blood
+    Health: 3
+    Cost: 4
+    Speed: 0
     Defence: 0
     Range:
     - {x: 1, y: 0}
@@ -232,11 +241,11 @@ MonoBehaviour:
     - {x: 2, y: 1}
     - {x: 1, y: 2}
     Damage: 3
-  - ID: 21
-    Name: TEST21
-    Health: 1
-    Cost: 0
-    Speed: 4
+  - ID: 22
+    Name: St. Gabriel
+    Health: 3
+    Cost: 4
+    Speed: 0
     Defence: 3
     Range:
     - {x: 0, y: 0}
@@ -244,95 +253,95 @@ MonoBehaviour:
     - {x: 0, y: 2}
     - {x: 2, y: 2}
     Damage: 0
-  - ID: 22
-    Name: TEST22
-    Health: 4
-    Cost: 0
-    Speed: 1
-    Defence: 2
+  - ID: 23
+    Name: St. Michael
+    Health: 3
+    Cost: 4
+    Speed: 4
+    Defence: 0
     Range:
     - {x: 0, y: 0}
     - {x: 2, y: 0}
     - {x: 0, y: 1}
     - {x: 2, y: 1}
-    Damage: 1
-  - ID: 23
-    Name: TEST23
-    Health: 4
-    Cost: 0
-    Speed: 1
-    Defence: 0
+    Damage: 2
+  - ID: 24
+    Name: St. Raphael
+    Health: 3
+    Cost: 4
+    Speed: 4
+    Defence: 2
     Range:
     - {x: 1, y: 0}
     - {x: 2, y: 0}
     - {x: 0, y: 1}
     - {x: 0, y: 2}
-    Damage: 3
-  - ID: 24
-    Name: TEST24
-    Health: 8
-    Cost: 0
-    Speed: 0
+    Damage: 0
+  - ID: 25
+    Name: Nephil
+    Health: 7
+    Cost: 4
+    Speed: 4
     Defence: 1
     Range:
     - {x: 0, y: 0}
     - {x: 1, y: 0}
     - {x: 2, y: 0}
     - {x: 1, y: 2}
-    Damage: 2
-  - ID: 25
-    Name: TEST25
-    Health: 8
-    Cost: 0
-    Speed: 0
-    Defence: 3
-    Range:
-    - {x: 0, y: 0}
-    - {x: 1, y: 0}
-    - {x: 0, y: 1}
-    - {x: 2, y: 2}
     Damage: 0
   - ID: 26
-    Name: TEST26
-    Health: 8
-    Cost: 0
-    Speed: 1
-    Defence: 2
+    Name: Golem
+    Health: 7
+    Cost: 4
+    Speed: 4
+    Defence: 0
+    Range:
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    - {x: 2, y: 2}
+    Damage: 1
+  - ID: 27
+    Name: Samson
+    Health: 3
+    Cost: 4
+    Speed: 4
+    Defence: 1
     Range:
     - {x: 1, y: 0}
     - {x: 0, y: 1}
     - {x: 1, y: 1}
     - {x: 2, y: 1}
-    Damage: 0
-  - ID: 27
-    Name: TEST27
-    Health: 8
-    Cost: 0
-    Speed: 1
-    Defence: 0
+    Damage: 1
+  - ID: 28
+    Name: Goliath
+    Health: 3
+    Cost: 4
+    Speed: 4
+    Defence: 1
     Range:
     - {x: 0, y: 0}
     - {x: 2, y: 0}
     - {x: 1, y: 1}
     - {x: 0, y: 2}
-    Damage: 2
-  - ID: 28
-    Name: TEST28
-    Health: 10
-    Cost: 0
-    Speed: 0
-    Defence: 1
+    Damage: 1
+  - ID: 29
+    Name: Brunhilde
+    Health: 2
+    Cost: 4
+    Speed: 5
+    Defence: 0
     Range:
     - {x: 0, y: 0}
     - {x: 1, y: 0}
     - {x: 2, y: 0}
     - {x: 1, y: 1}
-    Damage: 1
-  - ID: 29
-    Name: TEST29
-    Health: 10
-    Cost: 0
-    Speed: 0
+    Damage: 2
+  - ID: 30
+    Name: La Tour de Dieu
+    Health: 2
+    Cost: 4
+    Speed: 5
     Defence: 2
     Range:
     - {x: 0, y: 0}
@@ -340,30 +349,30 @@ MonoBehaviour:
     - {x: 0, y: 1}
     - {x: 1, y: 1}
     Damage: 0
-  - ID: 30
-    Name: TEST30
+  - ID: 31
+    Name: Gideon
     Health: 6
-    Cost: 0
-    Speed: 1
+    Cost: 4
+    Speed: 5
     Defence: 1
     Range:
     - {x: 1, y: 0}
     - {x: 0, y: 1}
     - {x: 1, y: 1}
     - {x: 2, y: 2}
-    Damage: 1
-  - ID: 31
-    Name: TEST31
+    Damage: 0
+  - ID: 32
+    Name: Azrael
     Health: 6
-    Cost: 0
-    Speed: 1
+    Cost: 4
+    Speed: 5
     Defence: 0
     Range:
     - {x: 0, y: 0}
     - {x: 2, y: 0}
     - {x: 1, y: 1}
     - {x: 1, y: 2}
-    Damage: 2
+    Damage: 1
   populateDeck: 0
   clearDeck: 0
   addAll: 0

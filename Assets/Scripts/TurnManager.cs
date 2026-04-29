@@ -158,11 +158,11 @@ public class TurnManager : NetworkBehaviour
 
         if (turnState == TurnState.Player1Turn)
         {
-            turnText.text = GameManager.instance.playerId == Player.PlayerId.Player1 ? "Your Turn" : "Waiting...";
+            turnText.text = GameManager.instance.playerId == Player.PlayerId.Player1 ? "Your Turn" : "Opponent's Turn";
         }
         else
         {
-            turnText.text = GameManager.instance.playerId == Player.PlayerId.Player2 ? "Your Turn" : "Waiting...";
+            turnText.text = GameManager.instance.playerId == Player.PlayerId.Player2 ? "Your Turn" : "Opponent's Turn";
         }
         
     }
@@ -175,7 +175,10 @@ public class TurnManager : NetworkBehaviour
         {
             case TurnState.Player1Turn:
                 
-                if (GameManager.instance.playerId == Player.PlayerId.Player1)
+
+                await BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player2);
+
+                if (GameManager.instance.playerId == Player.PlayerId.Player1 && turnCount != 2)
                 {
                     foreach (var unit in BoardManager.Instance.unitsList)
                     {
@@ -211,7 +214,6 @@ public class TurnManager : NetworkBehaviour
                     }
                 }
                 
-                await BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player2);
 
                 turnCount += 1;
 
@@ -219,8 +221,10 @@ public class TurnManager : NetworkBehaviour
             
             
             case TurnState.Player2Turn:
+
+                await BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player1);
                 
-                if (GameManager.instance.playerId == Player.PlayerId.Player2 && turnCount != 1)
+                if (GameManager.instance.playerId == Player.PlayerId.Player2 && turnCount != 2)
                 {
                     foreach (var unit in BoardManager.Instance.unitsList)
                     {
@@ -257,7 +261,8 @@ public class TurnManager : NetworkBehaviour
                     }
                 }
                 
-                await BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player1);
+
+                turnCount += 1;
 
                 break;
         }
