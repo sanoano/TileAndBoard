@@ -12,7 +12,7 @@ public class UIPopupNumbers : MonoBehaviour
     [SerializeField] public Image icon;
     private float disappearTimer = 1.0f;
     public Color textColor;
-    [SerializeField] private Sprite[] icons;//0 is HP, 1 is Manna. LP don't have no icon
+    [SerializeField] private Sprite[] icons;//0 is HP, 1 is Manna, 2 is death. LP don't have no icon
 
     public void Setup(float amount, int type)
     {
@@ -35,23 +35,31 @@ public class UIPopupNumbers : MonoBehaviour
                 numbersTMP.text = amount.ToString();
             }          
         }
-        else
+        else if (type == 1)//Manna
         {
             numbersTMP.text = "+" + amount.ToString();
         }
-                
+        else if (type == 3)//death
+        {
+            numbersTMP.text = string.Empty;
+        }
 
 
 
-        if (type < 2)
+
+        if (type < 2)//Manna or HP
         {
             icon.enabled = true;
             icon.sprite = icons[type];
         }
-        else
+        else if (type == 3)//death
+        {
+            icon.enabled = true;
+            icon.sprite = icons[2];
+        }
+        else//LP
             icon.enabled = false;
 
-        //remind me to add code that makes negative numbers red
             
     }
     public static UIPopupNumbers Create(Vector3 position, Transform parent, float amount, int type)
