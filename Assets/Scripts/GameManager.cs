@@ -48,6 +48,8 @@ public class GameManager : NetworkBehaviour
 
             Camera.main.transform.position = pos;
             Camera.main.transform.rotation = rot;
+
+            TurnManager.instance.isSide1 = false;
         }
         
         Application.targetFrameRate = 60;
