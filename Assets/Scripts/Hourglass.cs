@@ -3,11 +3,11 @@ using System.Collections;
 using System.Linq;
 using TMPro;
 using Tweens;
+using Tweens.Core;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.UI;
-using Tweens;
-using Tweens.Core;
 
 public class Hourglass : MonoBehaviour
 {
@@ -19,22 +19,24 @@ public class Hourglass : MonoBehaviour
     private bool flippedUp = false;
     private float defaultScaleValue = 0.9f;
     private Vector3 defaultScale;
+    [SerializeField] private float turnSpeed = 50.0f;
+    [SerializeField] private float moveSpeed = 5.0f;
 
     //This is for all the stuff in switching from left to right
-    private Transform position1, position2;
+    [SerializeField] private Transform position1, position2;
     private Transform player1Position, player2Position;
     private bool positionsAssigned = false;
 
     void Start()
     {
-        defaultScale = new Vector3(defaultScaleValue, defaultScaleValue, defaultScaleValue);
-
-        StartCoroutine(InitiateTimer(10.0f, true));
+        if (!positionsAssigned)
+            AssignPositions(true);
     }
 
-    void Update()
+    private void Update()
     {
-
+        //if (Input.GetKeyDown("r"))
+        //    FlipHourglass(5f);
     }
 
     public void AssignPositions(bool firstPlayerLeft)
@@ -51,78 +53,91 @@ public class Hourglass : MonoBehaviour
         }
     }
 
-    private IEnumerator InitiateTimer(float timerLength, bool p1)
+    public void FlipHourglass(float timerLength)
     {
-        float elapsed = 0f;
+        Debug.Log(flippedUp);
+
+        Quaternion originalRot = Quaternion.identity;
+        Quaternion flippedRot = new Quaternion(originalRot.x + 180.0f, originalRot.y, originalRot.z, 1);
+
+        var tweenX = new RotationTween()
+        {
+            from = originalRot,
+            to = flippedRot,
+            duration = turnSpeed,
+            easeType = EaseType.Linear,
+        };
+
+        gameObject.AddTween(tweenX);
+
+        StopAllCoroutines();
 
         if (flippedUp)
         {
-            var tweenX = new EulerAnglesXTween()
-            {
-                from = 0,
-                to = 180.0f,
-                duration = 0.01f,
-                easeType = EaseType.SineOut
-            };
+            half2Empty.SetActive(true);
+            half1Empty.SetActive(false);
 
-            gameObject.AddTween(tweenX);
-        }
-        else
-        {
-            var tweenX = new EulerAnglesXTween()
-            {
-                from = 180.0f,
-                to = 0.0f,
-                duration = 0.01f,
-                easeType = EaseType.SineOut
-            };
-
-            gameObject.AddTween(tweenX);
-        }
-
-
-        if (p1)
-        {
-            half1Empty.transform.localScale = defaultScale;
-            half2Fill.transform.localScale = Vector3.zero;
-        }
-        else
-        {
             half2Empty.transform.localScale = defaultScale;
             half1Fill.transform.localScale = Vector3.zero;
+            half2Fill.transform.localScale = Vector3.zero;
+
+            StartCoroutine(InitiateTimer(timerLength));
+
+            var tweenPos1 = new PositionTween()
+            {
+                from = player1Position.position,
+                to = player2Position.position,
+                duration = moveSpeed,
+                easeType = EaseType.ExpoOut
+            };
+
+            gameObject.AddTween(tweenPos1);
+
+            flippedUp = false;
         }
+        else
+        {
+            half2Empty.SetActive(true);
+            half1Empty.SetActive(false);
+
+            half2Empty.transform.localScale = defaultScale;
+            half1Fill.transform.localScale = Vector3.zero;
+            half2Fill.transform.localScale = Vector3.zero;
+
+            StartCoroutine(InitiateTimer(timerLength));
+
+            var tweenPos2 = new PositionTween()
+            {
+                from = player2Position.position,
+                to = player1Position.position,
+                duration = moveSpeed,
+                easeType = EaseType.ExpoOut
+            };
+
+            gameObject.AddTween(tweenPos2);
+
+            flippedUp = true;
+        }
+    }
+
+    private IEnumerator InitiateTimer(float timerLength)
+    {
+        float elapsed = 0f;
+        defaultScale = new Vector3(defaultScaleValue, defaultScaleValue, defaultScaleValue);
 
         while (elapsed < timerLength)
         {
             float t = elapsed / timerLength;
 
-            if (p1)
-            {
-                half1Empty.transform.localScale = Vector3.Lerp(defaultScale, Vector3.zero, t);
-                half2Fill.transform.localScale = Vector3.Lerp(Vector3.zero, defaultScale, t);
-            }
-            else
-            {
-                half2Empty.transform.localScale = Vector3.Lerp(defaultScale, Vector3.zero, t);
-                half1Fill.transform.localScale = Vector3.Lerp(Vector3.zero, defaultScale, t);
-            }
+            half2Empty.transform.localScale = Vector3.Lerp(defaultScale, Vector3.zero, t);
+            half1Fill.transform.localScale = Vector3.Lerp(Vector3.zero, defaultScale, t);
 
             elapsed += Time.deltaTime;
+
             yield return null;
         }
 
-        if (p1)
-        {
-            half1Empty.transform.localScale = Vector3.zero;
-            half2Fill.transform.localScale = defaultScale;
-        }
-        else
-        {
-            half2Empty.transform.localScale = Vector3.zero;
-            half1Fill.transform.localScale = defaultScale;
-        }
-
-        if (!flippedUp)
-            flippedUp = true;
+        half2Empty.transform.localScale = Vector3.zero;
+        half1Fill.transform.localScale = defaultScale;
     }
 }
