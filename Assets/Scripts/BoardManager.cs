@@ -109,15 +109,16 @@ public class BoardManager : NetworkBehaviour
     [Header("Board References")] 
     [SerializeField] private GameObject player1BoardGameObject;
     [SerializeField] private GameObject player2BoardGameObject;
-    private GameObject islandBottom1, islandBottom2;
+    [SerializeField] private GameObject islandBottom1;
+    [SerializeField] private GameObject islandBottom2;
 
-    private bool board1DoOnce = false;
-    private bool board2DoOnce = false;
+    public bool board1DoOnce = false;
+    public bool board2DoOnce = false;
     private int criticalHealthThreshold;
 
     private float speed1 = 0;
     private float speed2 = 0;
-    private const float maxSpeed = 30.0f;
+    private const float maxSpeed = 50.0f;
     private const float acceleration = 5.0f;
 
     [HideInInspector] public bool attackInProgress;
@@ -182,8 +183,7 @@ public class BoardManager : NetworkBehaviour
 
         Transform[] island1Components = player1BoardGameObject.GetComponentsInChildren<Transform>(true);
         Transform[] island2Components = player2BoardGameObject.GetComponentsInChildren<Transform>(true);
-        islandBottom1 = island1Components[38].gameObject;
-        islandBottom2 = island2Components[38].gameObject;
+
     }
 
     private void Start()
@@ -244,15 +244,27 @@ public class BoardManager : NetworkBehaviour
         if (speed1 < maxSpeed && board1DoOnce)
         {
             speed1 += acceleration * Time.deltaTime;
-
             islandBottom1.transform.position = new Vector3(islandBottom1.transform.position.x, islandBottom1.transform.position.y - speed1 * Time.deltaTime, islandBottom1.transform.position.z);
+        }
+
+        if (speed1 >= maxSpeed)
+        {
+            Destroy(islandBottom1);
+            board1DoOnce = false;
+            speed1 = 0.0f;
         }
 
         if (speed2 < maxSpeed && board2DoOnce)
         {
             speed2 += acceleration * Time.deltaTime;
-
             islandBottom2.transform.position = new Vector3(islandBottom2.transform.position.x, islandBottom2.transform.position.y - speed2 * Time.deltaTime, islandBottom2.transform.position.z);
+        }
+
+        if (speed2 >= maxSpeed)
+        {
+            Destroy(islandBottom2);
+            board2DoOnce = false;
+            speed2 = 0.0f;
         }
             
     }
@@ -1811,7 +1823,11 @@ public class BoardManager : NetworkBehaviour
             }
 
             if (player1Health <= criticalHealthThreshold && !board1DoOnce)
+            {
                 board1DoOnce = true;
+                print("working");
+            }
+                
         }
         else
         {
@@ -1823,7 +1839,11 @@ public class BoardManager : NetworkBehaviour
             }
 
             if (player2Health <= criticalHealthThreshold && !board2DoOnce)
+            {
                 board2DoOnce = true;
+                print("working");
+            }
+                
         }
 
         damageTaken.Invoke();

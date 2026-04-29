@@ -175,7 +175,7 @@ public class TurnManager : NetworkBehaviour
         {
             case TurnState.Player1Turn:
                 
-
+                turnCount += 1;
                 await BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player2);
 
                 if (GameManager.instance.playerId == Player.PlayerId.Player1 && turnCount != 2)
@@ -215,13 +215,14 @@ public class TurnManager : NetworkBehaviour
                 }
                 
 
-                turnCount += 1;
+                
 
                 break;
             
             
             case TurnState.Player2Turn:
 
+                turnCount += 1;
                 await BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player1);
                 
                 if (GameManager.instance.playerId == Player.PlayerId.Player2 && turnCount != 2)
@@ -262,7 +263,7 @@ public class TurnManager : NetworkBehaviour
                 }
                 
 
-                turnCount += 1;
+                
 
                 break;
         }

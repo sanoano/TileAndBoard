@@ -185,6 +185,7 @@ public class UIManager : MonoBehaviour
             player2CardAmount.text =
                 $"Cards: {BoardManager.Instance.GetCardAmount(Player.PlayerId.Player2)} / {BoardManager.Instance.maxCardsPerPlayer}"
                 ;
+
         }
         else
         {

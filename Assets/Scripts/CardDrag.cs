@@ -322,6 +322,7 @@ public class CardDrag : MonoBehaviour
         if (CardManager.instance.cardDrawInProgress) return;
         if (orbitCamera.cameraState == OrbitCamera.CameraState.Free) return;
         if (BoardManager.Instance.attackInProgress) return;
+        AudioManager.singleton.PlaySound("cardHover", true, 0.2f);
         var pos = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z + 0.01f);
         transform.localPosition = pos;
 
