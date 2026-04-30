@@ -61,6 +61,8 @@ public class UIManager : MonoBehaviour
 
     [Header("Controls Display")]
     [SerializeField] private TextMeshProUGUI controlsText;
+    [SerializeField] private GameObject attackingDefendingText;
+    [SerializeField] private GameObject movingText;
 
     [Header("Card Amount Display")]
     [SerializeField] private TextMeshProUGUI player1CardAmount;
@@ -336,10 +338,18 @@ public class UIManager : MonoBehaviour
         cardInfoHeader.text = "Card Info: " + unitToDisplay.Name;
         cardInfoHealth.text = unitToDisplay.Health.ToString();
 
+         CardDeck cardList = Resources.Load<CardDeck>("Data/MasterList");
+
+        CardDeck.CardData cardData = new CardDeck.CardData();
+
+        cardData =  cardList.Cards.Find(card => card.Name == unitToDisplay.Name);
+
+        int actualMovement = cardData.Speed;
+
         //These if statements just hide icons+numbers for stats at 0
-        if (unitToDisplay.Movement > 0)
+        if (actualMovement > 0)
         {
-            cardInfoSpeed.text = unitToDisplay.Movement.ToString();
+            cardInfoSpeed.text = actualMovement.ToString();
             cardInfoSpeedHeader.text = "Speed:";
             cardIconSpeed.enabled = true;
             
@@ -516,30 +526,28 @@ public class UIManager : MonoBehaviour
         {
             case InteractionState.Attacking:
                 
-                controlsText.gameObject.SetActive(true);
-                controlsText.text = "Right Click to Rotate\nLeft Click to Confirm\nEsc to Cancel";
+                attackingDefendingText.SetActive(true);
 
 
                 break;
             
             case InteractionState.Defending:
 
-                controlsText.gameObject.SetActive(true);
-                controlsText.text = "Right Click to Rotate\nLeft Click to Confirm\nEsc to Cancel";
+                attackingDefendingText.SetActive(true);
 
                 break;
             
             
             case InteractionState.Moving:
 
-                controlsText.gameObject.SetActive(true);
-                controlsText.text = "Click on Tile to move\nEsc to Cancel";
+                movingText.SetActive(true);
 
                 break;
             
             case InteractionState.None:
 
-                controlsText.gameObject.SetActive(false);
+                movingText.SetActive(false);
+                attackingDefendingText.SetActive(false);
 
                 break;
         }
