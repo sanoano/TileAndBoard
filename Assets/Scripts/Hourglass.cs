@@ -59,14 +59,14 @@ public class Hourglass : MonoBehaviour
         //Debug.Log(flippedUp);
 
         Quaternion originalRot = Quaternion.identity;
-        Quaternion flippedRot = new Quaternion(originalRot.x + 180.0f, originalRot.y, originalRot.z, 1);
+        Quaternion flippedRot = Quaternion.Euler(originalRot.x + 180f, originalRot.y, originalRot.z);
 
         var tweenX = new RotationTween()
         {
             from = originalRot,
             to = flippedRot,
-            duration = turnSpeed,
-            easeType = EaseType.Linear,
+            duration = moveSpeed,
+            easeType = EaseType.ExpoOut,
         };
 
         gameObject.AddTween(tweenX);
@@ -96,8 +96,8 @@ public class Hourglass : MonoBehaviour
             {
                 from = player1PositionCloud,
                 to = player2PositionCloud,
-                duration = moveSpeed / 3,
-                easeType = EaseType.Linear
+                duration = moveSpeed / 4,
+                easeType = EaseType.ExpoOut
             };
 
             gameObject.AddTween(tweenPos1);
@@ -128,8 +128,8 @@ public class Hourglass : MonoBehaviour
             {
                 from = player2PositionCloud,
                 to = player1PositionCloud,
-                duration = moveSpeed / 3,
-                easeType = EaseType.Linear
+                duration = moveSpeed / 4,
+                easeType = EaseType.ExpoOut
             };
 
             gameObject.AddTween(tweenPos2);

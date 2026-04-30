@@ -101,8 +101,10 @@ public class CardDeck : ScriptableObject
                 }
             }
             
-            // Mark ScriptableObject as dirty (essential for range values to persist at runtime)
-            UnityEditor.EditorUtility.SetDirty(this);
+            #if UNITY_EDITOR
+                // Mark ScriptableObject as dirty (essential for range values to persist at runtime)
+                UnityEditor.EditorUtility.SetDirty(this);
+            #endif
         }
         catch (Exception e)
         {
@@ -150,8 +152,10 @@ public class CardDeck : ScriptableObject
                 
             }
             
-            // Mark ScriptableObject as dirty (essential for range values to persist at runtime)
-            UnityEditor.EditorUtility.SetDirty(this);
+            #if UNITY_EDITOR
+                // Mark ScriptableObject as dirty (essential for range values to persist at runtime)
+                UnityEditor.EditorUtility.SetDirty(this);
+            #endif
         }
         catch (Exception e)
         {

@@ -366,7 +366,7 @@ public class TurnManager : NetworkBehaviour
         currentTurn = turn;
         UpdateTurnText(currentTurn);
         OnTurnChanged(currentTurn);
-        AudioManager.singleton.PlaySound("roundChange", false);
+        //AudioManager.singleton.PlaySound("roundChange", false);
         isYourTurn = !isYourTurn;
     }
     
