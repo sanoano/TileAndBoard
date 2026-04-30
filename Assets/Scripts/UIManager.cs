@@ -35,7 +35,11 @@ public class UIManager : MonoBehaviour
     
     [Header("Canvas")]
     public GameObject Canvas;
-    
+
+    [Header("Draw Card Button")]
+    [SerializeField] private GameObject DrawCardButton;
+    private UIDialogueSlide drawCardSlide;
+    private bool slideOnce;
 
     [Header("Card Info Panel")] 
     [SerializeField] private GameObject cardInfoPrefab;
@@ -126,6 +130,7 @@ public class UIManager : MonoBehaviour
         };
 
         var instance = lensCap.gameObject.AddTween(backgroundTween);
+        drawCardSlide = DrawCardButton.GetComponent<UIDialogueSlide>();
     }
 
     private void Update()
@@ -142,15 +147,27 @@ public class UIManager : MonoBehaviour
 
         turnCountText.text = $"Turn {TurnManager.instance.turnCount}";
 
-        if (TurnManager.instance.isYourTurn)
+        /*if (TurnManager.instance.isYourTurn)
         {
             turnTimer.text = String.Format("{0:0}:{1:00}", Mathf.Floor(((int)TurnManager.instance.currentTime) / 60), ((int)TurnManager.instance.currentTime) % 60);
         }
         else
         {
             turnTimer.text = String.Empty;
+        }*/
+
+        turnTimer.text = String.Format("{0:0}:{1:00}", Mathf.Floor(((int)TurnManager.instance.currentTime) / 60), ((int)TurnManager.instance.currentTime) % 60);
+
+        if (TurnManager.instance.isYourTurn && !slideOnce)
+        {
+            drawCardSlide.SlideIn();
+            slideOnce = true;
         }
-        
+        else if (!TurnManager.instance.isYourTurn && slideOnce)
+        {
+            drawCardSlide.SlideOut();
+            slideOnce = false;
+        }
     }
 
     void UpdateHealthDisplay()
