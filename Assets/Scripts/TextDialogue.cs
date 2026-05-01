@@ -63,7 +63,7 @@ public class TextDialogue : MonoBehaviour
         //dialogueTMP.color = invisible;
         //headerTMP.color = invisible;
 
-        AudioManager.singleton.PlaySound("uiError", false);
+        AudioManager.singleton.PlaySound("uiError", false, 0.4f);
         switch (code)
         {
             case 1:

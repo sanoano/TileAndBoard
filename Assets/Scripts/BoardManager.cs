@@ -845,7 +845,15 @@ public class BoardManager : NetworkBehaviour
             currentlySelectedUnit.Movement -= 1;
             CurrentSelectedTile = currentAdjacentPositions[direction];
             
-            AudioManager.singleton.PlaySound("cardMove", true);
+            var randInt = Random.Range(0, 1);
+            if (randInt == 0)
+            {
+                AudioManager.singleton.PlaySound("cardMove1", true); 
+            }
+            else if(randInt == 1)
+            {
+                AudioManager.singleton.PlaySound("cardMove2", true); 
+            }
 
             if (NetworkManager.Singleton)
             {
@@ -1154,7 +1162,7 @@ public class BoardManager : NetworkBehaviour
 
         cardVisual.GetComponent<CardDrag>().isPlaced = true;
         
-        AudioManager.singleton.PlaySound("cardPlace", true);
+        AudioManager.singleton.PlaySound("cardPlace1", true, 1.0f);
 
         cardPlaced.Invoke();
 

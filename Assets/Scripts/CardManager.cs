@@ -112,7 +112,20 @@ public class CardManager : NetworkBehaviour
 
             playerDeck.RemoveAt(randInt);
             
-            AudioManager.singleton.PlaySound("cardDeal", true);
+            var randSoundInt = Random.Range(0, 2);
+            if (randSoundInt == 0)
+            {
+                AudioManager.singleton.PlaySound("cardDraw1", true);
+            }
+            else if (randSoundInt == 1)
+            {
+                AudioManager.singleton.PlaySound("cardDraw2", true);
+            }
+            else if(randSoundInt == 2)
+            {
+                AudioManager.singleton.PlaySound("cardDraw3", true);
+            }
+
 
             if (playerHand.Count != 1)
             {
@@ -173,7 +186,7 @@ public class CardManager : NetworkBehaviour
         
         ManaManager.instance.RemoveManaPoints(unit.AttackPositions.Count);
         
-        AudioManager.singleton.PlaySound("cardPlace", true);
+        AudioManager.singleton.PlaySound("cardRecall2", true);
         
         UIManager.Instance.DestroyCurrentInfoInstance();
         
