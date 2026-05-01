@@ -22,10 +22,10 @@ public class GameManager : NetworkBehaviour
 
     private string playerName;
 
-    [SerializeField] private Material skybox;
+    /*[SerializeField] private Material skybox;
 
     [Header("Parameters")] 
-    [SerializeField] private float rotationSpeed;
+    [SerializeField] private float rotationSpeed;*/
 
     
     private void Awake()
@@ -156,7 +156,7 @@ public class GameManager : NetworkBehaviour
         
     }
 
-    private void Start()
+    /*private void Start()
     {
         
 
@@ -165,7 +165,7 @@ public class GameManager : NetworkBehaviour
     private void FixedUpdate()
     {
         skybox.SetFloat(Rotation, Time.time * rotationSpeed);
-    }
+    }*/
 
     
     

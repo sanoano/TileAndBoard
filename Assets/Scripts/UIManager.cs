@@ -417,7 +417,7 @@ public class UIManager : MonoBehaviour
         StartCoroutine(RotateGridShape(cardChildren, new List<Vector2Int>(unitToDisplay.AttackPositions)));
 
 
-        if (unitToDisplay.ID == GameManager.instance.playerId)
+        if (unitToDisplay.ID == GameManager.instance.playerId && TurnManager.instance.isYourTurn)
         {
             /*actionsInfoPrefabInstance = Instantiate(actionsInfoPrefab, actionsInfoPanelPos.transform.position,
                 Quaternion.identity,
@@ -428,7 +428,7 @@ public class UIManager : MonoBehaviour
             //var panel = actionChildren[2].gameObject;
 
             var buttons = cardInfoPrefabInstance.GetComponentsInChildren<Button>();
-            
+
             buttons[3].GetComponentInChildren<TextMeshProUGUI>().text = $"Recall (-{unitToDisplay.AttackPositions.Count} Mna)";
 
             print(buttons[0].gameObject.name);
@@ -565,6 +565,16 @@ public class UIManager : MonoBehaviour
         yield return null;
     }
     
+    public void DrawTextAddCost(bool show)
+    {
+        TextMeshProUGUI DrawCardButtonTMP = DrawCardButton.GetComponentInChildren<TextMeshProUGUI>();
+
+        if (show)
+            DrawCardButtonTMP.text = "Draw Card (-3 Mna)";
+        else
+            DrawCardButtonTMP.text = "Draw Card";
+    }
+
     private IEnumerator RotateGridShape(Transform[] children, List<Vector2Int> positions)
     {
 
