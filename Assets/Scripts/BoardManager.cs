@@ -149,7 +149,7 @@ public class BoardManager : NetworkBehaviour
 
     [Header("Events")]
     public UnityEvent cardPlaced;
-    public UnityEvent damageTaken;
+    public UnityEvent<Player.PlayerId> damageTaken;
     public UnityEvent cardDied;
     
     private InputAction select;
@@ -236,7 +236,8 @@ public class BoardManager : NetworkBehaviour
 
         currentSelectedTileGameObject = null;
         
-        damageTaken.Invoke();
+        damageTaken.Invoke(Player.PlayerId.Player1);
+        damageTaken.Invoke(Player.PlayerId.Player2);
     }
 
     private void Update()
@@ -1833,8 +1834,9 @@ public class BoardManager : NetworkBehaviour
             if (player1Health <= criticalHealthThreshold && !board1DoOnce)
             {
                 board1DoOnce = true;
-                print("working");
+                
             }
+            damageTaken.Invoke(Player.PlayerId.Player1);
                 
         }
         else
@@ -1849,12 +1851,12 @@ public class BoardManager : NetworkBehaviour
             if (player2Health <= criticalHealthThreshold && !board2DoOnce)
             {
                 board2DoOnce = true;
-                print("working");
+        
             }
-                
+            damageTaken.Invoke(Player.PlayerId.Player2);
         }
 
-        damageTaken.Invoke();
+        
     }
 
     public int GetCardAmount(Player.PlayerId id)

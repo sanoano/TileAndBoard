@@ -111,7 +111,8 @@ public class UIManager : MonoBehaviour
         BoardManager.Instance.cardPlaced.AddListener(UpdateCardAmountDisplay);
         BoardManager.Instance.damageTaken.AddListener(UpdateHealthDisplay);
         BoardManager.Instance.cardDied.AddListener(UpdateCardAmountDisplay);
-        UpdateHealthDisplay();
+        UpdateHealthDisplay(Player.PlayerId.Player1);
+        UpdateHealthDisplay(Player.PlayerId.Player2);
         UpdateCardAmountDisplay();
         
         Color invisible = new Color(0, 0, 0, 0);
@@ -170,8 +171,32 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    void UpdateHealthDisplay()
+    void UpdateHealthDisplay(Player.PlayerId id)
     {
+        
+        var tween1 = new ColorTween
+                {
+                    from = player1HealthDisplay.color,
+                    to = Color.red,
+                    duration = 0.15f,
+                    easeType = EaseType.SineInOut,
+                    usePingPong = true,
+                    onUpdate = (_, value) => player1HealthDisplay.color = value
+                    
+                };
+
+        var tween2 = new ColorTween
+                {
+                    from = player2HealthDisplay.color,
+                    to = Color.red,
+                    duration = 0.15f,
+                    easeType = EaseType.SineInOut,
+                    usePingPong = true,
+                    onUpdate = (_, value) => player2HealthDisplay.color = value
+                    
+                };
+
+
         if (GameManager.instance.playerId == Player.PlayerId.Player1)
         {
             player1HealthDisplay.text =
@@ -179,6 +204,19 @@ public class UIManager : MonoBehaviour
         
             player2HealthDisplay.text =
                 $"Life Points: {BoardManager.Instance.player2Health} / {BoardManager.Instance.startingPlayerHealth}";
+
+            if (id == Player.PlayerId.Player1 
+            && BoardManager.Instance.player1Health != BoardManager.Instance.startingPlayerHealth)
+            {
+                
+                player1HealthDisplay.gameObject.AddTween(tween1);
+            }
+            if (id == Player.PlayerId.Player2 
+            && BoardManager.Instance.player2Health != BoardManager.Instance.startingPlayerHealth)
+            {
+                
+                player2HealthDisplay.gameObject.AddTween(tween2);
+            }        
         }
         else
         {
@@ -187,7 +225,20 @@ public class UIManager : MonoBehaviour
         
             player2HealthDisplay.text =
                 $"Life Points: {BoardManager.Instance.player1Health} / {BoardManager.Instance.startingPlayerHealth}";
+
+            if (id == Player.PlayerId.Player1 
+            && BoardManager.Instance.player1Health != BoardManager.Instance.startingPlayerHealth)
+            {
+                player2HealthDisplay.gameObject.AddTween(tween2);
+            }
+            if (id == Player.PlayerId.Player2 
+            && BoardManager.Instance.player2Health != BoardManager.Instance.startingPlayerHealth)
+            {
+                
+                player1HealthDisplay.gameObject.AddTween(tween1);
+            } 
         }
+
        
     }
 
