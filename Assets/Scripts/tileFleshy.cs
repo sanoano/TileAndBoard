@@ -8,6 +8,7 @@ public class fxFleshies : MonoBehaviour
     [SerializeField] private float scale;
     [SerializeField] private float waveSpeed;
     [SerializeField] private float waveHeight;
+    [SerializeField] private float flashLenghth = 0.5f;
     private Renderer renderer;
     private bool doOnce;
 
@@ -53,7 +54,7 @@ public class fxFleshies : MonoBehaviour
             renderer.material.SetInt("_isFlashing", 1);
             waveSpeed = waveSpeed * 2;
 
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(flashLenghth);
 
             renderer.material.SetInt("_isFlashing", 0);
             waveSpeed = waveSpeed / 2;
