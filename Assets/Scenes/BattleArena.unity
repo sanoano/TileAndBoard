@@ -2239,6 +2239,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.47713825, y: 0, z: 0.7157074}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &427556164 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 736383692869467052, guid: 030a1ec3aab99534da948fb716e56076, type: 3}
+  m_PrefabInstance: {fileID: 323262830}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d851f9cd74bc53641890abcf8c82070a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::fxFleshies
 --- !u!1 &490903952 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3395807549087842677, guid: 030a1ec3aab99534da948fb716e56076, type: 3}
@@ -2712,6 +2723,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5940605411908282148, guid: f76f45781ec656741a846ad5de15718a, type: 3}
   m_PrefabInstance: {fileID: 729388383109592811}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &695795306 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 736383692869467052, guid: 030a1ec3aab99534da948fb716e56076, type: 3}
+  m_PrefabInstance: {fileID: 1011320055}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d851f9cd74bc53641890abcf8c82070a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::fxFleshies
 --- !u!65 &708675976
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8595,6 +8617,14 @@ PrefabInstance:
       propertyPath: player2Health
       value: 25
       objectReference: {fileID: 0}
+    - target: {fileID: 7599052890681973211, guid: bfe3c2c4d9e1e4302a1607207895dc64, type: 3}
+      propertyPath: tileFleshScript1
+      value: 
+      objectReference: {fileID: 427556164}
+    - target: {fileID: 7599052890681973211, guid: bfe3c2c4d9e1e4302a1607207895dc64, type: 3}
+      propertyPath: tileFleshScript2
+      value: 
+      objectReference: {fileID: 695795306}
     - target: {fileID: 7599052890681973211, guid: bfe3c2c4d9e1e4302a1607207895dc64, type: 3}
       propertyPath: tileLayer.m_Bits
       value: 64

@@ -111,6 +111,8 @@ public class BoardManager : NetworkBehaviour
     [SerializeField] private GameObject player2BoardGameObject;
     [SerializeField] private GameObject islandBottom1;
     [SerializeField] private GameObject islandBottom2;
+    [SerializeField] private tileFleshy tileFleshScript1;
+    [SerializeField] private tileFleshy tileFleshScript2;
 
     public bool board1DoOnce = false;
     public bool board2DoOnce = false;
@@ -1590,7 +1592,8 @@ public class BoardManager : NetworkBehaviour
                         {
                             //Play board attack sounds
                             AudioManager.singleton.PlaySound("boardAttack", true);
-                            
+                            //tileFleshScript1.StartSinglePulse(attackDelay);
+                            StartCoroutine(tileFleshScript2.Pulse(attackDelay / 1000));
                         }
                         else
                         {
@@ -1743,7 +1746,8 @@ public class BoardManager : NetworkBehaviour
                         {
                             //Play board attack sounds
                             AudioManager.singleton.PlaySound("boardAttack", true);
-                            
+                            //tileFleshScript2.StartSinglePulse(attackDelay);
+                            StartCoroutine(tileFleshScript2.Pulse(attackDelay / 1000));
                         }
                         else
                         {
