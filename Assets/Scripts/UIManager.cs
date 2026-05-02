@@ -61,6 +61,9 @@ public class UIManager : MonoBehaviour
 
     [Header("Controls Display")]
     [SerializeField] private TextMeshProUGUI controlsText;
+    [SerializeField] private GameObject attackingDefendingText;
+    [SerializeField] private GameObject movingText;
+
 
     [Header("Card Amount Display")]
     [SerializeField] private TextMeshProUGUI player1CardAmount;
@@ -567,30 +570,28 @@ public class UIManager : MonoBehaviour
         {
             case InteractionState.Attacking:
                 
-                controlsText.gameObject.SetActive(true);
-                controlsText.text = "Right Click to Rotate\nLeft Click to Confirm\nEsc to Cancel";
+                attackingDefendingText.SetActive(true);
 
 
                 break;
             
             case InteractionState.Defending:
 
-                controlsText.gameObject.SetActive(true);
-                controlsText.text = "Right Click to Rotate\nLeft Click to Confirm\nEsc to Cancel";
+                attackingDefendingText.SetActive(true);
 
                 break;
             
             
             case InteractionState.Moving:
 
-                controlsText.gameObject.SetActive(true);
-                controlsText.text = "Click on Tile to move\nEsc to Cancel";
+                movingText.SetActive(true);
 
                 break;
             
             case InteractionState.None:
 
-                controlsText.gameObject.SetActive(false);
+                movingText.SetActive(false);
+                attackingDefendingText.SetActive(false);
 
                 break;
         }
