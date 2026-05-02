@@ -621,7 +621,6 @@ public class BoardManager : NetworkBehaviour
 
 
                 Vector2Int newCoords = new Vector2Int(Mathf.RoundToInt(rotX), Mathf.RoundToInt(rotY));
-                print(newCoords);
                 workingPositions[i] = newCoords;
             }
 
@@ -1539,6 +1538,10 @@ public class BoardManager : NetworkBehaviour
                             player1Board.Visuals[i, j].GetComponentsInChildren<TextMeshProUGUI>()[1].text =
                                 unit.Health.ToString();
                             attackBlocked = true;
+                            if (unit.Health <= 0)
+                            {
+                                PruneUnitList();
+                            }
                         }
                     }
 
@@ -1563,7 +1566,9 @@ public class BoardManager : NetworkBehaviour
                     if (attackBlocked)
                     {
                         //Play card attack sounds
-                        int randInt = Random.Range(0, 2);
+                        if (workingDamage > 0)
+                        {
+                            int randInt = Random.Range(0, 2);
                             if (randInt == 0)
                             {
                                 AudioManager.singleton.PlaySound("combatSword0", true);
@@ -1572,6 +1577,12 @@ public class BoardManager : NetworkBehaviour
                             {
                                 AudioManager.singleton.PlaySound("combatSword1", true);
                             }
+                        }
+                        else
+                        {
+                            AudioManager.singleton.PlaySound("shieldBlock", true);
+                        }
+                            
                     }
                     else
                     {
@@ -1680,6 +1691,10 @@ public class BoardManager : NetworkBehaviour
                             player2Board.Visuals[i, j].GetComponentsInChildren<TextMeshProUGUI>()[1].text =
                                 unit.Health.ToString();
                             attackBlocked = true;
+                            if (unit.Health <= 0)
+                            {
+                                PruneUnitList();
+                            }
                         }
                     }
 
@@ -1704,7 +1719,9 @@ public class BoardManager : NetworkBehaviour
                     if (attackBlocked)
                     {
                         //Play card attack sounds
-                        int randInt = Random.Range(0, 2);
+                        if (workingDamage > 0)
+                        {
+                            int randInt = Random.Range(0, 2);
                             if (randInt == 0)
                             {
                                 AudioManager.singleton.PlaySound("combatSword0", true);
@@ -1713,6 +1730,12 @@ public class BoardManager : NetworkBehaviour
                             {
                                 AudioManager.singleton.PlaySound("combatSword1", true);
                             }
+                        }
+                        else
+                        {
+                            AudioManager.singleton.PlaySound("shieldBlock", true);
+                        }
+                            
                     }
                     else
                     {
@@ -1739,7 +1762,7 @@ public class BoardManager : NetworkBehaviour
                     }
                     
                     
-                    PruneUnitList();
+                    
                     await Task.Delay(attackDelay);
                 }
                 

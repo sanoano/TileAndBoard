@@ -39,6 +39,8 @@ public class TurnManager : NetworkBehaviour
     [HideInInspector] public bool isSide1 = true;
     [SerializeField] private Transform[] side1Transforms;//0 is on the left, 1 on the right
     [SerializeField] private Transform[] side2Transforms;
+
+    private bool turnForceEnded;
     
     
     
@@ -147,14 +149,19 @@ public class TurnManager : NetworkBehaviour
 
     public void Update()
     {
-        if (isYourTurn && !BoardManager.Instance.attackInProgress)
+        if (!BoardManager.Instance.attackInProgress)
         {
             currentTime -= Time.deltaTime;
         }
 
-        if (currentTime < 0)
+        if (currentTime < 0 && isYourTurn)
         {
             ForceEndTurn();
+        }
+
+        if (currentTime < 0)
+        {
+            currentTime = 0.0f;
         }
     }
 
@@ -173,6 +180,7 @@ public class TurnManager : NetworkBehaviour
         BoardManager.Instance.UpdateTileVisuals();
         BoardManager.Instance.NullSelection();
             
+        turnForceEnded = true;
         ChangeTurn();
     }
 
@@ -296,8 +304,12 @@ public class TurnManager : NetworkBehaviour
     public void ChangeTurn()
     {
 
-        currentTime = maxTimePerTurn;
 
+        if (!turnForceEnded)
+        {
+            AudioManager.singleton.PlaySound("stonePush", false, 0.4f);
+        }
+        turnForceEnded = false;
 
         if (UIManager.Instance.interactionState != UIManager.InteractionState.None)
         {
@@ -346,6 +358,7 @@ public class TurnManager : NetworkBehaviour
             turnButton.gameObject.SetActive(false);
         }
         currentTurn = turn;
+        currentTime = maxTimePerTurn;
         UpdateTurnText(currentTurn);
         OnTurnChanged(currentTurn);
         //AudioManager.singleton.PlaySound("roundChange", false);
@@ -364,6 +377,7 @@ public class TurnManager : NetworkBehaviour
             turnButton.gameObject.SetActive(false);
         }
         currentTurn = turn;
+        currentTime = maxTimePerTurn;
         UpdateTurnText(currentTurn);
         OnTurnChanged(currentTurn);
         //AudioManager.singleton.PlaySound("roundChange", false);
