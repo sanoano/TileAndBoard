@@ -50,8 +50,36 @@ public class Hourglass : MonoBehaviour
         player1PositionCloud = new Vector3(player1Position.position.x, player1Position.position.y - 5, player1Position.position.z);
         player2PositionCloud = new Vector3(player2Position.position.x, player2Position.position.y - 5, player2Position.position.z);
 
-        gameObject.transform.position = player1Position.position;
-        cloud.transform.position = player1PositionCloud;
+        if (GameManager.instance.playerId == Player.PlayerId.Player1)
+        {
+            if (TurnManager.instance.currentTurn == TurnManager.TurnState.Player1Turn)
+            {
+                gameObject.transform.position = player1Position.position;
+                cloud.transform.position = player1PositionCloud;
+                flippedUp = true;
+            }
+            else
+            {
+                gameObject.transform.position = player2Position.position;
+                cloud.transform.position = player2PositionCloud;
+            }
+        }
+        else
+        {
+            if (TurnManager.instance.currentTurn == TurnManager.TurnState.Player1Turn)
+            {
+                gameObject.transform.position = player1Position.position;
+                cloud.transform.position = player1PositionCloud;
+                flippedUp = true;
+            }
+            else
+            {
+                gameObject.transform.position = player2Position.position;
+                cloud.transform.position = player2PositionCloud;
+            }
+        }
+        
+        
     }
 
     public void FlipHourglass(float timerLength)

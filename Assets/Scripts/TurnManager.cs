@@ -123,7 +123,7 @@ public class TurnManager : NetworkBehaviour
 
         hourglassScript = hourglass.GetComponent<Hourglass>();
 
-        if (isSide1)
+        if (GameManager.instance.playerId == Player.PlayerId.Player1)
         {
             hourglassScript.AssignPositions(side1Transforms[0], side1Transforms[1]);
             //Debug.Log(side1Transforms[0]);
@@ -136,7 +136,7 @@ public class TurnManager : NetworkBehaviour
             //Debug.Log(side2Transforms[1]);
         }
 
-        hourglassScript.FlipHourglass(maxTimePerTurn);
+        //hourglassScript.FlipHourglass(maxTimePerTurn);
     }
 
     public enum TurnState : byte
@@ -298,7 +298,6 @@ public class TurnManager : NetworkBehaviour
 
         currentTime = maxTimePerTurn;
 
-        hourglassScript.FlipHourglass(maxTimePerTurn);
 
         if (UIManager.Instance.interactionState != UIManager.InteractionState.None)
         {
@@ -350,6 +349,7 @@ public class TurnManager : NetworkBehaviour
         UpdateTurnText(currentTurn);
         OnTurnChanged(currentTurn);
         //AudioManager.singleton.PlaySound("roundChange", false);
+        hourglassScript.FlipHourglass(maxTimePerTurn);
         isYourTurn = !isYourTurn;
     }
     
@@ -367,6 +367,7 @@ public class TurnManager : NetworkBehaviour
         UpdateTurnText(currentTurn);
         OnTurnChanged(currentTurn);
         //AudioManager.singleton.PlaySound("roundChange", false);
+        hourglassScript.FlipHourglass(maxTimePerTurn);
         isYourTurn = !isYourTurn;
     }
     
