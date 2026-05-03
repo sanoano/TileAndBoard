@@ -20,11 +20,10 @@ public class tileFleshy : MonoBehaviour
     {
         CalcNoise();
 
-        if (Input.GetKeyDown("p"))
+        /*if (Input.GetKeyDown("p"))
         {
             StartCoroutine(Pulse(0.35f));
-            //StartSinglePulse(350.0f);
-        }
+        }*/
             
     }
 
