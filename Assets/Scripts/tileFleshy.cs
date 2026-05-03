@@ -60,7 +60,7 @@ public class tileFleshy : MonoBehaviour
             renderer.material.SetInt("_isFlashing", 1);
             waveSpeed = waveSpeed * 2;
 
-            yield return new WaitForSeconds(waitInSeconds);
+            yield return new WaitForSeconds(waitInSeconds + 0.15f);
 
             renderer.material.SetInt("_isFlashing", 0);
             waveSpeed = waveSpeed / 2;

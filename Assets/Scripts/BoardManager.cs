@@ -1498,6 +1498,7 @@ public class BoardManager : NetworkBehaviour
                 {
                     int workingDamage = 0;
 
+                    bool cardDied = false;
                     bool damageInstancePresent = false;
                     bool defenseInstancePresent = false;
 
@@ -1542,11 +1543,9 @@ public class BoardManager : NetworkBehaviour
                             attackBlocked = true;
                             if (unit.Health <= 0)
                             {
-                                tileColour deadTileScript = player2Board.TileTransforms[unit.Position.x, unit.Position.y].GetComponentInChildren<tileColour>();
-
-                                //PruneUnitList();
-                                deadTileScript.TileRecievePopup(0, 3);
-                                AudioManager.singleton.PlaySound("cardDie", true);
+                                cardDied = true;
+                                PruneUnitVisuals();
+                                AudioManager.singleton.PlaySound("cardDie", true, 0.4f);
                             }
                         }
                     }
@@ -1608,7 +1607,15 @@ public class BoardManager : NetworkBehaviour
 
                     if (attackBlocked)
                     {
-                        tc.TileRecievePopup(workingDamage, 0);
+                        if (cardDied)
+                        {
+                            tc.TileRecievePopup(0, 3);
+                        }
+                        else
+                        {
+                            tc.TileRecievePopup(workingDamage, 0);
+                        }
+                        
                     }
                     else
                     {
@@ -1657,6 +1664,7 @@ public class BoardManager : NetworkBehaviour
                 {
                     int workingDamage = 0;
 
+                    bool cardDied = false;
                     bool damageInstancePresent = false;
                     bool defenseInstancePresent = false;
 
@@ -1700,11 +1708,9 @@ public class BoardManager : NetworkBehaviour
                             attackBlocked = true;
                             if (unit.Health <= 0)
                             {
-                                tileColour deadTileScript = player2Board.TileTransforms[unit.Position.x, unit.Position.y].GetComponentInChildren<tileColour>();
-
-                                //PruneUnitList();
-                                deadTileScript.TileRecievePopup(0, 3);
-                                AudioManager.singleton.PlaySound("cardDie", true);
+                                cardDied = true;
+                                PruneUnitVisuals();
+                                AudioManager.singleton.PlaySound("cardDie", true, 0.4f);
                             }
                         }
                     }
@@ -1766,7 +1772,15 @@ public class BoardManager : NetworkBehaviour
 
                     if (attackBlocked)
                     {
-                        tc.TileRecievePopup(workingDamage, 0);
+                        if (cardDied)
+                        {
+                            tc.TileRecievePopup(0, 3);
+                        }
+                        else
+                        {
+                            tc.TileRecievePopup(workingDamage, 0);
+                        }
+                        
                     }
                     else
                     {
@@ -1825,10 +1839,8 @@ public class BoardManager : NetworkBehaviour
         attackInProgress = false;
     }
 
-    public void PruneUnitList()
+    public void PruneUnitVisuals()
     {
-        List<Unit> unitsToDelete = new List<Unit>();
-
         foreach (var unit in unitsList)
         {
             if (unit.Health <= 0)
@@ -1842,6 +1854,22 @@ public class BoardManager : NetworkBehaviour
                     Destroy(player2Board.Visuals[unit.Position.x, unit.Position.y]);
                 }
 
+                cardDied.Invoke();
+            }
+        }
+
+         
+    }
+
+    public void PruneUnitList()
+    {
+        List<Unit> unitsToDelete = new List<Unit>();
+
+        foreach (var unit in unitsList)
+        {
+            if (unit.Health <= 0)
+            {
+
                 unitsToDelete.Add(unit);
             }
         }
@@ -1852,7 +1880,7 @@ public class BoardManager : NetworkBehaviour
             unitsList.Remove(unit);
         }
 
-        cardDied.Invoke();
+       
     }
 
     void BoardTakeDamage(int damage, Player.PlayerId id)
