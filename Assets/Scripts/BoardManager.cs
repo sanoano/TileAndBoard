@@ -1541,6 +1541,17 @@ public class BoardManager : NetworkBehaviour
                             player1Board.Visuals[i, j].GetComponentsInChildren<TextMeshProUGUI>()[1].text =
                                 unit.Health.ToString();
                             attackBlocked = true;
+                            var thing = player1Board.Visuals[i, j].GetComponent<SpriteRenderer>();
+                            var colorTween = new ColorTween
+                            {
+                                from = thing.color,
+                                to = Color.hotPink,
+                                duration = 0.15f,
+                                easeType = EaseType.SineInOut,
+                                usePingPong = true,
+                                onUpdate = (_, value) => thing.color = value
+                            };
+                            thing.gameObject.AddTween(colorTween);
                             if (unit.Health <= 0)
                             {
                                 cardDied = true;
@@ -1596,7 +1607,7 @@ public class BoardManager : NetworkBehaviour
                             //Play board attack sounds
                             AudioManager.singleton.PlaySound("boardAttack", true);
                             
-                            StartCoroutine(tileFleshScript2.Pulse(attackDelay / 1000));
+                            StartCoroutine(tileFleshScript1.Pulse(attackDelay / 1000));
                         }
                         else
                         {
@@ -1706,6 +1717,17 @@ public class BoardManager : NetworkBehaviour
                             player2Board.Visuals[i, j].GetComponentsInChildren<TextMeshProUGUI>()[1].text =
                                 unit.Health.ToString();
                             attackBlocked = true;
+                            var thing = player2Board.Visuals[i, j].GetComponent<SpriteRenderer>();
+                            var colorTween = new ColorTween
+                            {
+                                from = thing.color,
+                                to = Color.hotPink,
+                                duration = 0.15f,
+                                easeType = EaseType.SineInOut,
+                                usePingPong = true,
+                                onUpdate = (_, value) => thing.color = value
+                            };
+                            thing.gameObject.AddTween(colorTween);
                             if (unit.Health <= 0)
                             {
                                 cardDied = true;
