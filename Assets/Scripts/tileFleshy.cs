@@ -51,7 +51,7 @@ public class tileFleshy : MonoBehaviour
         Pulse(waitInMiliseconds / 1000);
     }
 
-    public IEnumerator Pulse(float waitTime)
+    public IEnumerator Pulse(float waitInSeconds)
     {
         if (!doOnce)
         {
@@ -60,7 +60,7 @@ public class tileFleshy : MonoBehaviour
             renderer.material.SetInt("_isFlashing", 1);
             waveSpeed = waveSpeed * 2;
 
-            yield return new WaitForSeconds(waitTime);
+            yield return new WaitForSeconds(waitInSeconds);
 
             renderer.material.SetInt("_isFlashing", 0);
             waveSpeed = waveSpeed / 2;

@@ -1542,7 +1542,11 @@ public class BoardManager : NetworkBehaviour
                             attackBlocked = true;
                             if (unit.Health <= 0)
                             {
-                                PruneUnitList();
+                                tileColour deadTileScript = player2Board.TileTransforms[unit.Position.x, unit.Position.y].GetComponentInChildren<tileColour>();
+
+                                //PruneUnitList();
+                                deadTileScript.TileRecievePopup(0, 3);
+                                AudioManager.singleton.PlaySound("cardDie", true);
                             }
                         }
                     }
@@ -1592,7 +1596,7 @@ public class BoardManager : NetworkBehaviour
                         {
                             //Play board attack sounds
                             AudioManager.singleton.PlaySound("boardAttack", true);
-                            //tileFleshScript1.StartSinglePulse(attackDelay);
+                            
                             StartCoroutine(tileFleshScript2.Pulse(attackDelay / 1000));
                         }
                         else
@@ -1696,7 +1700,11 @@ public class BoardManager : NetworkBehaviour
                             attackBlocked = true;
                             if (unit.Health <= 0)
                             {
-                                PruneUnitList();
+                                tileColour deadTileScript = player2Board.TileTransforms[unit.Position.x, unit.Position.y].GetComponentInChildren<tileColour>();
+
+                                //PruneUnitList();
+                                deadTileScript.TileRecievePopup(0, 3);
+                                AudioManager.singleton.PlaySound("cardDie", true);
                             }
                         }
                     }
@@ -1746,7 +1754,7 @@ public class BoardManager : NetworkBehaviour
                         {
                             //Play board attack sounds
                             AudioManager.singleton.PlaySound("boardAttack", true);
-                            //tileFleshScript2.StartSinglePulse(attackDelay);
+                            
                             StartCoroutine(tileFleshScript2.Pulse(attackDelay / 1000));
                         }
                         else

@@ -187,5 +187,37 @@ public class tileColour : MonoBehaviour
 
 
         }
+        else if (type == 3)
+        {
+            var popUpInstance = UIPopupNumbers.Create(Vector3.zero, mainCanvas.transform, amount, type);
+
+            var iconInvisible = new Color(popUpInstance.icon.color.r, popUpInstance.icon.color.g, popUpInstance.icon.color.b, 0);
+
+            var iconDisappearTween = new ColorTween
+            {
+                from = popUpInstance.icon.color,
+                to = iconInvisible,
+                duration = 0.25f,
+                easeType = EaseType.SineOut,
+                onUpdate = (_, value) => popUpInstance.icon.color = value,
+                onEnd = (instance) =>
+                {
+                    Destroy(popUpInstance.gameObject);
+                }
+            };
+
+            var riseTween = new PositionYTween
+            {
+                to = popUpInstance.transform.position.y + 5.5f,
+                duration = 1.25f,
+                easeType = EaseType.SineInOut,
+                onEnd = (instance) =>
+                {
+                    popUpInstance.gameObject.AddTween(iconDisappearTween);
+                },
+            };
+
+            popUpInstance.gameObject.AddTween(riseTween);
+        }
     }
 }
