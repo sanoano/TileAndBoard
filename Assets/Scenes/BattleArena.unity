@@ -5510,6 +5510,17 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1602338718 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 736383692869467052, guid: 030a1ec3aab99534da948fb716e56076, type: 3}
+  m_PrefabInstance: {fileID: 323262830}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d851f9cd74bc53641890abcf8c82070a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::fxFleshies
 --- !u!1 &1654880184
 GameObject:
   m_ObjectHideFlags: 0
@@ -7594,6 +7605,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3908101841244136861, guid: 030a1ec3aab99534da948fb716e56076, type: 3}
   m_PrefabInstance: {fileID: 323262830}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2128211911 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 736383692869467052, guid: 030a1ec3aab99534da948fb716e56076, type: 3}
+  m_PrefabInstance: {fileID: 1011320055}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d851f9cd74bc53641890abcf8c82070a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::fxFleshies
 --- !u!4 &723724997762784634
 Transform:
   m_ObjectHideFlags: 0
@@ -8601,6 +8623,14 @@ PrefabInstance:
       propertyPath: attackDelay
       value: 350
       objectReference: {fileID: 0}
+    - target: {fileID: 7599052890681973211, guid: bfe3c2c4d9e1e4302a1607207895dc64, type: 3}
+      propertyPath: board1Fleshie
+      value: 
+      objectReference: {fileID: 1602338718}
+    - target: {fileID: 7599052890681973211, guid: bfe3c2c4d9e1e4302a1607207895dc64, type: 3}
+      propertyPath: board2Fleshie
+      value: 
+      objectReference: {fileID: 2128211911}
     - target: {fileID: 7599052890681973211, guid: bfe3c2c4d9e1e4302a1607207895dc64, type: 3}
       propertyPath: islandBottom1
       value: 

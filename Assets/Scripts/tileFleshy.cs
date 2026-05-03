@@ -8,7 +8,7 @@ public class tileFleshy : MonoBehaviour
     [SerializeField] private float scale;
     [SerializeField] private float waveSpeed;
     [SerializeField] private float waveHeight;
-    //[SerializeField] private float flashLenghth = 0.5f;
+    [SerializeField] private float flashLenghth = 0.15f;
     private Renderer renderer;
     private bool doOnce = false;
 

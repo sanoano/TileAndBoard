@@ -161,6 +161,10 @@ public class BoardManager : NetworkBehaviour
     private List<Vector2Int> workingPositions = null;
     
     private Vector2Int[] currentAdjacentPositions;
+
+    [Header("Fleshies")]
+    [SerializeField] private fxFleshies board1Fleshie;
+    [SerializeField] private fxFleshies board2Fleshie;
     
     
 
@@ -1864,6 +1868,8 @@ public class BoardManager : NetworkBehaviour
                 
             }
             damageTaken.Invoke(Player.PlayerId.Player1);
+
+            StartCoroutine(board1Fleshie.Pulse());
                 
         }
         else
@@ -1881,9 +1887,11 @@ public class BoardManager : NetworkBehaviour
         
             }
             damageTaken.Invoke(Player.PlayerId.Player2);
+
+            StartCoroutine(board2Fleshie.Pulse());
         }
 
-        
+
     }
 
     public int GetCardAmount(Player.PlayerId id)
