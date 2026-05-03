@@ -22,16 +22,17 @@ public class UIManagerMainMenu : MonoBehaviour
     [Header("Screens")]
     [SerializeField] private GameObject[] presstostart; //(0)
 
-    [SerializeField] private GameObject[] buttons1;//Play, Options, Quit (no options for now) (1)
-    [SerializeField] private GameObject[] buttons2;//Create Game, Join Private Game, Find Game, Back (2)
+    [SerializeField] private GameObject[] buttons1;//(1) buttons2, options, credits, Quit
+    [SerializeField] private GameObject[] buttons2;//(2) Create Game, Join Private Game, Find Game, Back 
 
     [SerializeField] private GameObject[] createGame;//(3)
-    [SerializeField] private GameObject[] joinGame;//(4) obsolete, direct join is now in findGame (5)
+    [SerializeField] private GameObject[] joinGame;//(4) obsolete, direct join is now in findGame
     [SerializeField] private GameObject[] findGame;//(5)
     [SerializeField] private GameObject[] options;//(6)
     [SerializeField] private GameObject[] tutorial;//(7)
     [SerializeField] private GameObject[] loading;//(8)
     [SerializeField] private GameObject[] credits;//(9)
+    [SerializeField] private GameObject[] sureQuit;//(10) 
 
     GameObject[][] UIlist;
     private int currentState = 0;
@@ -49,7 +50,7 @@ public class UIManagerMainMenu : MonoBehaviour
 
     void Start()
     {
-        UIlist = new GameObject[][] {presstostart, buttons1, buttons2, createGame, joinGame, findGame, options, tutorial, loading, credits};
+        UIlist = new GameObject[][] {presstostart, buttons1, buttons2, createGame, joinGame, findGame, options, tutorial, loading, credits, sureQuit};
 
         statusTMP = status.GetComponent<TextMeshProUGUI>();
         statusTMP.text = "";
@@ -173,9 +174,29 @@ public class UIManagerMainMenu : MonoBehaviour
             SetMenuLevel(1);
         }
 
-        crawlRate = crawlSpeed * Time.deltaTime;
+        if (currentState == 9)
+        {
+            crawlRate = crawlSpeed * Time.deltaTime;
+        }
 
         creditsListTrans.anchoredPosition += Vector2.up * crawlRate;
+
+        //probably a smarter way to do this but oh well!!
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (currentState == 2 || currentState == 6 || currentState == 9)
+            {
+                SetMenuScreen(1);
+                SetMenuLevel(1);
+                AudioStone();
+            }
+            else if (currentState == 3 || currentState == 5 || currentState == 7)
+            {
+                SetMenuScreen(2);
+                SetMenuLevel(2);
+                AudioStone();
+            }
+        }
 
     }
 

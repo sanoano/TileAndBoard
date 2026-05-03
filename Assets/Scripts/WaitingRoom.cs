@@ -46,7 +46,6 @@ public class WaitingRoom : NetworkBehaviour
         {
             startGameButtonObject.SetActive(true);
             waitingText.SetActive(false);
-            otherIsland.SetActive(true);
         }
         else
         {
@@ -54,6 +53,11 @@ public class WaitingRoom : NetworkBehaviour
             waitingText.SetActive(true);
         }
         
+        if (NetworkManager.Singleton.ConnectedClientsIds.Count == 2)
+        {
+            otherIsland.SetActive(true);
+        }
+
         UpdatePlayerList();
         
         sessionNameText.text = lobby._session.Name;
