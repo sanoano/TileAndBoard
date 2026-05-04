@@ -54,10 +54,10 @@ public class OrbitCamera : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetKeyUp(KeyCode.C) && UIManager.Instance.interactionState == UIManager.InteractionState.None)
-        {
-            SwapCameraMode();
-        }
+        // if (Input.GetKeyUp(KeyCode.C) && UIManager.Instance.interactionState == UIManager.InteractionState.None)
+        // {
+        //     SwapCameraMode();
+        // }
 
 
         if (Input.GetMouseButton(1) && cameraState == CameraState.Free)
