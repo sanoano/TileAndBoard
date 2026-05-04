@@ -1545,7 +1545,7 @@ public class BoardManager : NetworkBehaviour
                             var colorTween = new ColorTween
                             {
                                 from = thing.color,
-                                to = Color.hotPink,
+                                to = Color.red,
                                 duration = 0.15f,
                                 easeType = EaseType.SineInOut,
                                 usePingPong = true,
@@ -1713,7 +1713,7 @@ public class BoardManager : NetworkBehaviour
                             var colorTween = new ColorTween
                             {
                                 from = thing.color,
-                                to = Color.hotPink,
+                                to = Color.red,
                                 duration = 0.15f,
                                 easeType = EaseType.SineInOut,
                                 usePingPong = true,
