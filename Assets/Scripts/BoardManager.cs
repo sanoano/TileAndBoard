@@ -1584,19 +1584,11 @@ public class BoardManager : NetworkBehaviour
                         //Play card attack sounds
                         if (workingDamage > 0)
                         {
-                            int randInt = Random.Range(0, 2);
-                            if (randInt == 0)
-                            {
-                                AudioManager.singleton.PlaySound("combatSword0", true);
-                            }
-                            else
-                            {
-                                AudioManager.singleton.PlaySound("combatSword1", true);
-                            }
+                            AudioManager.singleton.PlaySound("cardAttack", true);
                         }
                         else
                         {
-                            AudioManager.singleton.PlaySound("shieldBlock", true);
+                            AudioManager.singleton.PlaySound("attackBlocked", true);
                         }
                             
                     }
@@ -1612,7 +1604,7 @@ public class BoardManager : NetworkBehaviour
                         else
                         {
                             //Play card defend sounds
-                            AudioManager.singleton.PlaySound("shieldBlock", true);
+                            AudioManager.singleton.PlaySound("attackBlocked", true);
                         }
                     }
 
@@ -1755,24 +1747,16 @@ public class BoardManager : NetworkBehaviour
                     tc.TileRecieveDamage(0, 0);
 
 
-                    if (attackBlocked)
+                     if (attackBlocked)
                     {
                         //Play card attack sounds
                         if (workingDamage > 0)
                         {
-                            int randInt = Random.Range(0, 2);
-                            if (randInt == 0)
-                            {
-                                AudioManager.singleton.PlaySound("combatSword0", true);
-                            }
-                            else
-                            {
-                                AudioManager.singleton.PlaySound("combatSword1", true);
-                            }
+                            AudioManager.singleton.PlaySound("cardAttack", true);
                         }
                         else
                         {
-                            AudioManager.singleton.PlaySound("shieldBlock", true);
+                            AudioManager.singleton.PlaySound("attackBlocked", true);
                         }
                             
                     }
@@ -1788,7 +1772,7 @@ public class BoardManager : NetworkBehaviour
                         else
                         {
                             //Play card defend sounds
-                            AudioManager.singleton.PlaySound("shieldBlock", true);
+                            AudioManager.singleton.PlaySound("attackBlocked", true);
                         }
                     }
 
@@ -1845,6 +1829,8 @@ public class BoardManager : NetworkBehaviour
                 defenseInstances.Remove(defenseInstance);
             }
         }
+        
+        
 
         foreach (var tile in player1Board.TileTransforms)
         {
@@ -1858,6 +1844,7 @@ public class BoardManager : NetworkBehaviour
 
         UpdateTileVisuals();
         PruneUnitList();
+        await Task.Delay(attackDelay);
         attackInProgress = false;
     }
 
