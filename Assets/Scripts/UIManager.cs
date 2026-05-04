@@ -484,48 +484,55 @@ public class UIManager : MonoBehaviour
             var buttons = cardInfoPrefabInstance.GetComponentsInChildren<Button>();
 
             buttons[3].GetComponentInChildren<TextMeshProUGUI>().text = $"Recall (-{unitToDisplay.AttackPositions.Count} Mna)";
-
-            print(buttons[0].gameObject.name);
-            if (unitToDisplay.Damage > 0)
+            if (unitToDisplay.HasActed == false)
             {
-                buttons[0].onClick.AddListener(BoardManager.Instance.PrepareAttack);
-                if (!ManaManager.instance.CanAfford(unitToDisplay.AttackPositions.Count) || !TurnManager.instance.isYourTurn ||
-                    unitToDisplay.HasActed)
+                if (unitToDisplay.Damage > 0)
                 {
-                    buttons[0].interactable = false;
+                    buttons[0].onClick.AddListener(BoardManager.Instance.PrepareAttack);
+                    if (!ManaManager.instance.CanAfford(unitToDisplay.AttackPositions.Count) || !TurnManager.instance.isYourTurn ||
+                        unitToDisplay.HasActed)
+                    {
+                        buttons[0].interactable = false;
+                    }
+                }
+                else
+                {
+                    buttons[0].gameObject.SetActive(false);
+                }
+
+
+                if (unitToDisplay.Defense > 0)
+                {
+                    buttons[1].onClick.AddListener(BoardManager.Instance.PrepareDefense);
+                    if (!ManaManager.instance.CanAfford(unitToDisplay.AttackPositions.Count) || !TurnManager.instance.isYourTurn ||
+                        unitToDisplay.HasActed)
+                    {
+                        buttons[1].interactable = false;
+                    }
+                }
+                else
+                {
+                    buttons[1].gameObject.SetActive(false);
+                }
+
+                if (unitToDisplay.Movement > 0)
+                {
+                    buttons[2].onClick.AddListener(BoardManager.Instance.PrepareMovement);
+                    if (!ManaManager.instance.CanAfford(unitToDisplay.AttackPositions.Count) || !TurnManager.instance.isYourTurn ||
+                        unitToDisplay.HasActed)
+                    {
+                        buttons[2].interactable = false;
+                    }
+                }
+                else
+                {
+                    buttons[2].gameObject.SetActive(false);
                 }
             }
             else
             {
                 buttons[0].gameObject.SetActive(false);
-            }
-
-
-            if (unitToDisplay.Defense > 0)
-            {
-                buttons[1].onClick.AddListener(BoardManager.Instance.PrepareDefense);
-                if (!ManaManager.instance.CanAfford(unitToDisplay.AttackPositions.Count) || !TurnManager.instance.isYourTurn ||
-                    unitToDisplay.HasActed)
-                {
-                    buttons[1].interactable = false;
-                }
-            }
-            else
-            {
                 buttons[1].gameObject.SetActive(false);
-            }
-
-            if (unitToDisplay.Movement > 0)
-            {
-                buttons[2].onClick.AddListener(BoardManager.Instance.PrepareMovement);
-                if (!ManaManager.instance.CanAfford(unitToDisplay.AttackPositions.Count) || !TurnManager.instance.isYourTurn ||
-                    unitToDisplay.HasActed)
-                {
-                    buttons[2].interactable = false;
-                }
-            }
-            else
-            {
                 buttons[2].gameObject.SetActive(false);
             }
 
