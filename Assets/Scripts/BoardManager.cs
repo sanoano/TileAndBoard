@@ -1577,7 +1577,15 @@ public class BoardManager : NetworkBehaviour
                             {
                                 cardDied = true;
                                 PruneUnitVisuals();
-                                AudioManager.singleton.PlaySound("cardDie", true, 0.4f);
+                                var randInt = Random.Range(0, 10);
+                                if (randInt == 10) 
+                                {
+                                    AudioManager.singleton.PlaySound("cardDie", true, 0.3f);
+                                }
+                                else 
+                                {
+                                    AudioManager.singleton.PlaySound("cardDie2", true, 0.3f);
+                                }
                             }
                         }
                     }
@@ -1745,7 +1753,16 @@ public class BoardManager : NetworkBehaviour
                             {
                                 cardDied = true;
                                 PruneUnitVisuals();
-                                AudioManager.singleton.PlaySound("cardDie", true, 0.3f);
+                                var randInt = Random.Range(0, 10);
+                                if (randInt == 10) 
+                                {
+                                    AudioManager.singleton.PlaySound("cardDie", true, 0.3f);
+                                }
+                                else 
+                                {
+                                    AudioManager.singleton.PlaySound("cardDie2", true, 0.3f);
+                                }
+                                
                             }
                         }
                     }
