@@ -579,6 +579,16 @@ public class BoardManager : NetworkBehaviour
 
             currentSelectedTileGameObject = null;
             CurrentSelectedTile = new Vector2Int(-1, 1);
+            
+            var randInt = Random.Range(0, 1);
+            if (randInt == 0) 
+            {
+                AudioManager.singleton.PlaySound("attackPlace1", false, 0.8f);
+            }
+            else 
+            {
+                AudioManager.singleton.PlaySound("attackPlace2", false, 0.8f);
+            }
 
             if (NetworkManager.Singleton)
             {
@@ -684,6 +694,17 @@ public class BoardManager : NetworkBehaviour
 
             currentSelectedTileGameObject = null;
             CurrentSelectedTile = new Vector2Int(-1, 1);
+            
+            var randInt = Random.Range(0, 1);
+            
+            if (randInt == 0) 
+            {
+                AudioManager.singleton.PlaySound("defensePlace1", false, 0.8f);
+            }
+            else 
+            {
+                AudioManager.singleton.PlaySound("defensePlace2", false, 0.8f);
+            }
 
             if (NetworkManager.Singleton)
             {
