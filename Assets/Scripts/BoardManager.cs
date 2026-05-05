@@ -1605,11 +1605,11 @@ public class BoardManager : NetworkBehaviour
                         //Play card attack sounds
                         if (workingDamage > 0)
                         {
-                            AudioManager.singleton.PlaySound("cardAttack", true);
+                            AudioManager.singleton.PlaySound("cardAttack", true, 0.8f);
                         }
                         else
                         {
-                            AudioManager.singleton.PlaySound("attackBlocked", true);
+                            AudioManager.singleton.PlaySound("attackBlocked", true, 0.8f);
                         }
                             
                     }
@@ -1618,14 +1618,14 @@ public class BoardManager : NetworkBehaviour
                         if (workingDamage > 0)
                         {
                             //Play board attack sounds
-                            AudioManager.singleton.PlaySound("boardAttack", true);
+                            AudioManager.singleton.PlaySound("boardAttack", true, 0.8f);
                             
                             StartCoroutine(tileFleshScript1.Pulse(attackDelay / 1000));
                         }
                         else
                         {
                             //Play card defend sounds
-                            AudioManager.singleton.PlaySound("attackBlocked", true);
+                            AudioManager.singleton.PlaySound("attackBlocked", true, 0.8f);
                         }
                     }
 
@@ -1773,11 +1773,11 @@ public class BoardManager : NetworkBehaviour
                         //Play card attack sounds
                         if (workingDamage > 0)
                         {
-                            AudioManager.singleton.PlaySound("cardAttack", true);
+                            AudioManager.singleton.PlaySound("cardAttack", true, 0.8f);
                         }
                         else
                         {
-                            AudioManager.singleton.PlaySound("attackBlocked", true);
+                            AudioManager.singleton.PlaySound("attackBlocked", true, 0.8f);
                         }
                             
                     }
@@ -1786,14 +1786,14 @@ public class BoardManager : NetworkBehaviour
                         if (workingDamage > 0)
                         {
                             //Play board attack sounds
-                            AudioManager.singleton.PlaySound("boardAttack", true);
+                            AudioManager.singleton.PlaySound("boardAttack", true, 0.8f);
                             
                             StartCoroutine(tileFleshScript2.Pulse(attackDelay / 1000));
                         }
                         else
                         {
                             //Play card defend sounds
-                            AudioManager.singleton.PlaySound("attackBlocked", true);
+                            AudioManager.singleton.PlaySound("attackBlocked", true, 0.8f);
                         }
                     }
 

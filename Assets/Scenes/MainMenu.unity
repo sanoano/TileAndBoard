@@ -1304,13 +1304,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1929042587167995704, guid: 64cadb011816d4571892f0c57a451610, type: 3}
+      propertyPath: m_Volume
+      value: 0.13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1929042587167995704, guid: 64cadb011816d4571892f0c57a451610, type: 3}
       propertyPath: m_Resource
       value: 
       objectReference: {fileID: 8300000, guid: 5dfeac12f5bfd4ee58b755151307e6dc, type: 3}
     - target: {fileID: 3248893169751202068, guid: 64cadb011816d4571892f0c57a451610, type: 3}
       propertyPath: m_Resource
       value: 
-      objectReference: {fileID: 8300000, guid: b9e6044e6674b40b4914228261ae832a, type: 3}
+      objectReference: {fileID: 8300000, guid: 9f3b2f1269b8568419a702909aed3390, type: 3}
     - target: {fileID: 3444800217767845638, guid: 64cadb011816d4571892f0c57a451610, type: 3}
       propertyPath: m_Name
       value: AUDIO
@@ -1677,7 +1681,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.397
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -1858,7 +1862,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &486571931
 RectTransform:
   m_ObjectHideFlags: 0
