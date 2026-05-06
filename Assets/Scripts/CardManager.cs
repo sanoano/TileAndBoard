@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using Tweens;
 using Unity.Netcode;
+using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -387,8 +388,14 @@ public class CardManager : NetworkBehaviour
         var op = Resources.LoadAsync<Sprite>($"CardArt/{cardData.ID}");
         var sprite = op.asset as Sprite;
         cardSprites[8].sprite = sprite;
-        Debug.Log(sprite != null ? "Card art loaded succesfully" : $"No art found for card {cardData.Name}");
-
+        Debug.Log(sprite != null ? "Card art loaded succesfully" : $"No art found for card {cardData.Name}, loading default.");
+        if (sprite == null)
+        {
+            op = Resources.LoadAsync<Sprite>("CardArt/Default");
+            sprite = op.asset as Sprite;
+            cardSprites[8].sprite = sprite;
+            Debug.Log(sprite != null ? "Card art loaded succesfully" : "Default art failed to load.");
+        }
         //I'm not arsed to do something smart rn...will fix this later...maybe...
         //Just wakes up the right squares. Make sure they're all inactive in the prefab before running the game...
 
