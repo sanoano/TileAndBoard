@@ -1642,7 +1642,7 @@ Transform:
   m_GameObject: {fileID: 442604864}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -611, y: -24, z: 814}
+  m_LocalPosition: {x: 0, y: -24, z: 0}
   m_LocalScale: {x: 1380.5139, y: 1, z: 1713.3772}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1974,7 +1974,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &486571931
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4474,7 +4474,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 451512463}
         m_TargetAssemblyTypeName: UIManagerMainMenu, Assembly-CSharp
-        m_MethodName: AudioParchment
+        m_MethodName: AudioStone
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6320,7 +6320,7 @@ Transform:
   m_GameObject: {fileID: 1327584136}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -611, y: -24, z: 814}
+  m_LocalPosition: {x: 0, y: -24, z: 0}
   m_LocalScale: {x: 1382.2927, y: 1, z: 1713.3772}
   m_ConstrainProportionsScale: 0
   m_Children: []
