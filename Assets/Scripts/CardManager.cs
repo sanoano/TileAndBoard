@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using TMPro;
 using Tweens;
 using Unity.Netcode;
-using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
