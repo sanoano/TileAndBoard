@@ -545,7 +545,7 @@ public class UIManager : MonoBehaviour
 
         }
 
-        AudioManager.singleton.PlaySound("scrollOpen", true);
+        AudioManager.singleton.PlaySound("scrollOpen", true, 0.6f);
         slideScript.SlideIn();
 
     }
