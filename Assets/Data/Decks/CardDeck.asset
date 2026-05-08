@@ -17,7 +17,7 @@ MonoBehaviour:
   - ID: 0
     Name: Cloud Buffer
     Health: 20
-    Cost: 9
+    Cost: 0
     Speed: 6
     Defence: 0
     Range:
@@ -25,136 +25,127 @@ MonoBehaviour:
     Damage: 0
   - ID: 1
     Name: Holy Well
-    Health: 6
+    Health: 1
     Cost: 1
-    Speed: 0
-    Defence: 12
+    Speed: 5
+    Defence: 6
     Range:
     - {x: 1, y: 1}
-    Damage: 0
+    Damage: 6
   - ID: 2
     Name: Brimstone Pit
-    Health: 6
+    Health: 3
     Cost: 1
-    Speed: 0
-    Defence: 0
-    Range:
-    - {x: 1, y: 1}
-    Damage: 12
-  - ID: 3
-    Name: Gryphon
-    Health: 7
-    Cost: 1
-    Speed: 2
+    Speed: 5
     Defence: 3
     Range:
     - {x: 1, y: 0}
-    Damage: 6
-  - ID: 4
-    Name: Proto-Angel
-    Health: 7
+    Damage: 4
+  - ID: 3
+    Name: Gryphon
+    Health: 3
     Cost: 1
-    Speed: 2
-    Defence: 6
+    Speed: 5
+    Defence: 4
     Range:
     - {x: 0, y: 0}
     Damage: 3
-  - ID: 5
-    Name: Guardian Angel
-    Health: 4
+  - ID: 4
+    Name: Proto-Angel
+    Health: 1
     Cost: 2
-    Speed: 1
+    Speed: 3
     Defence: 6
     Range:
     - {x: 1, y: 0}
     - {x: 1, y: 2}
     Damage: 0
-  - ID: 6
-    Name: Dominion
-    Health: 4
+  - ID: 5
+    Name: Guardian Angel
+    Health: 1
     Cost: 2
-    Speed: 1
+    Speed: 3
     Defence: 0
     Range:
     - {x: 0, y: 0}
     - {x: 2, y: 2}
     Damage: 6
-  - ID: 7
-    Name: Valkyrie
-    Health: 3
+  - ID: 6
+    Name: Dominion
+    Health: 5
     Cost: 2
-    Speed: 2
-    Defence: 5
+    Speed: 3
+    Defence: 1
     Range:
     - {x: 1, y: 0}
     - {x: 0, y: 1}
-    Damage: 1
-  - ID: 8
-    Name: Seraph
-    Health: 3
+    Damage: 4
+  - ID: 7
+    Name: Valkyrie
+    Health: 5
     Cost: 2
-    Speed: 2
-    Defence: 1
+    Speed: 3
+    Defence: 3
     Range:
     - {x: 0, y: 0}
     - {x: 2, y: 0}
-    Damage: 5
-  - ID: 9
-    Name: Cherub
-    Health: 1
+    Damage: 2
+  - ID: 8
+    Name: Seraph
+    Health: 7
     Cost: 2
-    Speed: 4
-    Defence: 2
+    Speed: 2
+    Defence: 4
     Range:
     - {x: 1, y: 0}
     - {x: 1, y: 1}
-    Damage: 4
-  - ID: 10
-    Name: Archangel
-    Health: 1
+    Damage: 1
+  - ID: 9
+    Name: Cherub
+    Health: 7
     Cost: 2
-    Speed: 4
-    Defence: 4
+    Speed: 2
+    Defence: 2
     Range:
     - {x: 0, y: 0}
     - {x: 1, y: 1}
-    Damage: 2
+    Damage: 3
+  - ID: 10
+    Name: Archangel
+    Health: 1
+    Cost: 3
+    Speed: 1
+    Defence: 0
+    Range:
+    - {x: 1, y: 0}
+    - {x: 1, y: 1}
+    - {x: 1, y: 2}
+    Damage: 4
   - ID: 11
     Name: Shield Angel
     Health: 1
     Cost: 3
-    Speed: 3
+    Speed: 1
     Defence: 4
-    Range:
-    - {x: 1, y: 0}
-    - {x: 1, y: 1}
-    - {x: 1, y: 2}
-    Damage: 0
-  - ID: 12
-    Name: Fury
-    Health: 1
-    Cost: 3
-    Speed: 3
-    Defence: 0
     Range:
     - {x: 0, y: 0}
     - {x: 1, y: 1}
     - {x: 2, y: 2}
-    Damage: 4
-  - ID: 13
-    Name: Angelic Captain
-    Health: 2
+    Damage: 0
+  - ID: 12
+    Name: Fury
+    Health: 6
     Cost: 3
     Speed: 2
-    Defence: 1
+    Defence: 0
     Range:
     - {x: 1, y: 0}
     - {x: 0, y: 1}
     - {x: 2, y: 1}
-    Damage: 3
-  - ID: 14
-    Name: Angelic Seer
-    Health: 2
+    Damage: 4
+  - ID: 13
+    Name: Angelic Captain
+    Health: 6
     Cost: 3
     Speed: 2
     Defence: 3
@@ -163,77 +154,77 @@ MonoBehaviour:
     - {x: 2, y: 0}
     - {x: 0, y: 2}
     Damage: 1
-  - ID: 15
-    Name: Power
-    Health: 3
+  - ID: 14
+    Name: Angelic Seer
+    Health: 5
     Cost: 3
-    Speed: 4
-    Defence: 1
+    Speed: 2
+    Defence: 4
     Range:
     - {x: 1, y: 0}
     - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    Damage: 0
+  - ID: 15
+    Name: Power
+    Health: 5
+    Cost: 3
+    Speed: 2
+    Defence: 2
+    Range:
+    - {x: 0, y: 0}
+    - {x: 2, y: 0}
     - {x: 1, y: 1}
     Damage: 2
   - ID: 16
     Name: Virtue
-    Health: 3
+    Health: 8
     Cost: 3
-    Speed: 4
-    Defence: 2
-    Range:
-    - {x: 0, y: 0}
-    - {x: 2, y: 0}
-    - {x: 1, y: 1}
-    Damage: 1
-  - ID: 17
-    Name: Zephyr
-    Health: 3
-    Cost: 3
-    Speed: 4
-    Defence: 3
+    Speed: 2
+    Defence: 1
     Range:
     - {x: 0, y: 0}
     - {x: 1, y: 0}
     - {x: 0, y: 1}
+    Damage: 2
+  - ID: 17
+    Name: Zephyr
+    Health: 8
+    Cost: 3
+    Speed: 2
+    Defence: 3
+    Range:
+    - {x: 0, y: 0}
+    - {x: 1, y: 0}
+    - {x: 2, y: 0}
     Damage: 0
   - ID: 18
     Name: Principality
-    Health: 3
+    Health: 5
     Cost: 3
-    Speed: 4
-    Defence: 0
-    Range:
-    - {x: 0, y: 0}
-    - {x: 1, y: 0}
-    - {x: 2, y: 0}
-    Damage: 3
-  - ID: 19
-    Name: Ophanim
-    Health: 6
-    Cost: 3
-    Speed: 4
+    Speed: 3
     Defence: 2
     Range:
     - {x: 1, y: 0}
     - {x: 0, y: 1}
     - {x: 2, y: 2}
-    Damage: 0
-  - ID: 20
-    Name: Throne
-    Health: 6
+    Damage: 1
+  - ID: 19
+    Name: Ophanim
+    Health: 5
     Cost: 3
-    Speed: 4
+    Speed: 3
     Defence: 0
     Range:
     - {x: 0, y: 0}
     - {x: 2, y: 0}
     - {x: 1, y: 2}
-    Damage: 2
-  - ID: 21
-    Name: Field of Blood
-    Health: 3
+    Damage: 3
+  - ID: 20
+    Name: Throne
+    Health: 1
     Cost: 4
-    Speed: 0
+    Speed: 2
     Defence: 0
     Range:
     - {x: 1, y: 0}
@@ -241,11 +232,11 @@ MonoBehaviour:
     - {x: 2, y: 1}
     - {x: 1, y: 2}
     Damage: 3
-  - ID: 22
-    Name: St. Gabriel
-    Health: 3
+  - ID: 21
+    Name: Field of Blood
+    Health: 1
     Cost: 4
-    Speed: 0
+    Speed: 2
     Defence: 3
     Range:
     - {x: 0, y: 0}
@@ -253,95 +244,95 @@ MonoBehaviour:
     - {x: 0, y: 2}
     - {x: 2, y: 2}
     Damage: 0
-  - ID: 23
-    Name: St. Michael
-    Health: 3
+  - ID: 22
+    Name: St. Gabriel
+    Health: 4
     Cost: 4
-    Speed: 4
-    Defence: 0
+    Speed: 1
+    Defence: 2
     Range:
     - {x: 0, y: 0}
     - {x: 2, y: 0}
     - {x: 0, y: 1}
     - {x: 2, y: 1}
-    Damage: 2
-  - ID: 24
-    Name: St. Raphael
-    Health: 3
+    Damage: 1
+  - ID: 23
+    Name: St. Michael
+    Health: 4
     Cost: 4
-    Speed: 4
-    Defence: 2
+    Speed: 1
+    Defence: 0
     Range:
     - {x: 1, y: 0}
     - {x: 2, y: 0}
     - {x: 0, y: 1}
     - {x: 0, y: 2}
-    Damage: 0
-  - ID: 25
-    Name: Nephil
-    Health: 7
+    Damage: 3
+  - ID: 24
+    Name: St. Raphael
+    Health: 8
     Cost: 4
-    Speed: 4
+    Speed: 0
     Defence: 1
     Range:
     - {x: 0, y: 0}
     - {x: 1, y: 0}
     - {x: 2, y: 0}
     - {x: 1, y: 2}
-    Damage: 0
-  - ID: 26
-    Name: Golem
-    Health: 7
+    Damage: 2
+  - ID: 25
+    Name: Nephil
+    Health: 8
     Cost: 4
-    Speed: 4
-    Defence: 0
+    Speed: 0
+    Defence: 3
     Range:
     - {x: 0, y: 0}
     - {x: 1, y: 0}
     - {x: 0, y: 1}
     - {x: 2, y: 2}
-    Damage: 1
-  - ID: 27
-    Name: Samson
-    Health: 3
+    Damage: 0
+  - ID: 26
+    Name: Golem
+    Health: 8
     Cost: 4
-    Speed: 4
-    Defence: 1
+    Speed: 1
+    Defence: 2
     Range:
     - {x: 1, y: 0}
     - {x: 0, y: 1}
     - {x: 1, y: 1}
     - {x: 2, y: 1}
-    Damage: 1
-  - ID: 28
-    Name: Goliath
-    Health: 3
+    Damage: 0
+  - ID: 27
+    Name: Samson
+    Health: 8
     Cost: 4
-    Speed: 4
-    Defence: 1
+    Speed: 1
+    Defence: 0
     Range:
     - {x: 0, y: 0}
     - {x: 2, y: 0}
     - {x: 1, y: 1}
     - {x: 0, y: 2}
-    Damage: 1
-  - ID: 29
-    Name: Brunhilde
-    Health: 2
+    Damage: 2
+  - ID: 28
+    Name: Goliath
+    Health: 10
     Cost: 4
-    Speed: 5
-    Defence: 0
+    Speed: 0
+    Defence: 1
     Range:
     - {x: 0, y: 0}
     - {x: 1, y: 0}
     - {x: 2, y: 0}
     - {x: 1, y: 1}
-    Damage: 2
-  - ID: 30
-    Name: La Tour de Dieu
-    Health: 2
+    Damage: 1
+  - ID: 29
+    Name: Brunhilde
+    Health: 10
     Cost: 4
-    Speed: 5
+    Speed: 0
     Defence: 2
     Range:
     - {x: 0, y: 0}
@@ -349,18 +340,30 @@ MonoBehaviour:
     - {x: 0, y: 1}
     - {x: 1, y: 1}
     Damage: 0
+  - ID: 30
+    Name: La Tour de Dieu
+    Health: 6
+    Cost: 4
+    Speed: 1
+    Defence: 1
+    Range:
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+    - {x: 2, y: 2}
+    Damage: 1
   - ID: 31
     Name: Gideon
     Health: 6
     Cost: 4
-    Speed: 5
-    Defence: 1
+    Speed: 1
+    Defence: 0
     Range:
-    - {x: 1, y: 0}
-    - {x: 0, y: 1}
+    - {x: 0, y: 0}
+    - {x: 2, y: 0}
     - {x: 1, y: 1}
-    - {x: 2, y: 2}
-    Damage: 0
+    - {x: 1, y: 2}
+    Damage: 2
   - ID: 32
     Name: Azrael
     Health: 6
