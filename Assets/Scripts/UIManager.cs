@@ -578,6 +578,7 @@ public class UIManager : MonoBehaviour
             case InteractionState.Attacking:
                 
                 attackingDefendingText.SetActive(true);
+                controlsText.gameObject.SetActive(true);
 
 
                 break;
@@ -585,6 +586,7 @@ public class UIManager : MonoBehaviour
             case InteractionState.Defending:
 
                 attackingDefendingText.SetActive(true);
+                controlsText.gameObject.SetActive(true);
 
                 break;
             
@@ -592,13 +594,14 @@ public class UIManager : MonoBehaviour
             case InteractionState.Moving:
 
                 movingText.SetActive(true);
-
+                controlsText.gameObject.SetActive(true);
                 break;
             
             case InteractionState.None:
 
                 movingText.SetActive(false);
                 attackingDefendingText.SetActive(false);
+                controlsText.gameObject.SetActive(false);
 
                 break;
         }
