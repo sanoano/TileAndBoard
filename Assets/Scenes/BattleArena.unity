@@ -14699,7 +14699,7 @@ PrefabInstance:
     - target: {fileID: 4318003631524276523, guid: 107481a5e5bb6482abb5f4a3a35b0ad8, type: 3}
       propertyPath: playerHead
       value: 
-      objectReference: {fileID: 8506733579990767881, guid: 07b0f606dbbac46a48fcad38441a50a1, type: 3}
+      objectReference: {fileID: 4702116979466629238, guid: 04b745ff3854e164b9dca439ad50cb7d, type: 3}
     - target: {fileID: 4318003631524276523, guid: 107481a5e5bb6482abb5f4a3a35b0ad8, type: 3}
       propertyPath: rotationSpeed
       value: 3
