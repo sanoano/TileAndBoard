@@ -184,7 +184,7 @@ public class CardManager : NetworkBehaviour
 
         if (playerHand.Count >= maxCards) return;
         
-        ManaManager.instance.RemoveManaPoints(unit.AttackPositions.Count);
+        ManaManager.instance.RemoveManaPoints(unit.Cost);
         
         AudioManager.singleton.PlaySound("cardRecall2", true);
         
@@ -436,20 +436,17 @@ public class CardManager : NetworkBehaviour
 
         //Manna cost display
 
-        int mannaCost = 0;
-        foreach (Vector2Int space in cardData.Range)
-            mannaCost++;
 
-        if (mannaCost >= 1)
+        if (cardData.Cost >= 1)
             cardManna[1].gameObject.SetActive(true);
 
-        if (mannaCost >= 2)
+        if (cardData.Cost >= 2)
             cardManna[2].gameObject.SetActive(true);
 
-        if (mannaCost >= 3)
+        if (cardData.Cost >= 3)
             cardManna[3].gameObject.SetActive(true);
 
-        if (mannaCost >= 4)
+        if (cardData.Cost >= 4)
             cardManna[4].gameObject.SetActive(true);
 
         return cardVisual;

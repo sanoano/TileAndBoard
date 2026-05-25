@@ -72,6 +72,7 @@ public class BoardManager : NetworkBehaviour
     public class Unit
     {
         public String Name;
+        public int Cost;
         public Player.PlayerId ID;
         public int Health;
         public int Damage;
@@ -81,7 +82,7 @@ public class BoardManager : NetworkBehaviour
         public Vector2Int Position;
         public bool HasActed;
 
-        public Unit(string name, Player.PlayerId id, int health, int damage, int movement,
+        public Unit(string name, int cost, Player.PlayerId id, int health, int damage, int movement,
             List<Vector2Int> attackPositions, Vector2Int position, int defense, bool hasActed)
         {
             Name = name;
@@ -93,6 +94,7 @@ public class BoardManager : NetworkBehaviour
             Position = position;
             Defense = defense;
             HasActed = hasActed;
+            Cost = cost;
         }
     }
 
@@ -552,7 +554,7 @@ public class BoardManager : NetworkBehaviour
         {
            
             
-            ManaManager.instance.RemoveManaPoints(currentlySelectedUnit.AttackPositions.Count);
+            ManaManager.instance.RemoveManaPoints(currentlySelectedUnit.Cost);
 
 
             UIManager.Instance.interactionState = UIManager.InteractionState.None;
@@ -668,7 +670,7 @@ public class BoardManager : NetworkBehaviour
         {
             
             
-            ManaManager.instance.RemoveManaPoints(currentlySelectedUnit.AttackPositions.Count);
+            ManaManager.instance.RemoveManaPoints(currentlySelectedUnit.Cost);
 
             UIManager.Instance.interactionState = UIManager.InteractionState.None;
             UIManager.Instance.EnableControlsText();
@@ -1126,6 +1128,7 @@ public class BoardManager : NetworkBehaviour
 
         Unit unit = new Unit(
             name: cardData.Name,
+            cost: cardData.Cost,
             id: GameManager.instance.playerId,
             health: cardData.Health,
             damage: cardData.Damage,
@@ -1220,6 +1223,7 @@ public class BoardManager : NetworkBehaviour
 
         Unit unit = new Unit(
             name: cardData.Name,
+            cost: cardData.Cost,
             id: playerId,
             health: unitHealth,
             damage: cardData.Damage,
@@ -1358,7 +1362,7 @@ public class BoardManager : NetworkBehaviour
             }
         }
         
-        ManaManager.instance.RemoveManaPoints(currentlySelectedUnit.AttackPositions.Count);
+        ManaManager.instance.RemoveManaPoints(currentlySelectedUnit.Cost);
         if (workingPositions == null) return;
 
         ClearTiles();
