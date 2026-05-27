@@ -357,6 +357,7 @@ public class UIManager : MonoBehaviour
 
         if (!unitFound) return;
 
+        //ctrl+f poop to get here
         cardInfoPrefabInstance = Instantiate(cardInfoPrefab, CardInfoPanelPos.transform.position, Quaternion.identity, CardInfoPanelPos.transform);
 
         UIDialogueSlide slideScript = CardInfoPanelPos.GetComponent<UIDialogueSlide>();
@@ -377,18 +378,22 @@ public class UIManager : MonoBehaviour
         TextMeshProUGUI cardInfoSpeed = cardChildren[11].gameObject.GetComponent<TextMeshProUGUI>();
         TextMeshProUGUI cardInfoDamage = cardChildren[12].gameObject.GetComponent<TextMeshProUGUI>();
         TextMeshProUGUI cardInfoDefence = cardChildren[13].gameObject.GetComponent<TextMeshProUGUI>();
+        TextMeshProUGUI cardInfoCost = cardChildren[34].gameObject.GetComponent<TextMeshProUGUI>();
 
         //Cosmetic headers
         Image cardIconSpeed = cardChildren[7].gameObject.GetComponent<Image>();
         Image cardIconDamage = cardChildren[8].gameObject.GetComponent<Image>();
         Image cardIconDefence = cardChildren[9].gameObject.GetComponent<Image>();
+        Image cardIconShape = cardChildren[14].gameObject.GetComponent<Image>();
 
         TextMeshProUGUI cardInfoSpeedHeader = cardChildren[3].gameObject.GetComponent<TextMeshProUGUI>();
         TextMeshProUGUI cardInfoDamageHeader = cardChildren[4].gameObject.GetComponent<TextMeshProUGUI>();
         TextMeshProUGUI cardInfoDefenceHeader = cardChildren[5].gameObject.GetComponent<TextMeshProUGUI>();
 
         cardInfoHeader.text = "Card Info: " + unitToDisplay.Name;
+
         cardInfoHealth.text = unitToDisplay.Health.ToString();
+        cardInfoCost.text = unitToDisplay.Cost.ToString();
 
         //These if statements just hide icons+numbers for stats at 0
         if (unitToDisplay.Movement > 0)
@@ -396,7 +401,6 @@ public class UIManager : MonoBehaviour
             cardInfoSpeed.text = unitToDisplay.Movement.ToString();
             cardInfoSpeedHeader.text = "Speed:";
             cardIconSpeed.enabled = true;
-            
         }
         else
         {
@@ -467,6 +471,12 @@ public class UIManager : MonoBehaviour
                     cardChildren[23].gameObject.SetActive(true);
             }
         }
+
+        //disables the grid shape space for cards that don't have a grid shape
+        if (unitToDisplay.AttackPositions.Count == 0)
+            cardIconShape.enabled = false;
+        else
+            cardIconShape.enabled = true;
 
         StartCoroutine(RotateGridShape(cardChildren, new List<Vector2Int>(unitToDisplay.AttackPositions)));
 

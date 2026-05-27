@@ -335,7 +335,7 @@ public class CardManager : NetworkBehaviour
     
 
     public GameObject BuildCard(CardDeck.CardData cardData)
-    {// Probably a nicer way to do this... Oh well...
+    {// Probably a nicer way to do this... Oh well...ctrl+f poop to find it.
         
         
         var cardVisual = Instantiate(cardVisualPrefab,
@@ -395,10 +395,10 @@ public class CardManager : NetworkBehaviour
             cardSprites[8].sprite = sprite;
             Debug.Log(sprite != null ? "Card art loaded succesfully" : "Default art failed to load.");
         }
+
+
         //I'm not arsed to do something smart rn...will fix this later...maybe...
         //Just wakes up the right squares. Make sure they're all inactive in the prefab before running the game...
-
-
 
         foreach (Vector2Int coord in cardData.Range)
         {// Simple logic tree to find out which squares should show up...inelegant but robust enough...
@@ -434,8 +434,14 @@ public class CardManager : NetworkBehaviour
             }
         }
 
-        //Manna cost display
+        if (cardData.Range.Count == 0)
+            cardSprites[7].enabled = false;
+        else
+            cardSprites[7].enabled = true;
 
+
+
+        //Manna cost display
 
         if (cardData.Cost >= 1)
             cardManna[1].gameObject.SetActive(true);
