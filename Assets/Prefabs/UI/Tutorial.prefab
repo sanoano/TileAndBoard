@@ -278,9 +278,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "Attacking: Attacking reduces the enemy player's LP or enemy cards\u2019
-    HP. Cards with a Damage stat greater than 0 can Attack.   \r\nWhen performing
+    HP. Cards with a Power stat greater than 0 can Attack.   \r\nWhen performing
     an Attack, players rotate the Attacking card's grid shape to target spaces on
-    the enemy's island. The Attacking card's Damage stat is applied to all targeted
+    the enemy's island. The Attacking card's Power stat is applied to all targeted
     spaces within the arranged grid shape. \r\n\r\nBlocking: Blocking reduces incoming
     Attack damage from enemy cards. Cards with a Defence stat greater than 0 can
     Block.   \r\nWhen performing a Block, players rotate the Blocking card's grid
@@ -1401,7 +1401,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Damage: The amount of LP/HP subtracted from the enemy player/each card
+  m_text: 'Power: The amount of LP/HP subtracted from the enemy player/each card
     within the Grid Shape'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e2e27534f6cc30e48af57eca383b5503, type: 2}
