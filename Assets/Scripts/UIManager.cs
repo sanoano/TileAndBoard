@@ -1,15 +1,16 @@
 using JetBrains.Annotations;
+using Mono.Cecil.Cil;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Tweens;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 using static CardDeck;
-using Tweens;
 
 
 public class UIManager : MonoBehaviour
@@ -494,15 +495,16 @@ public class UIManager : MonoBehaviour
             var buttons = cardInfoPrefabInstance.GetComponentsInChildren<Button>();
 
             buttons[3].GetComponentInChildren<TextMeshProUGUI>().text = $"Recall (-{unitToDisplay.Cost} Mna)";
-            if (unitToDisplay.HasActed == false)
+            if (unitToDisplay.HasActed == false)//need to add clause for when the card is first placed
             {
                 if (unitToDisplay.Damage > 0)
                 {
                     buttons[0].onClick.AddListener(BoardManager.Instance.PrepareAttack);
-                    if (!ManaManager.instance.CanAfford(unitToDisplay.Cost) || !TurnManager.instance.isYourTurn ||
-                        unitToDisplay.HasActed)
+                    if (!ManaManager.instance.CanAfford(unitToDisplay.Cost) || !TurnManager.instance.isYourTurn)
                     {
-                        buttons[0].interactable = false;
+                        buttons[0].onClick.AddListener(() => TextDialogue.instance.DialogueRecieveStatus(1));
+                        TextMeshProUGUI AttackButtonText = buttons[0].gameObject.GetComponentInChildren<TextMeshProUGUI>();
+                        AttackButtonText.fontStyle = FontStyles.Strikethrough;
                     }
                 }
                 else
@@ -514,10 +516,11 @@ public class UIManager : MonoBehaviour
                 if (unitToDisplay.Defense > 0)
                 {
                     buttons[1].onClick.AddListener(BoardManager.Instance.PrepareDefense);
-                    if (!ManaManager.instance.CanAfford(unitToDisplay.Cost) || !TurnManager.instance.isYourTurn ||
-                        unitToDisplay.HasActed)
+                    if (!ManaManager.instance.CanAfford(unitToDisplay.Cost) || !TurnManager.instance.isYourTurn)
                     {
-                        buttons[1].interactable = false;
+                        buttons[1].onClick.AddListener(() => TextDialogue.instance.DialogueRecieveStatus(1));
+                        TextMeshProUGUI DefendButtonText = buttons[1].gameObject.GetComponentInChildren<TextMeshProUGUI>();
+                        DefendButtonText.fontStyle = FontStyles.Strikethrough;
                     }
                 }
                 else
@@ -528,10 +531,11 @@ public class UIManager : MonoBehaviour
                 if (unitToDisplay.Movement > 0)
                 {
                     buttons[2].onClick.AddListener(BoardManager.Instance.PrepareMovement);
-                    if (!ManaManager.instance.CanAfford(unitToDisplay.Cost) || !TurnManager.instance.isYourTurn ||
-                        unitToDisplay.HasActed)
+                    if (!ManaManager.instance.CanAfford(unitToDisplay.Cost) || !TurnManager.instance.isYourTurn)
                     {
-                        buttons[2].interactable = false;
+                        buttons[2].onClick.AddListener(() => TextDialogue.instance.DialogueRecieveStatus(1));
+                        TextMeshProUGUI MoveButtonText = buttons[2].gameObject.GetComponentInChildren<TextMeshProUGUI>();
+                        MoveButtonText.fontStyle = FontStyles.Strikethrough;
                     }
                 }
                 else
@@ -539,20 +543,62 @@ public class UIManager : MonoBehaviour
                     buttons[2].gameObject.SetActive(false);
                 }
             }
-            else
+            else if (unitToDisplay.HasActed == true)
             {
-                buttons[0].gameObject.SetActive(false);
-                buttons[1].gameObject.SetActive(false);
-                buttons[2].gameObject.SetActive(false);
+                if (unitToDisplay.Damage > 0)
+                {
+                    buttons[0].onClick.AddListener(() => TextDialogue.instance.DialogueRecieveStatus(9));
+
+                    TextMeshProUGUI AttackButtonText = buttons[0].gameObject.GetComponentInChildren<TextMeshProUGUI>();
+                    AttackButtonText.fontStyle = FontStyles.Strikethrough;
+                }
+                else
+                {
+                    buttons[0].gameObject.SetActive(false);
+                }
+
+
+                if (unitToDisplay.Defense > 0)
+                {
+                    buttons[1].onClick.AddListener(() => TextDialogue.instance.DialogueRecieveStatus(9));
+
+                    TextMeshProUGUI DefenceButtonText = buttons[1].gameObject.GetComponentInChildren<TextMeshProUGUI>();
+                    DefenceButtonText.fontStyle = FontStyles.Strikethrough;
+                }
+                else
+                {
+                    buttons[1].gameObject.SetActive(false);
+                }
+
+                if (unitToDisplay.Movement > 0)
+                {
+                    buttons[2].onClick.AddListener(() => TextDialogue.instance.DialogueRecieveStatus(9));
+
+                    TextMeshProUGUI MoveButtonText = buttons[2].gameObject.GetComponentInChildren<TextMeshProUGUI>();
+                    MoveButtonText.fontStyle = FontStyles.Strikethrough;
+                }
+                else
+                {
+                    buttons[2].gameObject.SetActive(false);
+                }
             }
 
             buttons[3].onClick.AddListener(delegate { CardManager.instance.RecallCard(cardVisual, unitToDisplay); });
             if (!ManaManager.instance.CanAfford(unitToDisplay.Cost) || !TurnManager.instance.isYourTurn
                 || CardManager.instance.playerHand.Count >= CardManager.instance.maxCards)
             {
-                buttons[3].interactable = false;
+                buttons[2].onClick.AddListener(() => TextDialogue.instance.DialogueRecieveStatus(1));
+                TextMeshProUGUI RecallButtonText = buttons[3].gameObject.GetComponentInChildren<TextMeshProUGUI>();
+                RecallButtonText.fontStyle = FontStyles.Strikethrough;
             }
 
+        }
+        else
+        {
+            var buttons = cardInfoPrefabInstance.GetComponentsInChildren<Button>();
+
+            foreach (var button in buttons)
+                button.gameObject.SetActive(false);
         }
 
         AudioManager.singleton.PlaySound("scrollOpen", true, 0.6f);

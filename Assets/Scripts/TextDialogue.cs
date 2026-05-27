@@ -98,6 +98,14 @@ public class TextDialogue : MonoBehaviour
                 headerTMP.text = "Can't End Turn";
                 dialogueTMP.text = "You must finish your current action before ending your turn.";
                 break;
+            case 9:
+                headerTMP.text = "Card Exhausted";
+                dialogueTMP.text = "This card has either already taken an action or was just placed this turn.";
+                break;
+            case 10:
+                headerTMP.text = "Card Just Placed";
+                dialogueTMP.text = "Cards cannot take actions until the turn after they're played";
+                break;
             default:
                 headerTMP.text = "Unknown Error!";
                 dialogueTMP.text = "idk what's going on!";
