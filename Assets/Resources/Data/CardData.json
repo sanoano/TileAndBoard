@@ -1,790 +1,366 @@
 [
-  {
-    "ID": 0,
-    "Name": "Cloud Buffer",
-    "Health": 20,
-    "Cost": 0,
-    "Speed": 6,
-    "Defence": 0,
-    "Range": [
-      [
-        1,
-        1
-      ]
-    ],
-    "Damage": 0,
-    "": ""
-  },
-  {
-    "ID": 1,
-    "Name": "Holy Well",
-    "Health": 1,
-    "Cost": 1,
-    "Speed": 5,
-    "Defence": 6,
-    "Range": [
-      [
-        1,
-        1
-      ]
-    ],
-    "Damage": 6,
-    "": ""
-  },
-  {
-    "ID": 2,
-    "Name": "Brimstone Pit",
-    "Health": 3,
-    "Cost": 1,
-    "Speed": 5,
-    "Defence": 3,
-    "Range": [
-      [
-        1,
-        0
-      ]
-    ],
-    "Damage": 4,
-    "": ""
-  },
-  {
-    "ID": 3,
-    "Name": "Gryphon",
-    "Health": 3,
-    "Cost": 1,
-    "Speed": 5,
-    "Defence": 4,
-    "Range": [
-      [
-        0,
-        0
-      ]
-    ],
-    "Damage": 3,
-    "": ""
-  },
-  {
-    "ID": 4,
-    "Name": "Proto-Angel",
-    "Health": 1,
-    "Cost": 2,
-    "Speed": 3,
-    "Defence": 6,
-    "Range": [
-      [
-        1,
-        0
-      ],
-      [
-        1,
-        2
-      ]
-    ],
-    "Damage": 0,
-    "": ""
-  },
-  {
-    "ID": 5,
-    "Name": "Guardian Angel",
-    "Health": 1,
-    "Cost": 2,
-    "Speed": 3,
-    "Defence": 0,
-    "Range": [
-      [
-        0,
-        0
-      ],
-      [
-        2,
-        2
-      ]
-    ],
-    "Damage": 6,
-    "": ""
-  },
-  {
-    "ID": 6,
-    "Name": "Dominion",
-    "Health": 5,
-    "Cost": 2,
-    "Speed": 3,
-    "Defence": 1,
-    "Range": [
-      [
-        1,
-        0
-      ],
-      [
-        0,
-        1
-      ]
-    ],
-    "Damage": 4,
-    "": ""
-  },
-  {
-    "ID": 7,
-    "Name": "Valkyrie",
-    "Health": 5,
-    "Cost": 2,
-    "Speed": 3,
-    "Defence": 3,
-    "Range": [
-      [
-        0,
-        0
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 2,
-    "": ""
-  },
-  {
-    "ID": 8,
-    "Name": "Seraph",
-    "Health": 7,
-    "Cost": 2,
-    "Speed": 2,
-    "Defence": 4,
-    "Range": [
-      [
-        1,
-        0
-      ],
-      [
-        1,
-        1
-      ]
-    ],
-    "Damage": 1,
-    "": ""
-  },
-  {
-    "ID": 9,
-    "Name": "Cherub",
-    "Health": 7,
-    "Cost": 2,
-    "Speed": 2,
-    "Defence": 2,
-    "Range": [
-      [
-        0,
-        0
-      ],
-      [
-        1,
-        1
-      ]
-    ],
-    "Damage": 3,
-    "": ""
-  },
-  {
-    "ID": 10,
-    "Name": "Archangel",
-    "Health": 1,
-    "Cost": 3,
-    "Speed": 1,
-    "Defence": 0,
-    "Range": [
-      [
-        1,
-        0
-      ],
-      [
-        1,
-        1
-      ],
-      [
-        1,
-        2
-      ]
-    ],
-    "Damage": 4,
-    "": ""
-  },
-  {
-    "ID": 11,
-    "Name": "Shield Angel",
-    "Health": 1,
-    "Cost": 3,
-    "Speed": 1,
-    "Defence": 4,
-    "Range": [
-      [
-        0,
-        0
-      ],
-      [
-        1,
-        1
-      ],
-      [
-        2,
-        2
-      ]
-    ],
-    "Damage": 0,
-    "": ""
-  },
-  {
-    "ID": 12,
-    "Name": "Fury",
-    "Health": 6,
-    "Cost": 3,
-    "Speed": 2,
-    "Defence": 0,
-    "Range": [
-      [
-        1,
-        0
-      ],
-      [
-        0,
-        1
-      ],
-      [
-        2,
-        1
-      ]
-    ],
-    "Damage": 4,
-    "": ""
-  },
-  {
-    "ID": 13,
-    "Name": "Angelic Captain",
-    "Health": 6,
-    "Cost": 3,
-    "Speed": 2,
-    "Defence": 3,
-    "Range": [
-      [
-        0,
-        0
-      ],
-      [
-        2,
-        0
-      ],
-      [
-        0,
-        2
-      ]
-    ],
-    "Damage": 1,
-    "": ""
-  },
-  {
-    "ID": 14,
-    "Name": "Angelic Seer",
-    "Health": 5,
-    "Cost": 3,
-    "Speed": 2,
-    "Defence": 4,
-    "Range": [
-      [
-        1,
-        0
-      ],
-      [
-        0,
-        1
-      ],
-      [
-        1,
-        1
-      ]
-    ],
-    "Damage": 0,
-    "": ""
-  },
-  {
-    "ID": 15,
-    "Name": "Power",
-    "Health": 5,
-    "Cost": 3,
-    "Speed": 2,
-    "Defence": 2,
-    "Range": [
-      [
-        0,
-        0
-      ],
-      [
-        2,
-        0
-      ],
-      [
-        1,
-        1
-      ]
-    ],
-    "Damage": 2,
-    "": ""
-  },
-  {
-    "ID": 16,
-    "Name": "Virtue",
-    "Health": 8,
-    "Cost": 3,
-    "Speed": 2,
-    "Defence": 1,
-    "Range": [
-      [
-        0,
-        0
-      ],
-      [
-        1,
-        0
-      ],
-      [
-        0,
-        1
-      ]
-    ],
-    "Damage": 2,
-    "": ""
-  },
-  {
-    "ID": 17,
-    "Name": "Zephyr",
-    "Health": 8,
-    "Cost": 3,
-    "Speed": 2,
-    "Defence": 3,
-    "Range": [
-      [
-        0,
-        0
-      ],
-      [
-        1,
-        0
-      ],
-      [
-        2,
-        0
-      ]
-    ],
-    "Damage": 0,
-    "": ""
-  },
-  {
-    "ID": 18,
-    "Name": "Principality",
-    "Health": 5,
-    "Cost": 3,
-    "Speed": 3,
-    "Defence": 2,
-    "Range": [
-      [
-        1,
-        0
-      ],
-      [
-        0,
-        1
-      ],
-      [
-        2,
-        2
-      ]
-    ],
-    "Damage": 1,
-    "": ""
-  },
-  {
-    "ID": 19,
-    "Name": "Ophanim",
-    "Health": 5,
-    "Cost": 3,
-    "Speed": 3,
-    "Defence": 0,
-    "Range": [
-      [
-        0,
-        0
-      ],
-      [
-        2,
-        0
-      ],
-      [
-        1,
-        2
-      ]
-    ],
-    "Damage": 3,
-    "": ""
-  },
-  {
-    "ID": 20,
-    "Name": "Throne",
-    "Health": 1,
-    "Cost": 4,
-    "Speed": 2,
-    "Defence": 0,
-    "Range": [
-      [
-        1,
-        0
-      ],
-      [
-        0,
-        1
-      ],
-      [
-        2,
-        1
-      ],
-      [
-        1,
-        2
-      ]
-    ],
-    "Damage": 3,
-    "": ""
-  },
-  {
-    "ID": 21,
-    "Name": "Field of Blood",
-    "Health": 1,
-    "Cost": 4,
-    "Speed": 2,
-    "Defence": 3,
-    "Range": [
-      [
-        0,
-        0
-      ],
-      [
-        2,
-        0
-      ],
-      [
-        0,
-        2
-      ],
-      [
-        2,
-        2
-      ]
-    ],
-    "Damage": 0,
-    "": ""
-  },
-  {
-    "ID": 22,
-    "Name": "St. Gabriel",
-    "Health": 4,
-    "Cost": 4,
-    "Speed": 1,
-    "Defence": 2,
-    "Range": [
-      [
-        0,
-        0
-      ],
-      [
-        2,
-        0
-      ],
-      [
-        0,
-        1
-      ],
-      [
-        2,
-        1
-      ]
-    ],
-    "Damage": 1,
-    "": ""
-  },
-  {
-    "ID": 23,
-    "Name": "St. Michael",
-    "Health": 4,
-    "Cost": 4,
-    "Speed": 1,
-    "Defence": 0,
-    "Range": [
-      [
-        1,
-        0
-      ],
-      [
-        2,
-        0
-      ],
-      [
-        0,
-        1
-      ],
-      [
-        0,
-        2
-      ]
-    ],
-    "Damage": 3,
-    "": ""
-  },
-  {
-    "ID": 24,
-    "Name": "St. Raphael",
-    "Health": 8,
-    "Cost": 4,
-    "Speed": 0,
-    "Defence": 1,
-    "Range": [
-      [
-        0,
-        0
-      ],
-      [
-        1,
-        0
-      ],
-      [
-        2,
-        0
-      ],
-      [
-        1,
-        2
-      ]
-    ],
-    "Damage": 2,
-    "": ""
-  },
-  {
-    "ID": 25,
-    "Name": "Nephil",
-    "Health": 8,
-    "Cost": 4,
-    "Speed": 0,
-    "Defence": 3,
-    "Range": [
-      [
-        0,
-        0
-      ],
-      [
-        1,
-        0
-      ],
-      [
-        0,
-        1
-      ],
-      [
-        2,
-        2
-      ]
-    ],
-    "Damage": 0,
-    "": ""
-  },
-  {
-    "ID": 26,
-    "Name": "Golem",
-    "Health": 8,
-    "Cost": 4,
-    "Speed": 1,
-    "Defence": 2,
-    "Range": [
-      [
-        1,
-        0
-      ],
-      [
-        0,
-        1
-      ],
-      [
-        1,
-        1
-      ],
-      [
-        2,
-        1
-      ]
-    ],
-    "Damage": 0,
-    "": ""
-  },
-  {
-    "ID": 27,
-    "Name": "Samson",
-    "Health": 8,
-    "Cost": 4,
-    "Speed": 1,
-    "Defence": 0,
-    "Range": [
-      [
-        0,
-        0
-      ],
-      [
-        2,
-        0
-      ],
-      [
-        1,
-        1
-      ],
-      [
-        0,
-        2
-      ]
-    ],
-    "Damage": 2,
-    "": ""
-  },
-  {
-    "ID": 28,
-    "Name": "Goliath",
-    "Health": 10,
-    "Cost": 4,
-    "Speed": 0,
-    "Defence": 1,
-    "Range": [
-      [
-        0,
-        0
-      ],
-      [
-        1,
-        0
-      ],
-      [
-        2,
-        0
-      ],
-      [
-        1,
-        1
-      ]
-    ],
-    "Damage": 1,
-    "": ""
-  },
-  {
-    "ID": 29,
-    "Name": "Brunhilde",
-    "Health": 10,
-    "Cost": 4,
-    "Speed": 0,
-    "Defence": 2,
-    "Range": [
-      [
-        0,
-        0
-      ],
-      [
-        1,
-        0
-      ],
-      [
-        0,
-        1
-      ],
-      [
-        1,
-        1
-      ]
-    ],
-    "Damage": 0,
-    "": ""
-  },
-  {
-    "ID": 30,
-    "Name": "La Tour de Dieu",
-    "Health": 6,
-    "Cost": 4,
-    "Speed": 1,
-    "Defence": 1,
-    "Range": [
-      [
-        1,
-        0
-      ],
-      [
-        0,
-        1
-      ],
-      [
-        1,
-        1
-      ],
-      [
-        2,
-        2
-      ]
-    ],
-    "Damage": 1,
-    "": ""
-  },
-  {
-    "ID": 31,
-    "Name": "Gideon",
-    "Health": 6,
-    "Cost": 4,
-    "Speed": 1,
-    "Defence": 0,
-    "Range": [
-      [
-        0,
-        0
-      ],
-      [
-        2,
-        0
-      ],
-      [
-        1,
-        1
-      ],
-      [
-        1,
-        2
-      ]
-    ],
-    "Damage": 2,
-    "": ""
-  },
-  {
-    "ID": 32,
-    "Name": "Azrael",
-    "Health": 6,
-    "Cost": 4,
-    "Speed": 5,
-    "Defence": 0,
-    "Range": [
-      [
-        0,
-        0
-      ],
-      [
-        2,
-        0
-      ],
-      [
-        1,
-        1
-      ],
-      [
-        1,
-        2
-      ]
-    ],
-    "Damage": 1,
-    "": ""
-  }
+ {
+   "ID": 0,
+   "Name": "Cloud Buffer",
+   "Health": 16,
+   "Cost": 2,
+   "Speed": 6,
+   "Defence": 0,
+   "Range": [],
+   "Damage": 0,
+   "": ""
+
+ },
+ {
+   "ID": 1,
+   "Name": "Holy Well",
+   "Health": 7,
+   "Cost": 4,
+   "Speed": 0,
+   "Defence": 12,
+   "Range": [[1,1]],
+   "Damage": 0,
+   "": ""
+ },
+ {
+   "ID": 2,
+   "Name": "Brimstone Pit",
+   "Health": 7,
+   "Cost": 4,
+   "Speed": 0,
+   "Defence": 0,
+   "Range": [[1,1]],
+   "Damage": 12,
+   "": ""
+ },
+ {
+   "ID": 3,
+   "Name": "Gryphon",
+   "Health": 4,
+   "Cost": 2,
+   "Speed": 2,
+   "Defence": 3,
+   "Range": [[1,0]],
+   "Damage": 6,
+   "": ""
+ },
+ {
+   "ID": 4,
+   "Name": "Proto-Angel",
+   "Health": 4,
+   "Cost": 2,
+   "Speed": 2,
+   "Defence": 6,
+   "Range": [[0,0]],
+   "Damage": 3,
+   "": ""
+ },
+ {
+   "ID": 5,
+   "Name": "Guardian Angel",
+   "Health": 8,
+   "Cost": 4,
+   "Speed": 1,
+   "Defence": 5,
+   "Range": [[1,0], [1,2]],
+   "Damage": 0,
+   "": ""
+ },
+ {
+   "ID": 6,
+   "Name": "Dominion",
+   "Health": 8,
+   "Cost": 4,
+   "Speed": 1,
+   "Defence": 0,
+   "Range": [[0,0], [2,2]],
+   "Damage": 5,
+   "": ""
+ },
+ {
+   "ID": 7,
+   "Name": "Valkyrie",
+   "Health": 4,
+   "Cost": 3,
+   "Speed": 2,
+   "Defence": 4,
+   "Range": [[1,0], [0,1]],
+   "Damage": 1,
+   "": ""
+ },
+ {
+   "ID": 8,
+   "Name": "Seraph",
+   "Health": 4,
+   "Cost": 3,
+   "Speed": 2,
+   "Defence": 1,
+   "Range": [[0,0], [2,0]],
+   "Damage": 4,
+   "": ""
+ },
+ {
+   "ID": 9,
+   "Name": "Cherub",
+   "Health": 2,
+   "Cost": 2,
+   "Speed": 4,
+   "Defence": 1,
+   "Range": [[1,0], [1,1]],
+   "Damage": 3,
+   "": ""
+ },
+ {
+   "ID": 10,
+   "Name": "Archangel",
+   "Health": 2,
+   "Cost": 2,
+   "Speed": 4,
+   "Defence": 3,
+   "Range": [[0,0], [1,1]],
+   "Damage": 1,
+   "": ""
+ },
+ {
+   "ID": 11,
+   "Name": "Shield Angel",
+   "Health": 4,
+   "Cost": 3,
+   "Speed": 3,
+   "Defence": 3,
+   "Range": [[1,0], [1,1], [1,2]],
+   "Damage": 0,
+   "": ""
+ },
+ {
+   "ID": 12,
+   "Name": "Fury",
+   "Health": 4,
+   "Cost": 3,
+   "Speed": 3,
+   "Defence": 0,
+   "Range": [[0,0], [1,1], [2,2]],
+   "Damage": 3,
+   "": ""
+ },
+ {
+   "ID": 13,
+   "Name": "Angelic Captain",
+   "Health": 4,
+   "Cost": 2,
+   "Speed": 2,
+   "Defence": 1,
+   "Range": [[1,0], [0,1], [2,1]],
+   "Damage": 2,
+   "": ""
+ },
+ {
+   "ID": 14,
+   "Name": "Angelic Seer",
+   "Health": 4,
+   "Cost": 2,
+   "Speed": 2,
+   "Defence": 2,
+   "Range": [[0,0], [2,0], [0,2]],
+   "Damage": 1,
+   "": ""
+ },
+ {
+   "ID": 15,
+   "Name": "Power",
+   "Health": 5,
+   "Cost": 2,
+   "Speed": 4,
+   "Defence": 0,
+   "Range": [[1,0], [0,1], [1,1]],
+   "Damage": 2,
+   "": ""
+ },
+ {
+   "ID": 16,
+   "Name": "Virtue",
+   "Health": 5,
+   "Cost": 2,
+   "Speed": 4,
+   "Defence": 2,
+   "Range": [[0,0], [2,0], [1,1]],
+   "Damage": 0,
+   "": ""
+ },
+ {
+   "ID": 17,
+   "Name": "Zephyr",
+   "Health": 8,
+   "Cost": 1,
+   "Speed": 4,
+   "Defence": 1,
+   "Range": [[0,0], [1,0], [0,1]],
+   "Damage": 0,
+   "": ""
+ },
+ {
+   "ID": 18,
+   "Name": "Principality",
+   "Health": 8,
+   "Cost": 1,
+   "Speed": 4,
+   "Defence": 0,
+   "Range": [[0,0], [1,0], [2,0]],
+   "Damage": 1,
+   "": ""
+ },
+ {
+   "ID": 19,
+   "Name": "Ophanim",
+   "Health": 4,
+   "Cost": 1,
+   "Speed": 4,
+   "Defence": 1,
+   "Range": [[1,0], [0,1], [2,2]],
+   "Damage": 1,
+   "": ""
+ },
+ {
+   "ID": 20,
+   "Name": "Throne",
+   "Health": 4,
+   "Cost": 1,
+   "Speed": 4,
+   "Defence": 1,
+   "Range": [[0,0], [2,0], [1,2]],
+   "Damage": 1,
+   "": ""
+ },
+ {
+   "ID": 21,
+   "Name": "Field of Blood",
+   "Health": 7,
+   "Cost": 4,
+   "Speed": 0,
+   "Defence": 0,
+   "Range": [[1,0], [0,1],[2,1] ,[1,2]],
+   "Damage": 3,
+   "": ""
+ },
+ {
+   "ID": 22,
+   "Name": "St. Gabriel",
+   "Health": 7,
+   "Cost": 4,
+   "Speed": 0,
+   "Defence": 3,
+   "Range": [[0,0], [2,0],[0,2] ,[2,2]],
+   "Damage": 0,
+   "": ""
+ },
+ {
+   "ID": 23,
+   "Name": "St. Michael",
+   "Health": 4,
+   "Cost": 3,
+   "Speed": 4,
+   "Defence": 0,
+   "Range": [[0,0], [2,0],[0,1] ,[2,1]],
+   "Damage": 2,
+   "": ""
+ },
+ {
+   "ID": 24,
+   "Name": "St. Raphael",
+   "Health": 4,
+   "Cost": 3,
+   "Speed": 4,
+   "Defence": 2,
+   "Range": [[1,0], [2,0],[0,1] ,[0,2]],
+   "Damage": 0,
+   "": ""
+ },
+ {
+   "ID": 25,
+   "Name": "Nephil",
+   "Health": 4,
+   "Cost": 3,
+   "Speed": 4,
+   "Defence": 2,
+   "Range": [[0,0], [1,0],[2,0] ,[1,2]],
+   "Damage": 0,
+   "": ""
+ },
+ {
+   "ID": 26,
+   "Name": "Golem",
+   "Health": 4,
+   "Cost": 3,
+   "Speed": 4,
+   "Defence": 0,
+   "Range": [[0,0], [1,0],[0,1] ,[2,2]],
+   "Damage": 2,
+   "": ""
+ },
+ {
+   "ID": 27,
+   "Name": "Samson",
+   "Health": 4,
+   "Cost": 2,
+   "Speed": 4,
+   "Defence": 1,
+   "Range": [[1,0], [0,1],[1,1] ,[2,1]],
+   "Damage": 1,
+   "": ""
+ },
+ {
+   "ID": 28,
+   "Name": "Goliath",
+   "Health": 4,
+   "Cost": 2,
+   "Speed": 4,
+   "Defence": 1,
+   "Range": [[0,0], [2,0],[1,1] ,[0,2]],
+   "Damage": 1,
+   "": ""
+ },
+ {
+   "ID": 29,
+   "Name": "Brunhilde",
+   "Health": 7,
+   "Cost": 2,
+   "Speed": 5,
+   "Defence": 0,
+   "Range": [[0,0], [1,0],[2,0] ,[1,1]],
+   "Damage": 1,
+   "": ""
+ },
+ {
+   "ID": 30,
+   "Name": "La Tour de Dieu",
+   "Health": 7,
+   "Cost": 2,
+   "Speed": 5,
+   "Defence": 1,
+   "Range": [[0,0], [1,0],[0,1] ,[1,1]],
+   "Damage": 0,
+   "": ""
+ },
+ {
+   "ID": 31,
+   "Name": "Gideon",
+   "Health": 7,
+   "Cost": 2,
+   "Speed": 5,
+   "Defence": 1,
+   "Range": [[1,0], [0,1],[1,1] ,[2,2]],
+   "Damage": 0,
+   "": ""
+ },
+ {
+   "ID": 32,
+   "Name": "Azrael",
+   "Health": 7,
+   "Cost": 2,
+   "Speed": 5,
+   "Defence": 0,
+   "Range": [[0,0], [2,0],[1,1] ,[1,2]],
+   "Damage": 1,
+   "": ""
+ }
 ]
