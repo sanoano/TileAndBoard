@@ -368,7 +368,6 @@ public class Lobby : MonoBehaviour
        
        try
        {
-
            _session = await MultiplayerService.Instance.JoinSessionByIdAsync(id, new JoinSessionOptions().
                WithPlayerName(VisibilityPropertyOptions.Public));
            
@@ -411,7 +410,6 @@ public class Lobby : MonoBehaviour
    {
        try
        {
-
            SessionOptions options;
            
            if (isPrivate)

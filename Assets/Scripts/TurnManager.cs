@@ -211,13 +211,15 @@ public class TurnManager : NetworkBehaviour
 
                 if (GameManager.instance.playerId == Player.PlayerId.Player1 && turnCount != 2)
                 {
-                    foreach (var unit in BoardManager.Instance.unitsList)
+                    for (int i = 0; i < BoardManager.Instance.unitsCount; i++)
                     {
+                        BoardManager.Unit unit = BoardManager.Instance.unitsList[i];
                         if (unit.ID == Player.PlayerId.Player1)
                         {
                             unit.HasActed = false;
                             CardDeck.CardData data =  cardList.Cards.Find(card => card.Name == unit.Name);
                             unit.Movement = data.Speed;
+                            BoardManager.Instance.unitsList[i] = unit;
                         }
                     }
                     var manaToGain = 9 - BoardManager.Instance.GetCardAmount(Player.PlayerId.Player1);
@@ -230,8 +232,9 @@ public class TurnManager : NetworkBehaviour
                     {
                         var coords = BoardManager.Instance.CoordinatesOf<GameObject>(BoardManager.Instance.localBoard.TileTransforms, tile);
                         bool cardFound = false;
-                        foreach(BoardManager.Unit unit in BoardManager.Instance.unitsList)
+                        for (int i = 0; i < BoardManager.Instance.unitsCount; i++)
                         {
+                           BoardManager.Unit unit = BoardManager.Instance.unitsList[i];
                            if (Equals(unit.Position, coords) && unit.ID == Player.PlayerId.Player1)
                             {
                                 cardFound = true;
@@ -258,13 +261,15 @@ public class TurnManager : NetworkBehaviour
                 
                 if (GameManager.instance.playerId == Player.PlayerId.Player2 && turnCount != 2)
                 {
-                    foreach (var unit in BoardManager.Instance.unitsList)
+                    for (int i = 0; i < BoardManager.Instance.unitsCount; i++)
                     {
+                        BoardManager.Unit unit = BoardManager.Instance.unitsList[i];
                         if (unit.ID == Player.PlayerId.Player2)
                         {
                             unit.HasActed = false;
                             CardDeck.CardData data =  cardList.Cards.Find(card => card.Name == unit.Name);
                             unit.Movement = data.Speed;
+                            BoardManager.Instance.unitsList[i] = unit;
                         }
                     }
                     
@@ -278,8 +283,9 @@ public class TurnManager : NetworkBehaviour
                     {
                         var coords = BoardManager.Instance.CoordinatesOf<GameObject>(BoardManager.Instance.localBoard.TileTransforms, tile);
                         bool cardFound = false;
-                        foreach(BoardManager.Unit unit in BoardManager.Instance.unitsList)
+                        for (int i = 0; i < BoardManager.Instance.unitsCount; i++)
                         {
+                           BoardManager.Unit unit = BoardManager.Instance.unitsList[i];
                            if (Equals(unit.Position, coords) && unit.ID == Player.PlayerId.Player2)
                             {
                                 cardFound = true;

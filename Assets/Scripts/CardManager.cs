@@ -271,15 +271,18 @@ public class CardManager : NetworkBehaviour
 
         if (NetworkManager.Singleton)
         {
+            int unitIndex = BoardManager.Instance.IndexOfUnit(unit);
+            if (unitIndex < 0) return;
+
             foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
             {
                 if (clientIds == NetworkManager.Singleton.LocalClientId) continue;
-                RecallCardRpc(BoardManager.Instance.unitsList.IndexOf(unit),RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                RecallCardRpc(unitIndex,RpcTarget.Single(clientIds, RpcTargetUse.Temp));
             }
         }
         
 
-        BoardManager.Instance.unitsList.Remove(unit);
+        BoardManager.Instance.RemoveUnit(unit);
 
     }
     [Rpc(SendTo.SpecifiedInParams)]
@@ -290,7 +293,7 @@ public class CardManager : NetworkBehaviour
         
         Destroy(BoardManager.Instance.enemyBoard.Visuals[unit.Position.x, unit.Position.y]);
 
-        BoardManager.Instance.unitsList.Remove(unit);
+        BoardManager.Instance.RemoveUnitAt(unitIndex);
 
 
     }

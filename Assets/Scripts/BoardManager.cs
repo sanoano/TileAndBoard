@@ -18,6 +18,10 @@ public class BoardManager : NetworkBehaviour
 {
 
     public static BoardManager Instance;
+    public const int MaxUnits = 18;
+    public const int MaxDamageInstances = 18;
+    public const int MaxDefenseInstances = 18;
+    public const int MaxAttackPositions = 4;
 
     [Serializable]
     public struct PlayerBoard
@@ -40,14 +44,31 @@ public class BoardManager : NetworkBehaviour
         public String Name;
         public Player.PlayerId ID;
         public int Damage;
-        public List<Vector2Int> Positions;
+        public Vector2Int[] Positions;
+        public int PositionCount;
 
-        public DamageInstance(string name, Player.PlayerId id, int damage, List<Vector2Int> positions)
+        public DamageInstance(string name, Player.PlayerId id, int damage, IList<Vector2Int> positions)
         {
             Name = name;
             ID = id;
             Damage = damage;
-            Positions = positions;
+            Positions = new Vector2Int[MaxAttackPositions];
+            PositionCount = Mathf.Min(positions.Count, MaxAttackPositions);
+
+            for (int i = 0; i < PositionCount; i++)
+            {
+                Positions[i] = positions[i];
+            }
+        }
+
+        public bool ContainsPosition(Vector2Int position)
+        {
+            for (int i = 0; i < PositionCount; i++)
+            {
+                if (Positions[i] == position) return true;
+            }
+
+            return false;
         }
     }
 
@@ -57,19 +78,36 @@ public class BoardManager : NetworkBehaviour
         public String Name;
         public Player.PlayerId ID;
         public int Defense;
-        public List<Vector2Int> Positions;
+        public Vector2Int[] Positions;
+        public int PositionCount;
 
-        public DefenseInstance(string name, Player.PlayerId id, int defense, List<Vector2Int> positions)
+        public DefenseInstance(string name, Player.PlayerId id, int defense, IList<Vector2Int> positions)
         {
             Name = name;
             ID = id;
             Defense = defense;
-            Positions = positions;
+            Positions = new Vector2Int[MaxAttackPositions];
+            PositionCount = Mathf.Min(positions.Count, MaxAttackPositions);
+
+            for (int i = 0; i < PositionCount; i++)
+            {
+                Positions[i] = positions[i];
+            }
+        }
+
+        public bool ContainsPosition(Vector2Int position)
+        {
+            for (int i = 0; i < PositionCount; i++)
+            {
+                if (Positions[i] == position) return true;
+            }
+
+            return false;
         }
     }
 
     [Serializable]
-    public class Unit
+    public struct Unit
     {
         public String Name;
         public int Cost;
@@ -78,19 +116,27 @@ public class BoardManager : NetworkBehaviour
         public int Damage;
         public int Defense;
         public int Movement;
-        public List<Vector2Int> AttackPositions;
+        public Vector2Int[] AttackPositions;
+        public int AttackPositionCount;
         public Vector2Int Position;
         public bool HasActed;
 
         public Unit(string name, int cost, Player.PlayerId id, int health, int damage, int movement,
-            List<Vector2Int> attackPositions, Vector2Int position, int defense, bool hasActed)
+            IList<Vector2Int> attackPositions, Vector2Int position, int defense, bool hasActed)
         {
             Name = name;
             ID = id;
             Health = health;
             Damage = damage;
             Movement = movement;
-            AttackPositions = attackPositions;
+            AttackPositions = new Vector2Int[MaxAttackPositions];
+            AttackPositionCount = Mathf.Min(attackPositions.Count, MaxAttackPositions);
+
+            for (int i = 0; i < AttackPositionCount; i++)
+            {
+                AttackPositions[i] = attackPositions[i];
+            }
+
             Position = position;
             Defense = defense;
             HasActed = hasActed;
@@ -104,9 +150,12 @@ public class BoardManager : NetworkBehaviour
     public PlayerBoard localBoard;
     public PlayerBoard enemyBoard;
 
-    [Header("Lists")] public List<Unit> unitsList;
-    public List<DamageInstance> damageInstances;
-    public List<DefenseInstance> defenseInstances;
+    [Header("Lists")] public Unit[] unitsList;
+    public int unitsCount;
+    public DamageInstance[] damageInstances;
+    public int damageInstanceCount;
+    public DefenseInstance[] defenseInstances;
+    public int defenseInstanceCount;
 
     [Header("Board References")] 
     [SerializeField] private GameObject player1BoardGameObject;
@@ -135,6 +184,7 @@ public class BoardManager : NetworkBehaviour
     [Header("Selected Tile")] public Vector2Int CurrentSelectedTile;
     public GameObject currentSelectedTileGameObject;
     private Unit currentlySelectedUnit;
+    private int currentlySelectedUnitIndex = -1;
 
     [Header("Parameters")] 
     [SerializeField] private float placeAnimationTime;
@@ -155,8 +205,6 @@ public class BoardManager : NetworkBehaviour
     public UnityEvent cardPlaced;
     public UnityEvent<Player.PlayerId> damageTaken;
     public UnityEvent cardDied;
-    
-    private InputAction select;
 
     private OrbitCamera cameraInfo;
 
@@ -176,8 +224,6 @@ public class BoardManager : NetworkBehaviour
         {
             Destroy(this);
         }
-
-        select = InputSystem.actions.FindAction("Click");
 
         cam = Camera.main;
 
@@ -218,9 +264,12 @@ public class BoardManager : NetworkBehaviour
 
         }
 
-        unitsList = new List<Unit>();
-        damageInstances = new List<DamageInstance>();
-        defenseInstances = new List<DefenseInstance>();
+        unitsList = new Unit[MaxUnits];
+        unitsCount = 0;
+        damageInstances = new DamageInstance[MaxDamageInstances];
+        damageInstanceCount = 0;
+        defenseInstances = new DefenseInstance[MaxDefenseInstances];
+        defenseInstanceCount = 0;
 
         if (GameManager.instance.playerId == Player.PlayerId.Player1)
         {
@@ -242,6 +291,131 @@ public class BoardManager : NetworkBehaviour
         
         damageTaken.Invoke(Player.PlayerId.Player1);
         damageTaken.Invoke(Player.PlayerId.Player2);
+    }
+
+    public bool AddUnit(Unit unit)
+    {
+        if (unitsCount >= unitsList.Length)
+        {
+            Debug.LogWarning($"Cannot add unit {unit.Name}; max unit capacity reached.");
+            return false;
+        }
+
+        unitsList[unitsCount] = unit;
+        unitsCount++;
+        return true;
+    }
+
+    public int IndexOfUnit(Unit unit)
+    {
+        for (int i = 0; i < unitsCount; i++)
+        {
+            if (unitsList[i].Equals(unit)) return i;
+        }
+
+        return -1;
+    }
+
+    public void RemoveUnit(Unit unit)
+    {
+        RemoveUnitAt(IndexOfUnit(unit));
+    }
+
+    public void RemoveUnitAt(int index)
+    {
+        if (index < 0 || index >= unitsCount) return;
+
+        for (int i = index; i < unitsCount - 1; i++)
+        {
+            unitsList[i] = unitsList[i + 1];
+        }
+
+        unitsCount--;
+        unitsList[unitsCount] = default;
+
+        if (currentlySelectedUnitIndex == index)
+        {
+            currentlySelectedUnit = default;
+            currentlySelectedUnitIndex = -1;
+        }
+        else if (currentlySelectedUnitIndex > index)
+        {
+            currentlySelectedUnitIndex--;
+        }
+    }
+
+    private bool AddDamageInstance(DamageInstance instance)
+    {
+        if (damageInstanceCount >= damageInstances.Length)
+        {
+            Debug.LogWarning($"Cannot add damage instance {instance.Name}; max damage instance capacity reached.");
+            return false;
+        }
+
+        damageInstances[damageInstanceCount] = instance;
+        damageInstanceCount++;
+        return true;
+    }
+
+    private bool AddDefenseInstance(DefenseInstance instance)
+    {
+        if (defenseInstanceCount >= defenseInstances.Length)
+        {
+            Debug.LogWarning($"Cannot add defense instance {instance.Name}; max defense instance capacity reached.");
+            return false;
+        }
+
+        defenseInstances[defenseInstanceCount] = instance;
+        defenseInstanceCount++;
+        return true;
+    }
+
+    private void RemoveDamageInstanceAt(int index)
+    {
+        if (index < 0 || index >= damageInstanceCount) return;
+
+        for (int i = index; i < damageInstanceCount - 1; i++)
+        {
+            damageInstances[i] = damageInstances[i + 1];
+        }
+
+        damageInstanceCount--;
+        damageInstances[damageInstanceCount] = default;
+    }
+
+    private void RemoveDefenseInstanceAt(int index)
+    {
+        if (index < 0 || index >= defenseInstanceCount) return;
+
+        for (int i = index; i < defenseInstanceCount - 1; i++)
+        {
+            defenseInstances[i] = defenseInstances[i + 1];
+        }
+
+        defenseInstanceCount--;
+        defenseInstances[defenseInstanceCount] = default;
+    }
+
+    private void RemoveDamageInstancesForPlayer(Player.PlayerId id)
+    {
+        for (int i = damageInstanceCount - 1; i >= 0; i--)
+        {
+            if (damageInstances[i].ID == id)
+            {
+                RemoveDamageInstanceAt(i);
+            }
+        }
+    }
+
+    private void RemoveDefenseInstancesForPlayer(Player.PlayerId id)
+    {
+        for (int i = defenseInstanceCount - 1; i >= 0; i--)
+        {
+            if (defenseInstances[i].ID == id)
+            {
+                RemoveDefenseInstanceAt(i);
+            }
+        }
     }
 
     private void Update()
@@ -340,8 +514,9 @@ public class BoardManager : NetworkBehaviour
                             Player.PlayerId.Player2);
 
                         bool cardFound = false;
-                        foreach (Unit unit in unitsList)
+                        for (int i = 0; i < unitsCount; i++)
                         {
+                            Unit unit = unitsList[i];
                             if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player2)
                             {
                                 // ClearTiles();
@@ -373,8 +548,9 @@ public class BoardManager : NetworkBehaviour
                             Player.PlayerId.Player1);
 
                         bool cardFound = false;
-                        foreach (Unit unit in unitsList)
+                        for (int i = 0; i < unitsCount; i++)
                         {
+                            Unit unit = unitsList[i];
                             if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player1)
                             {
                                 // ClearTiles();
@@ -417,8 +593,9 @@ public class BoardManager : NetworkBehaviour
                         UIManager.Instance.CreateInfoPanel(CurrentSelectedTile, Player.PlayerId.Player2);
                         UIManager.Instance.CreateCardInfoPanel(CurrentSelectedTile, Player.PlayerId.Player2);
 
-                        foreach (Unit unit in unitsList)
+                        for (int i = 0; i < unitsCount; i++)
                         {
+                            Unit unit = unitsList[i];
                             if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player2)
                             {
                                 // ClearTiles();
@@ -437,8 +614,9 @@ public class BoardManager : NetworkBehaviour
                         UIManager.Instance.CreateInfoPanel(CurrentSelectedTile, Player.PlayerId.Player1);
                         UIManager.Instance.CreateCardInfoPanel(CurrentSelectedTile, Player.PlayerId.Player1);
 
-                        foreach (Unit unit in unitsList)
+                        for (int i = 0; i < unitsCount; i++)
                         {
+                            Unit unit = unitsList[i];
                             if (unit.Position == CurrentSelectedTile && unit.ID == Player.PlayerId.Player1)
                             {
                                 // ClearTiles();
@@ -477,6 +655,8 @@ public class BoardManager : NetworkBehaviour
         }
         currentSelectedTileGameObject = null;
         CurrentSelectedTile = new Vector2Int(-1, -1);
+        currentlySelectedUnit = default;
+        currentlySelectedUnitIndex = -1;
         UIManager.Instance.DestroyCurrentInfoInstance();
 
         // ClearTiles();
@@ -541,6 +721,7 @@ public class BoardManager : NetworkBehaviour
 
             workingPositions = null;
             currentlySelectedUnit = default;
+            currentlySelectedUnitIndex = -1;
 
             //currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
 
@@ -570,6 +751,10 @@ public class BoardManager : NetworkBehaviour
             Vector2Int[] positions = new Vector2Int[workingPositions.Count];
 
             currentlySelectedUnit.HasActed = true;
+            if (currentlySelectedUnitIndex >= 0 && currentlySelectedUnitIndex < unitsCount)
+            {
+                unitsList[currentlySelectedUnitIndex] = currentlySelectedUnit;
+            }
 
             for (int i = 0; i < workingPositions.Count; i++)
             {
@@ -657,6 +842,7 @@ public class BoardManager : NetworkBehaviour
 
             workingPositions = null;
             currentlySelectedUnit = default;
+            currentlySelectedUnitIndex = -1;
 
             //currentSelectedTileGameObject.GetComponent<Outline>().OutlineColor = Color.black;
 
@@ -685,6 +871,10 @@ public class BoardManager : NetworkBehaviour
             Vector2Int[] positions = new Vector2Int[workingPositions.Count];
 
             currentlySelectedUnit.HasActed = true;
+            if (currentlySelectedUnitIndex >= 0 && currentlySelectedUnitIndex < unitsCount)
+            {
+                unitsList[currentlySelectedUnitIndex] = currentlySelectedUnit;
+            }
 
             for (int i = 0; i < workingPositions.Count; i++)
             {
@@ -838,9 +1028,12 @@ public class BoardManager : NetworkBehaviour
 
     public void MoveCard(int direction)
     {
+        if (currentlySelectedUnitIndex < 0 || currentlySelectedUnitIndex >= unitsCount) return;
+
         if (currentlySelectedUnit.Movement > 0 &&
             !currentAdjacentPositions[direction].Equals(new Vector2Int(-1, -1)))
         {
+            int unitIndex = currentlySelectedUnitIndex;
             currentlySelectedUnit.HasActed = true;
 
 
@@ -868,6 +1061,7 @@ public class BoardManager : NetworkBehaviour
             currentlySelectedUnit.Position = currentAdjacentPositions[direction];
 
             currentlySelectedUnit.Movement -= 1;
+            unitsList[unitIndex] = currentlySelectedUnit;
             CurrentSelectedTile = currentAdjacentPositions[direction];
             
             var randInt = Random.Range(0, 1);
@@ -885,7 +1079,7 @@ public class BoardManager : NetworkBehaviour
                 foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
                 {
                     if (clientIds == NetworkManager.LocalClientId) continue;
-                    MoveCardRpc(unitsList.IndexOf(currentlySelectedUnit), currentAdjacentPositions[direction],
+                    MoveCardRpc(unitIndex, currentAdjacentPositions[direction],
                         RpcTarget.Single(clientIds, RpcTargetUse.Temp));
                 }
             }
@@ -929,6 +1123,7 @@ public class BoardManager : NetworkBehaviour
         enemyBoard.Visuals[newPos.x, newPos.y] = visual;
 
         unitToMove.Position = newPos;
+        unitsList[index] = unitToMove;
     }
 
 
@@ -936,42 +1131,28 @@ public class BoardManager : NetworkBehaviour
     public void AddDefenseInstanceRpc(string name, Player.PlayerId pID, int defense, Vector2Int[] positions,
         RpcParams rpcParams = default)
     {
-        List<Vector2Int> positionList = new List<Vector2Int>();
-
-        foreach (var position in positions)
-        {
-            positionList.Add(position);
-        }
-
         DefenseInstance instance = new DefenseInstance(
             name: name,
             id: pID,
             defense: defense,
-            positions: new List<Vector2Int>(positionList)
+            positions: positions
         );
 
-        defenseInstances.Add(instance);
+        AddDefenseInstance(instance);
 
         UpdateTileVisuals();
     }
     
     public void AddDefenseInstanceLocal(string name, Player.PlayerId pID, int defense, Vector2Int[] positions)
     {
-        List<Vector2Int> positionList = new List<Vector2Int>();
-
-        foreach (var position in positions)
-        {
-            positionList.Add(position);
-        }
-
         DefenseInstance instance = new DefenseInstance(
             name: name,
             id: pID,
             defense: defense,
-            positions: new List<Vector2Int>(positionList)
+            positions: positions
         );
 
-        defenseInstances.Add(instance);
+        AddDefenseInstance(instance);
 
         UpdateTileVisuals();
     }
@@ -980,42 +1161,28 @@ public class BoardManager : NetworkBehaviour
     public void AddDamageInstanceRpc(string name, Player.PlayerId pID, int damage, Vector2Int[] positions,
         RpcParams rpcParams = default)
     {
-        List<Vector2Int> positionList = new List<Vector2Int>();
-
-        foreach (var position in positions)
-        {
-            positionList.Add(position);
-        }
-
         DamageInstance instance = new DamageInstance(
             name: name,
             id: pID,
             damage: damage,
-            positions: new List<Vector2Int>(positionList)
+            positions: positions
         );
 
-        damageInstances.Add(instance);
+        AddDamageInstance(instance);
 
         UpdateTileVisuals();
     }
     
     public void AddDamageInstanceLocal(string name, Player.PlayerId pID, int damage, Vector2Int[] positions)
     {
-        List<Vector2Int> positionList = new List<Vector2Int>();
-
-        foreach (var position in positions)
-        {
-            positionList.Add(position);
-        }
-
         DamageInstance instance = new DamageInstance(
             name: name,
             id: pID,
             damage: damage,
-            positions: new List<Vector2Int>(positionList)
+            positions: positions
         );
 
-        damageInstances.Add(instance);
+        AddDamageInstance(instance);
 
         UpdateTileVisuals();
     }
@@ -1031,9 +1198,10 @@ public class BoardManager : NetworkBehaviour
                 int workingDefense = 0;
                 bool somethingHere = false;
 
-                foreach (var damageInstance in damageInstances)
+                for (int damageIndex = 0; damageIndex < damageInstanceCount; damageIndex++)
                 {
-                    if (damageInstance.Positions.Contains(new Vector2Int(i, j)) &&
+                    DamageInstance damageInstance = damageInstances[damageIndex];
+                    if (damageInstance.ContainsPosition(new Vector2Int(i, j)) &&
                         damageInstance.ID == Player.PlayerId.Player2)
                     {
                         workingDamage += damageInstance.Damage;
@@ -1041,9 +1209,10 @@ public class BoardManager : NetworkBehaviour
                     }
                 }
 
-                foreach (var defenseInstance in defenseInstances)
+                for (int defenseIndex = 0; defenseIndex < defenseInstanceCount; defenseIndex++)
                 {
-                    if (defenseInstance.Positions.Contains(new Vector2Int(i, j)) &&
+                    DefenseInstance defenseInstance = defenseInstances[defenseIndex];
+                    if (defenseInstance.ContainsPosition(new Vector2Int(i, j)) &&
                         defenseInstance.ID == Player.PlayerId.Player1)
                     {
                         workingDefense += defenseInstance.Defense;
@@ -1079,9 +1248,10 @@ public class BoardManager : NetworkBehaviour
                 int workingDefense = 0;
                 bool somethingHere = false;
 
-                foreach (var damageInstance in damageInstances)
+                for (int damageIndex = 0; damageIndex < damageInstanceCount; damageIndex++)
                 {
-                    if (damageInstance.Positions.Contains(new Vector2Int(i, j)) &&
+                    DamageInstance damageInstance = damageInstances[damageIndex];
+                    if (damageInstance.ContainsPosition(new Vector2Int(i, j)) &&
                         damageInstance.ID == Player.PlayerId.Player1)
                     {
                         workingDamage += damageInstance.Damage;
@@ -1089,9 +1259,10 @@ public class BoardManager : NetworkBehaviour
                     }
                 }
 
-                foreach (var defenseInstance in defenseInstances)
+                for (int defenseIndex = 0; defenseIndex < defenseInstanceCount; defenseIndex++)
                 {
-                    if (defenseInstance.Positions.Contains(new Vector2Int(i, j)) &&
+                    DefenseInstance defenseInstance = defenseInstances[defenseIndex];
+                    if (defenseInstance.ContainsPosition(new Vector2Int(i, j)) &&
                         defenseInstance.ID == Player.PlayerId.Player2)
                     {
                         workingDefense += defenseInstance.Defense;
@@ -1134,12 +1305,12 @@ public class BoardManager : NetworkBehaviour
             damage: cardData.Damage,
             defense: cardData.Defence,
             movement: cardData.Speed,
-            attackPositions: new List<Vector2Int>(cardData.Range),
+            attackPositions: cardData.Range,
             position: coordinates,
             hasActed: true
         );
 
-        unitsList.Add(unit);
+        if (!AddUnit(unit)) return;
 
         CardManager.instance.RemoveCard(cardVisual);
         CardManager.instance.playerHandVisuals.Remove(cardVisual);
@@ -1229,12 +1400,12 @@ public class BoardManager : NetworkBehaviour
             damage: cardData.Damage,
             defense: cardData.Defence,
             movement: cardData.Speed,
-            attackPositions: new List<Vector2Int>(cardData.Range),
+            attackPositions: cardData.Range,
             position: coordinates,
             hasActed: true
         );
 
-        unitsList.Add(unit);
+        if (!AddUnit(unit)) return;
 
         GameObject tile;
 
@@ -1282,13 +1453,22 @@ public class BoardManager : NetworkBehaviour
     {
         
         UIManager.Instance.DestroyCurrentInfoInstance();
+        workingPositions = null;
+        currentlySelectedUnit = default;
+        currentlySelectedUnitIndex = -1;
 
-        foreach (Unit unit in unitsList)
+        for (int i = 0; i < unitsCount; i++)
         {
+            Unit unit = unitsList[i];
             if (unit.Position == CurrentSelectedTile && unit.ID == GameManager.instance.playerId)
             {
-                workingPositions = new List<Vector2Int>(unit.AttackPositions);
+                workingPositions = new List<Vector2Int>(unit.AttackPositionCount);
+                for (int attackIndex = 0; attackIndex < unit.AttackPositionCount; attackIndex++)
+                {
+                    workingPositions.Add(unit.AttackPositions[attackIndex]);
+                }
                 currentlySelectedUnit = unit;
+                currentlySelectedUnitIndex = i;
             }
         }
         
@@ -1319,13 +1499,22 @@ public class BoardManager : NetworkBehaviour
     {
 
         UIManager.Instance.DestroyCurrentInfoInstance();
+        workingPositions = null;
+        currentlySelectedUnit = default;
+        currentlySelectedUnitIndex = -1;
 
-        foreach (Unit unit in unitsList)
+        for (int i = 0; i < unitsCount; i++)
         {
+            Unit unit = unitsList[i];
             if (unit.Position == CurrentSelectedTile && unit.ID == GameManager.instance.playerId)
             {
-                workingPositions = new List<Vector2Int>(unit.AttackPositions);
+                workingPositions = new List<Vector2Int>(unit.AttackPositionCount);
+                for (int attackIndex = 0; attackIndex < unit.AttackPositionCount; attackIndex++)
+                {
+                    workingPositions.Add(unit.AttackPositions[attackIndex]);
+                }
                 currentlySelectedUnit = unit;
+                currentlySelectedUnitIndex = i;
             }
         }
         
@@ -1352,13 +1541,22 @@ public class BoardManager : NetworkBehaviour
 
         
         UIManager.Instance.DestroyCurrentInfoInstance();
+        workingPositions = null;
+        currentlySelectedUnit = default;
+        currentlySelectedUnitIndex = -1;
 
-        foreach (Unit unit in unitsList)
+        for (int i = 0; i < unitsCount; i++)
         {
+            Unit unit = unitsList[i];
             if (unit.Position == CurrentSelectedTile && unit.ID == GameManager.instance.playerId)
             {
-                workingPositions = new List<Vector2Int>(unit.AttackPositions);
+                workingPositions = new List<Vector2Int>(unit.AttackPositionCount);
+                for (int attackIndex = 0; attackIndex < unit.AttackPositionCount; attackIndex++)
+                {
+                    workingPositions.Add(unit.AttackPositions[attackIndex]);
+                }
                 currentlySelectedUnit = unit;
+                currentlySelectedUnitIndex = i;
             }
         }
         
@@ -1404,8 +1602,9 @@ public class BoardManager : NetworkBehaviour
         if (position.x + 1 <= 2)
         {
             bool cardPresent = false;
-            foreach (var unit in unitsList)
+            for (int i = 0; i < unitsCount; i++)
             {
+                Unit unit = unitsList[i];
                 if (unit.ID != GameManager.instance.playerId) continue;
                 if (Equals(unit.Position, new Vector2Int(position.x + 1, position.y)))
                 {
@@ -1430,8 +1629,9 @@ public class BoardManager : NetworkBehaviour
         if (position.x - 1 >= 0)
         {
             bool cardPresent = false;
-            foreach (var unit in unitsList)
+            for (int i = 0; i < unitsCount; i++)
             {
+                Unit unit = unitsList[i];
                 if (unit.ID != GameManager.instance.playerId) continue;
                 if (Equals(unit.Position, new Vector2Int(position.x - 1, position.y)))
                 {
@@ -1456,8 +1656,9 @@ public class BoardManager : NetworkBehaviour
         if (position.y + 1 <= 2)
         {
             bool cardPresent = false;
-            foreach (var unit in unitsList)
+            for (int i = 0; i < unitsCount; i++)
             {
+                Unit unit = unitsList[i];
                 if (unit.ID != GameManager.instance.playerId) continue;
                 if (Equals(unit.Position, new Vector2Int(position.x, position.y + 1)))
                 {
@@ -1482,8 +1683,9 @@ public class BoardManager : NetworkBehaviour
         if (position.y - 1 >= 0)
         {
             bool cardPresent = false;
-            foreach (var unit in unitsList)
+            for (int i = 0; i < unitsCount; i++)
             {
+                Unit unit = unitsList[i];
                 if (unit.ID != GameManager.instance.playerId) continue;
                 if (Equals(unit.Position, new Vector2Int(position.x, position.y - 1)))
                 {
@@ -1527,9 +1729,10 @@ public class BoardManager : NetworkBehaviour
                     bool damageInstancePresent = false;
                     bool defenseInstancePresent = false;
 
-                    foreach (var damageInstance in damageInstances)
+                    for (int damageIndex = 0; damageIndex < damageInstanceCount; damageIndex++)
                     {
-                        if (damageInstance.Positions.Contains(new Vector2Int(i, j)) &&
+                        DamageInstance damageInstance = damageInstances[damageIndex];
+                        if (damageInstance.ContainsPosition(new Vector2Int(i, j)) &&
                             damageInstance.ID == Player.PlayerId.Player2)
                         {
                             damageInstancePresent = true;
@@ -1537,9 +1740,10 @@ public class BoardManager : NetworkBehaviour
                         }
                     }
 
-                    foreach (var defenseInstance in defenseInstances)
+                    for (int defenseIndex = 0; defenseIndex < defenseInstanceCount; defenseIndex++)
                     {
-                        if (defenseInstance.Positions.Contains(new Vector2Int(i, j)) &&
+                        DefenseInstance defenseInstance = defenseInstances[defenseIndex];
+                        if (defenseInstance.ContainsPosition(new Vector2Int(i, j)) &&
                             defenseInstance.ID == Player.PlayerId.Player1)
                         {
                             defenseInstancePresent = true;
@@ -1556,13 +1760,15 @@ public class BoardManager : NetworkBehaviour
                     }
 
                     bool attackBlocked = false;
-                    foreach (var unit in unitsList)
+                    for (int unitIndex = 0; unitIndex < unitsCount; unitIndex++)
                     {
+                        Unit unit = unitsList[unitIndex];
                         if (unit.ID == Player.PlayerId.Player2) continue;
 
                         if (Equals(unit.Position, new Vector2Int(i, j)))
                         {
                             unit.Health -= workingDamage;
+                            unitsList[unitIndex] = unit;
                             player1Board.Visuals[i, j].GetComponentsInChildren<TextMeshProUGUI>()[1].text =
                                 unit.Health.ToString();
                             attackBlocked = true;
@@ -1662,34 +1868,8 @@ public class BoardManager : NetworkBehaviour
                 }
             }
 
-
-            List<DamageInstance> toRemove = new List<DamageInstance>();
-            foreach (var damageInstance in damageInstances)
-            {
-                if (damageInstance.ID == Player.PlayerId.Player2)
-                {
-                    toRemove.Add(damageInstance);
-                }
-            }
-
-            foreach (var damageInstance in toRemove)
-            {
-                damageInstances.Remove(damageInstance);
-            }
-
-            List<DefenseInstance> toRemoveDefense = new List<DefenseInstance>();
-            foreach (var defenseInstance in defenseInstances)
-            {
-                if (defenseInstance.ID == Player.PlayerId.Player1)
-                {
-                    toRemoveDefense.Add(defenseInstance);
-                }
-            }
-
-            foreach (var defenseInstance in toRemoveDefense)
-            {
-                defenseInstances.Remove(defenseInstance);
-            }
+            RemoveDamageInstancesForPlayer(Player.PlayerId.Player2);
+            RemoveDefenseInstancesForPlayer(Player.PlayerId.Player1);
         }
         //Evaluate Player 2 Damage
         else
@@ -1704,9 +1884,10 @@ public class BoardManager : NetworkBehaviour
                     bool damageInstancePresent = false;
                     bool defenseInstancePresent = false;
 
-                    foreach (var damageInstance in damageInstances)
+                    for (int damageIndex = 0; damageIndex < damageInstanceCount; damageIndex++)
                     {
-                        if (damageInstance.Positions.Contains(new Vector2Int(i, j)) &&
+                        DamageInstance damageInstance = damageInstances[damageIndex];
+                        if (damageInstance.ContainsPosition(new Vector2Int(i, j)) &&
                             damageInstance.ID == Player.PlayerId.Player1)
                         {
                             damageInstancePresent = true;
@@ -1714,9 +1895,10 @@ public class BoardManager : NetworkBehaviour
                         }
                     }
 
-                    foreach (var defenseInstance in defenseInstances)
+                    for (int defenseIndex = 0; defenseIndex < defenseInstanceCount; defenseIndex++)
                     {
-                        if (defenseInstance.Positions.Contains(new Vector2Int(i, j)) &&
+                        DefenseInstance defenseInstance = defenseInstances[defenseIndex];
+                        if (defenseInstance.ContainsPosition(new Vector2Int(i, j)) &&
                             defenseInstance.ID == Player.PlayerId.Player2)
                         {
                             defenseInstancePresent = true;
@@ -1732,13 +1914,15 @@ public class BoardManager : NetworkBehaviour
                     }
 
                     bool attackBlocked = false;
-                    foreach (var unit in unitsList)
+                    for (int unitIndex = 0; unitIndex < unitsCount; unitIndex++)
                     {
+                        Unit unit = unitsList[unitIndex];
                         if (unit.ID == Player.PlayerId.Player1) continue;
 
                         if (Equals(unit.Position, new Vector2Int(i, j)))
                         {
                             unit.Health -= workingDamage;
+                            unitsList[unitIndex] = unit;
                             player2Board.Visuals[i, j].GetComponentsInChildren<TextMeshProUGUI>()[1].text =
                                 unit.Health.ToString();
                             attackBlocked = true;
@@ -1842,34 +2026,8 @@ public class BoardManager : NetworkBehaviour
                 
             }
 
-
-            List<DamageInstance> toRemove = new List<DamageInstance>();
-            foreach (var damageInstance in damageInstances)
-            {
-                if (damageInstance.ID == Player.PlayerId.Player1)
-                {
-                    toRemove.Add(damageInstance);
-                }
-            }
-
-            foreach (var damageInstance in toRemove)
-            {
-                damageInstances.Remove(damageInstance);
-            }
-
-            List<DefenseInstance> toRemoveDefense = new List<DefenseInstance>();
-            foreach (var defenseInstance in defenseInstances)
-            {
-                if (defenseInstance.ID == Player.PlayerId.Player2)
-                {
-                    toRemoveDefense.Add(defenseInstance);
-                }
-            }
-
-            foreach (var defenseInstance in toRemoveDefense)
-            {
-                defenseInstances.Remove(defenseInstance);
-            }
+            RemoveDamageInstancesForPlayer(Player.PlayerId.Player1);
+            RemoveDefenseInstancesForPlayer(Player.PlayerId.Player2);
         }
         
         
@@ -1892,8 +2050,9 @@ public class BoardManager : NetworkBehaviour
 
     public void PruneUnitVisuals()
     {
-        foreach (var unit in unitsList)
+        for (int i = 0; i < unitsCount; i++)
         {
+            Unit unit = unitsList[i];
             if (unit.Health <= 0)
             {
                 if (unit.ID == Player.PlayerId.Player1)
@@ -1914,24 +2073,13 @@ public class BoardManager : NetworkBehaviour
 
     public void PruneUnitList()
     {
-        List<Unit> unitsToDelete = new List<Unit>();
-
-        foreach (var unit in unitsList)
+        for (int i = unitsCount - 1; i >= 0; i--)
         {
-            if (unit.Health <= 0)
+            if (unitsList[i].Health <= 0)
             {
-
-                unitsToDelete.Add(unit);
+                RemoveUnitAt(i);
             }
         }
-
-
-        foreach (var unit in unitsToDelete)
-        {
-            unitsList.Remove(unit);
-        }
-
-       
     }
 
     void BoardTakeDamage(int damage, Player.PlayerId id)
@@ -1979,8 +2127,9 @@ public class BoardManager : NetworkBehaviour
     {
         int totalCards = 0;
 
-        foreach (var unit in unitsList)
+        for (int i = 0; i < unitsCount; i++)
         {
+            Unit unit = unitsList[i];
             if (unit.ID == id)
             {
                 totalCards++;

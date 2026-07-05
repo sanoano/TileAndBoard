@@ -290,13 +290,15 @@ public class UIManager : MonoBehaviour
         int damageTotal = 0;
         int defenseTotal = 0;
 
-        if (BoardManager.Instance.damageInstances.Count != 0)
+        if (BoardManager.Instance.damageInstanceCount != 0)
         {
-            foreach (BoardManager.DamageInstance thing in BoardManager.Instance.damageInstances)
+            for (int i = 0; i < BoardManager.Instance.damageInstanceCount; i++)
             {
+                BoardManager.DamageInstance thing = BoardManager.Instance.damageInstances[i];
                 if(thing.ID == playerId) continue;
-                foreach (Vector2Int damagePosition in thing.Positions)
+                for (int positionIndex = 0; positionIndex < thing.PositionCount; positionIndex++)
                 {
+                    Vector2Int damagePosition = thing.Positions[positionIndex];
                     if (Equals(damagePosition, position))
                     {
                         damageText.text += thing.Name + ": " + thing.Damage + "\n";
@@ -307,13 +309,15 @@ public class UIManager : MonoBehaviour
         }
        
         
-        if (BoardManager.Instance.defenseInstances.Count != 0)
+        if (BoardManager.Instance.defenseInstanceCount != 0)
         {
-            foreach (BoardManager.DefenseInstance thing in BoardManager.Instance.defenseInstances)
+            for (int i = 0; i < BoardManager.Instance.defenseInstanceCount; i++)
             {
+                BoardManager.DefenseInstance thing = BoardManager.Instance.defenseInstances[i];
                 if(thing.ID != playerId) continue;
-                foreach (Vector2Int defensePosition in thing.Positions)
+                for (int positionIndex = 0; positionIndex < thing.PositionCount; positionIndex++)
                 {
+                    Vector2Int defensePosition = thing.Positions[positionIndex];
                     if (Equals(defensePosition, position))
                     {
                         defenseText.text += thing.Name + ": " + thing.Defense + "\n";
@@ -345,8 +349,9 @@ public class UIManager : MonoBehaviour
         // }
 
         bool unitFound = false;
-        foreach (BoardManager.Unit unit in BoardManager.Instance.unitsList)
+        for (int i = 0; i < BoardManager.Instance.unitsCount; i++)
         {
+            BoardManager.Unit unit = BoardManager.Instance.unitsList[i];
             if (unit.ID == playerId && unit.Position == position)
             {
                 unitToDisplay = unit;
@@ -439,8 +444,11 @@ public class UIManager : MonoBehaviour
         StopAllCoroutines();
 
         //nasty nasty way to do this...but idc
-        foreach (Vector2Int coord in unitToDisplay.AttackPositions)
+        List<Vector2Int> displayAttackPositions = new List<Vector2Int>(unitToDisplay.AttackPositionCount);
+        for (int coordIndex = 0; coordIndex < unitToDisplay.AttackPositionCount; coordIndex++)
         {// Simple logic tree to find out which squares should show up...inelegant but robust enough...
+            Vector2Int coord = unitToDisplay.AttackPositions[coordIndex];
+            displayAttackPositions.Add(coord);
             int x = coord.x;
             int y = coord.y;
 
@@ -474,12 +482,12 @@ public class UIManager : MonoBehaviour
         }
 
         //disables the grid shape space for cards that don't have a grid shape
-        if (unitToDisplay.AttackPositions.Count == 0)
+        if (unitToDisplay.AttackPositionCount == 0)
             cardIconShape.enabled = false;
         else
             cardIconShape.enabled = true;
 
-        StartCoroutine(RotateGridShape(cardChildren, new List<Vector2Int>(unitToDisplay.AttackPositions)));
+        StartCoroutine(RotateGridShape(cardChildren, displayAttackPositions));
 
 
         if (unitToDisplay.ID == GameManager.instance.playerId && TurnManager.instance.isYourTurn)
