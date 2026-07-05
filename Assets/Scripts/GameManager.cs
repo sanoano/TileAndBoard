@@ -1,12 +1,8 @@
 using System;
-using TMPro;
-using Unity.Entities;
-using Unity.Entities.UniversalDelegates;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class GameManager : NetworkBehaviour
 {
@@ -16,16 +12,10 @@ public class GameManager : NetworkBehaviour
     private NetworkObject headInstanceNO;
 
     public static GameManager instance;
-    private static readonly int Rotation = Shader.PropertyToID("_Rotation");
 
     public Player.PlayerId playerId;
 
     private string playerName;
-
-    /*[SerializeField] private Material skybox;
-
-    [Header("Parameters")] 
-    [SerializeField] private float rotationSpeed;*/
 
     
     private void Awake()
@@ -148,7 +138,7 @@ public class GameManager : NetworkBehaviour
             }
             StopAllCoroutines();
         }
-        catch(Exception e)
+        catch(Exception)
         {
             StopAllCoroutines();
             SceneManager.LoadScene("MainMenu");
@@ -156,17 +146,4 @@ public class GameManager : NetworkBehaviour
         
     }
 
-    /*private void Start()
-    {
-        
-
-    }
-
-    private void FixedUpdate()
-    {
-        skybox.SetFloat(Rotation, Time.time * rotationSpeed);
-    }*/
-
-    
-    
 }

@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class ManaManager : MonoBehaviour
@@ -57,14 +56,7 @@ public class ManaManager : MonoBehaviour
 
     public bool CanAfford(int amount)
     {
-        if (currentManaPoints - amount < 0)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        return currentManaPoints - amount >= 0;
     }
     
 }

@@ -1,20 +1,13 @@
-using System;
-using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using Tweens;
-using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine.Events;
 using Random = UnityEngine.Random;
-using UnityEngine.SocialPlatforms;
 
-public class BoardManager : NetworkBehaviour
+public partial class BoardManager : NetworkBehaviour
 {
 
     public static BoardManager Instance;
@@ -22,163 +15,6 @@ public class BoardManager : NetworkBehaviour
     public const int MaxDamageInstances = 18;
     public const int MaxDefenseInstances = 18;
     public const int MaxAttackPositions = 4;
-
-    [Serializable]
-    public struct PlayerBoard
-    {
-
-        public GameObject[,] TileTransforms;
-        public GameObject[,] Visuals;
-
-        public PlayerBoard(GameObject[,] tileTransforms, GameObject[,] visuals)
-        {
-            TileTransforms = tileTransforms;
-            Visuals = visuals;
-        }
-
-    }
-
-    [Serializable]
-    public struct DamageInstance : INetworkSerializable
-    {
-        public String Name;
-        public Player.PlayerId ID;
-        public int Damage;
-        public Vector2Int[] Positions;
-        public int PositionCount;
-
-        public DamageInstance(string name, Player.PlayerId id, int damage, IList<Vector2Int> positions)
-        {
-            Name = name;
-            ID = id;
-            Damage = damage;
-            Positions = new Vector2Int[MaxAttackPositions];
-            PositionCount = Mathf.Min(positions.Count, MaxAttackPositions);
-
-            for (int i = 0; i < PositionCount; i++)
-            {
-                Positions[i] = positions[i];
-            }
-        }
-
-        public bool ContainsPosition(Vector2Int position)
-        {
-            for (int i = 0; i < PositionCount; i++)
-            {
-                if (Positions[i] == position) return true;
-            }
-
-            return false;
-        }
-
-        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-        {
-            serializer.SerializeValue(ref Name);
-            serializer.SerializeValue(ref ID);
-            serializer.SerializeValue(ref Damage);
-            serializer.SerializeValue(ref Positions);
-            serializer.SerializeValue(ref PositionCount);
-        }
-    }
-
-    [Serializable]
-    public struct DefenseInstance : INetworkSerializable
-    {
-        public String Name;
-        public Player.PlayerId ID;
-        public int Defense;
-        public Vector2Int[] Positions;
-        public int PositionCount;
-
-        public DefenseInstance(string name, Player.PlayerId id, int defense, IList<Vector2Int> positions)
-        {
-            Name = name;
-            ID = id;
-            Defense = defense;
-            Positions = new Vector2Int[MaxAttackPositions];
-            PositionCount = Mathf.Min(positions.Count, MaxAttackPositions);
-
-            for (int i = 0; i < PositionCount; i++)
-            {
-                Positions[i] = positions[i];
-            }
-        }
-
-        public bool ContainsPosition(Vector2Int position)
-        {
-            for (int i = 0; i < PositionCount; i++)
-            {
-                if (Positions[i] == position) return true;
-            }
-
-            return false;
-        }
-
-        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-        {
-            serializer.SerializeValue(ref Name);
-            serializer.SerializeValue(ref ID);
-            serializer.SerializeValue(ref Defense);
-            serializer.SerializeValue(ref Positions);
-            serializer.SerializeValue(ref PositionCount);
-        }
-    }
-
-    [Serializable]
-    public struct Unit : INetworkSerializable
-    {
-        public String Name;
-        public int CardID;
-        public int Cost;
-        public Player.PlayerId ID;
-        public int Health;
-        public int Damage;
-        public int Defense;
-        public int Movement;
-        public Vector2Int[] AttackPositions;
-        public int AttackPositionCount;
-        public Vector2Int Position;
-        public bool HasActed;
-
-        public Unit(string name, int cardID, int cost, Player.PlayerId id, int health, int damage, int movement,
-            IList<Vector2Int> attackPositions, Vector2Int position, int defense, bool hasActed)
-        {
-            Name = name;
-            CardID = cardID;
-            ID = id;
-            Health = health;
-            Damage = damage;
-            Movement = movement;
-            AttackPositions = new Vector2Int[MaxAttackPositions];
-            AttackPositionCount = Mathf.Min(attackPositions.Count, MaxAttackPositions);
-
-            for (int i = 0; i < AttackPositionCount; i++)
-            {
-                AttackPositions[i] = attackPositions[i];
-            }
-
-            Position = position;
-            Defense = defense;
-            HasActed = hasActed;
-            Cost = cost;
-        }
-
-        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-        {
-            serializer.SerializeValue(ref Name);
-            serializer.SerializeValue(ref CardID);
-            serializer.SerializeValue(ref Cost);
-            serializer.SerializeValue(ref ID);
-            serializer.SerializeValue(ref Health);
-            serializer.SerializeValue(ref Damage);
-            serializer.SerializeValue(ref Defense);
-            serializer.SerializeValue(ref Movement);
-            serializer.SerializeValue(ref AttackPositions);
-            serializer.SerializeValue(ref AttackPositionCount);
-            serializer.SerializeValue(ref Position);
-            serializer.SerializeValue(ref HasActed);
-        }
-    }
 
     private PlayerBoard player1Board;
     private PlayerBoard player2Board;
@@ -267,9 +103,6 @@ public class BoardManager : NetworkBehaviour
 
         interactionLayers = LayerMask.GetMask("Player1Tile", "Player2Tile");
 
-        Transform[] island1Components = player1BoardGameObject.GetComponentsInChildren<Transform>(true);
-        Transform[] island2Components = player2BoardGameObject.GetComponentsInChildren<Transform>(true);
-
     }
 
     private void Start()
@@ -327,131 +160,6 @@ public class BoardManager : NetworkBehaviour
         
         damageTaken.Invoke(Player.PlayerId.Player1);
         damageTaken.Invoke(Player.PlayerId.Player2);
-    }
-
-    public bool AddUnit(Unit unit)
-    {
-        if (unitsCount >= unitsList.Length)
-        {
-            Debug.LogWarning($"Cannot add unit {unit.Name}; max unit capacity reached.");
-            return false;
-        }
-
-        unitsList[unitsCount] = unit;
-        unitsCount++;
-        return true;
-    }
-
-    public int IndexOfUnit(Unit unit)
-    {
-        for (int i = 0; i < unitsCount; i++)
-        {
-            if (unitsList[i].Equals(unit)) return i;
-        }
-
-        return -1;
-    }
-
-    public void RemoveUnit(Unit unit)
-    {
-        RemoveUnitAt(IndexOfUnit(unit));
-    }
-
-    public void RemoveUnitAt(int index)
-    {
-        if (index < 0 || index >= unitsCount) return;
-
-        for (int i = index; i < unitsCount - 1; i++)
-        {
-            unitsList[i] = unitsList[i + 1];
-        }
-
-        unitsCount--;
-        unitsList[unitsCount] = default;
-
-        if (currentlySelectedUnitIndex == index)
-        {
-            currentlySelectedUnit = default;
-            currentlySelectedUnitIndex = -1;
-        }
-        else if (currentlySelectedUnitIndex > index)
-        {
-            currentlySelectedUnitIndex--;
-        }
-    }
-
-    private bool AddDamageInstance(DamageInstance instance)
-    {
-        if (damageInstanceCount >= damageInstances.Length)
-        {
-            Debug.LogWarning($"Cannot add damage instance {instance.Name}; max damage instance capacity reached.");
-            return false;
-        }
-
-        damageInstances[damageInstanceCount] = instance;
-        damageInstanceCount++;
-        return true;
-    }
-
-    private bool AddDefenseInstance(DefenseInstance instance)
-    {
-        if (defenseInstanceCount >= defenseInstances.Length)
-        {
-            Debug.LogWarning($"Cannot add defense instance {instance.Name}; max defense instance capacity reached.");
-            return false;
-        }
-
-        defenseInstances[defenseInstanceCount] = instance;
-        defenseInstanceCount++;
-        return true;
-    }
-
-    private void RemoveDamageInstanceAt(int index)
-    {
-        if (index < 0 || index >= damageInstanceCount) return;
-
-        for (int i = index; i < damageInstanceCount - 1; i++)
-        {
-            damageInstances[i] = damageInstances[i + 1];
-        }
-
-        damageInstanceCount--;
-        damageInstances[damageInstanceCount] = default;
-    }
-
-    private void RemoveDefenseInstanceAt(int index)
-    {
-        if (index < 0 || index >= defenseInstanceCount) return;
-
-        for (int i = index; i < defenseInstanceCount - 1; i++)
-        {
-            defenseInstances[i] = defenseInstances[i + 1];
-        }
-
-        defenseInstanceCount--;
-        defenseInstances[defenseInstanceCount] = default;
-    }
-
-    private void RemoveDamageInstancesForPlayer(Player.PlayerId id)
-    {
-        for (int i = damageInstanceCount - 1; i >= 0; i--)
-        {
-            if (damageInstances[i].ID == id)
-            {
-                RemoveDamageInstanceAt(i);
-            }
-        }
-    }
-
-    private void RemoveDefenseInstancesForPlayer(Player.PlayerId id)
-    {
-        for (int i = defenseInstanceCount - 1; i >= 0; i--)
-        {
-            if (defenseInstances[i].ID == id)
-            {
-                RemoveDefenseInstanceAt(i);
-            }
-        }
     }
 
     private void Update()
@@ -801,7 +509,7 @@ public class BoardManager : NetworkBehaviour
             currentSelectedTileGameObject = null;
             CurrentSelectedTile = new Vector2Int(-1, 1);
             
-            var randInt = Random.Range(0, 1);
+            var randInt = Random.Range(0, 2);
             if (randInt == 0) 
             {
                 AudioManager.singleton.PlaySound("attackPlace1", false, 0.5f);
@@ -930,7 +638,7 @@ public class BoardManager : NetworkBehaviour
             currentSelectedTileGameObject = null;
             CurrentSelectedTile = new Vector2Int(-1, 1);
             
-            var randInt = Random.Range(0, 1);
+            var randInt = Random.Range(0, 2);
             
             if (randInt == 0) 
             {
@@ -1118,7 +826,7 @@ public class BoardManager : NetworkBehaviour
             unitsList[unitIndex] = currentlySelectedUnit;
             CurrentSelectedTile = currentAdjacentPositions[direction];
             
-            var randInt = Random.Range(0, 1);
+            var randInt = Random.Range(0, 2);
             if (randInt == 0)
             {
                 AudioManager.singleton.PlaySound("cardMove1", true); 
@@ -1147,7 +855,7 @@ public class BoardManager : NetworkBehaviour
             ClearTiles();
             UpdateTileVisuals();
 
-            currentAdjacentPositions = GetAdjacentTiles(CurrentSelectedTile);
+            currentAdjacentPositions = GetAdjacentTiles(CurrentSelectedTile, unitsList, unitsCount, GameManager.instance.playerId);
 
             foreach (var pos in currentAdjacentPositions)
             {
@@ -1213,107 +921,10 @@ public class BoardManager : NetworkBehaviour
 
     public void UpdateTileVisuals()
     {
-        //for player 1 board
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                int workingDamage = 0;
-                int workingDefense = 0;
-                bool somethingHere = false;
-
-                for (int damageIndex = 0; damageIndex < damageInstanceCount; damageIndex++)
-                {
-                    DamageInstance damageInstance = damageInstances[damageIndex];
-                    if (damageInstance.ContainsPosition(new Vector2Int(i, j)) &&
-                        damageInstance.ID == Player.PlayerId.Player2)
-                    {
-                        workingDamage += damageInstance.Damage;
-                        somethingHere = true;
-                    }
-                }
-
-                for (int defenseIndex = 0; defenseIndex < defenseInstanceCount; defenseIndex++)
-                {
-                    DefenseInstance defenseInstance = defenseInstances[defenseIndex];
-                    if (defenseInstance.ContainsPosition(new Vector2Int(i, j)) &&
-                        defenseInstance.ID == Player.PlayerId.Player1)
-                    {
-                        workingDefense += defenseInstance.Defense;
-                        somethingHere = true;
-                    }
-                }
-
-                player1Board.TileTransforms[i, j].GetComponent<tileColour>()
-                    .TileRecieveDamage(workingDamage, workingDefense);
-
-                workingDamage -= workingDefense;
-
-                if (somethingHere)
-                {
-                    if (workingDamage <= 0)
-                    {
-                        player1Board.TileTransforms[i, j].GetComponent<tileColour>().TileRecieveSignal(2, false);
-                    }
-                    else
-                    {
-                        player1Board.TileTransforms[i, j].GetComponent<tileColour>().TileRecieveSignal(1, false);
-                    }
-                }
-            }
-        }
-
-        //for player 2 board
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                int workingDamage = 0;
-                int workingDefense = 0;
-                bool somethingHere = false;
-
-                for (int damageIndex = 0; damageIndex < damageInstanceCount; damageIndex++)
-                {
-                    DamageInstance damageInstance = damageInstances[damageIndex];
-                    if (damageInstance.ContainsPosition(new Vector2Int(i, j)) &&
-                        damageInstance.ID == Player.PlayerId.Player1)
-                    {
-                        workingDamage += damageInstance.Damage;
-                        somethingHere = true;
-                    }
-                }
-
-                for (int defenseIndex = 0; defenseIndex < defenseInstanceCount; defenseIndex++)
-                {
-                    DefenseInstance defenseInstance = defenseInstances[defenseIndex];
-                    if (defenseInstance.ContainsPosition(new Vector2Int(i, j)) &&
-                        defenseInstance.ID == Player.PlayerId.Player2)
-                    {
-                        workingDefense += defenseInstance.Defense;
-                        somethingHere = true;
-                    }
-                }
-                
-                player2Board.TileTransforms[i, j].GetComponent<tileColour>()
-                    .TileRecieveDamage(workingDamage, workingDefense);
-
-                workingDamage -= workingDefense;
-
-                if (somethingHere)
-                {
-                    if (workingDamage <= 0)
-                    {
-                        player2Board.TileTransforms[i, j].GetComponent<tileColour>().TileRecieveSignal(2, false);
-                    }
-                    else
-                    {
-                        player2Board.TileTransforms[i, j].GetComponent<tileColour>().TileRecieveSignal(1, false);
-                    }
-                }
-
-               
-            }
-        }
+        UpdateBoardTileVisuals(player1Board, Player.PlayerId.Player2, Player.PlayerId.Player1,
+            damageInstances, damageInstanceCount, defenseInstances, defenseInstanceCount);
+        UpdateBoardTileVisuals(player2Board, Player.PlayerId.Player1, Player.PlayerId.Player2,
+            damageInstances, damageInstanceCount, defenseInstances, defenseInstanceCount);
     }
 
 
@@ -1590,7 +1201,7 @@ public class BoardManager : NetworkBehaviour
         ClearTiles();
         UpdateTileVisuals();
 
-        currentAdjacentPositions = GetAdjacentTiles(CurrentSelectedTile);
+        currentAdjacentPositions = GetAdjacentTiles(CurrentSelectedTile, unitsList, unitsCount, GameManager.instance.playerId);
 
         foreach (var pos in currentAdjacentPositions)
         {
@@ -1620,119 +1231,7 @@ public class BoardManager : NetworkBehaviour
 
     Vector2Int[] GetAdjacentTiles(Vector2Int position)
     {
-        Vector2Int[] adjacent = new Vector2Int[4];
-
-
-        if (position.x + 1 <= 2)
-        {
-            bool cardPresent = false;
-            for (int i = 0; i < unitsCount; i++)
-            {
-                Unit unit = unitsList[i];
-                if (unit.ID != GameManager.instance.playerId) continue;
-                if (Equals(unit.Position, new Vector2Int(position.x + 1, position.y)))
-                {
-                    cardPresent = true;
-                }
-            }
-
-            if (cardPresent == false)
-            {
-                adjacent[0] = new Vector2Int(position.x + 1, position.y);
-            }
-            else
-            {
-                adjacent[0] = new Vector2Int(-1, -1);
-            }
-        }
-        else
-        {
-            adjacent[0] = new Vector2Int(-1, -1);
-        }
-
-        if (position.x - 1 >= 0)
-        {
-            bool cardPresent = false;
-            for (int i = 0; i < unitsCount; i++)
-            {
-                Unit unit = unitsList[i];
-                if (unit.ID != GameManager.instance.playerId) continue;
-                if (Equals(unit.Position, new Vector2Int(position.x - 1, position.y)))
-                {
-                    cardPresent = true;
-                }
-            }
-
-            if (cardPresent == false)
-            {
-                adjacent[1] = new Vector2Int(position.x - 1, position.y);
-            }
-            else
-            {
-                adjacent[1] = new Vector2Int(-1, -1);
-            }
-        }
-        else
-        {
-            adjacent[1] = new Vector2Int(-1, -1);
-        }
-
-        if (position.y + 1 <= 2)
-        {
-            bool cardPresent = false;
-            for (int i = 0; i < unitsCount; i++)
-            {
-                Unit unit = unitsList[i];
-                if (unit.ID != GameManager.instance.playerId) continue;
-                if (Equals(unit.Position, new Vector2Int(position.x, position.y + 1)))
-                {
-                    cardPresent = true;
-                }
-            }
-
-            if (cardPresent == false)
-            {
-                adjacent[2] = new Vector2Int(position.x, position.y + 1);
-            }
-            else
-            {
-                adjacent[2] = new Vector2Int(-1, -1);
-            }
-        }
-        else
-        {
-            adjacent[2] = new Vector2Int(-1, -1);
-        }
-
-        if (position.y - 1 >= 0)
-        {
-            bool cardPresent = false;
-            for (int i = 0; i < unitsCount; i++)
-            {
-                Unit unit = unitsList[i];
-                if (unit.ID != GameManager.instance.playerId) continue;
-                if (Equals(unit.Position, new Vector2Int(position.x, position.y - 1)))
-                {
-                    cardPresent = true;
-                }
-            }
-
-            if (cardPresent == false)
-            {
-                adjacent[3] = new Vector2Int(position.x, position.y - 1);
-            }
-            else
-            {
-                adjacent[3] = new Vector2Int(-1, -1);
-            }
-        }
-        else
-        {
-            adjacent[3] = new Vector2Int(-1, -1);
-        }
-
-
-        return adjacent;
+        return GetAdjacentTiles(position, unitsList, unitsCount, GameManager.instance.playerId);
     }
 
     public async Task EvaluateDamage(Player.PlayerId playerId)
@@ -1812,7 +1311,7 @@ public class BoardManager : NetworkBehaviour
                                 cardDied = true;
                                 PruneUnitVisuals();
                                 var randInt = Random.Range(0, 10);
-                                if (randInt == 10) 
+                                if (randInt == 9) 
                                 {
                                     AudioManager.singleton.PlaySound("cardDie", true, 0.3f);
                                 }
@@ -1966,7 +1465,7 @@ public class BoardManager : NetworkBehaviour
                                 cardDied = true;
                                 PruneUnitVisuals();
                                 var randInt = Random.Range(0, 10);
-                                if (randInt == 10) 
+                                if (randInt == 9) 
                                 {
                                     AudioManager.singleton.PlaySound("cardDie", true, 0.3f);
                                 }
@@ -2165,27 +1664,6 @@ public class BoardManager : NetworkBehaviour
 
     
 
-
-    // Source - https://stackoverflow.com/a
-    // Posted by Dan Tao
-    // Retrieved 2026-01-29, License - CC BY-SA 2.5
-
-    public Vector2Int CoordinatesOf<T>(T[,] matrix, T value)
-    {
-        int w = matrix.GetLength(0); // width
-        int h = matrix.GetLength(1); // height
-
-        for (int x = 0; x < w; ++x)
-        {
-            for (int y = 0; y < h; ++y)
-            {
-                if (matrix[x, y].Equals(value))
-                    return new Vector2Int(x, y);
-            }
-        }
-
-        return new Vector2Int(-1, -1);
-    }
 
     // public static List<Vector2Int> convertToTupleList(List<int[]> input)
     // {

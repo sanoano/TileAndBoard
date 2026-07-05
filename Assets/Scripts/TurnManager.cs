@@ -1,9 +1,6 @@
-using System;
 using TMPro;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -205,106 +202,72 @@ public class TurnManager : NetworkBehaviour
         switch (current)
         {
             case TurnState.Player1Turn:
-                
                 turnCount += 1;
                 await BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player2);
-
-                if (GameManager.instance.playerId == Player.PlayerId.Player1 && turnCount != 2)
-                {
-                    for (int i = 0; i < BoardManager.Instance.unitsCount; i++)
-                    {
-                        BoardManager.Unit unit = BoardManager.Instance.unitsList[i];
-                        if (unit.ID == Player.PlayerId.Player1)
-                        {
-                            unit.HasActed = false;
-                            CardDeck.CardData data =  cardList.Cards.Find(card => card.Name == unit.Name);
-                            unit.Movement = data.Speed;
-                            BoardManager.Instance.unitsList[i] = unit;
-                        }
-                    }
-                    var manaToGain = 9 - BoardManager.Instance.GetCardAmount(Player.PlayerId.Player1);
-                    ManaManager.instance.AddManaPoints(manaToGain);
-                    if (manaToGain > 0)
-                    {
-                        AudioManager.singleton.PlaySound("manaGain", false);
-                    }
-                    foreach (var tile in BoardManager.Instance.localBoard.TileTransforms)
-                    {
-                        var coords = BoardManager.Instance.CoordinatesOf<GameObject>(BoardManager.Instance.localBoard.TileTransforms, tile);
-                        bool cardFound = false;
-                        for (int i = 0; i < BoardManager.Instance.unitsCount; i++)
-                        {
-                           BoardManager.Unit unit = BoardManager.Instance.unitsList[i];
-                           if (Equals(unit.Position, coords) && unit.ID == Player.PlayerId.Player1)
-                            {
-                                cardFound = true;
-                            }
-                        }
-                        if (!cardFound)
-                        {
-                            tile.GetComponent<tileColour>().TileRecievePopup(1, 1);
-                        } 
-                        
-                    }
-                }
-                
-
-                
-
+                StartActivePlayerTurn(Player.PlayerId.Player1, BoardManager.Instance);
                 break;
             
-            
             case TurnState.Player2Turn:
-
                 turnCount += 1;
                 await BoardManager.Instance.EvaluateDamage(Player.PlayerId.Player1);
-                
-                if (GameManager.instance.playerId == Player.PlayerId.Player2 && turnCount != 2)
-                {
-                    for (int i = 0; i < BoardManager.Instance.unitsCount; i++)
-                    {
-                        BoardManager.Unit unit = BoardManager.Instance.unitsList[i];
-                        if (unit.ID == Player.PlayerId.Player2)
-                        {
-                            unit.HasActed = false;
-                            CardDeck.CardData data =  cardList.Cards.Find(card => card.Name == unit.Name);
-                            unit.Movement = data.Speed;
-                            BoardManager.Instance.unitsList[i] = unit;
-                        }
-                    }
-                    
-                    var manaToGain = 9 - BoardManager.Instance.GetCardAmount(Player.PlayerId.Player2);
-                    ManaManager.instance.AddManaPoints(manaToGain);
-                    if (manaToGain > 0)
-                    {
-                        AudioManager.singleton.PlaySound("manaGain", false);
-                    }
-                    foreach (var tile in BoardManager.Instance.localBoard.TileTransforms)
-                    {
-                        var coords = BoardManager.Instance.CoordinatesOf<GameObject>(BoardManager.Instance.localBoard.TileTransforms, tile);
-                        bool cardFound = false;
-                        for (int i = 0; i < BoardManager.Instance.unitsCount; i++)
-                        {
-                           BoardManager.Unit unit = BoardManager.Instance.unitsList[i];
-                           if (Equals(unit.Position, coords) && unit.ID == Player.PlayerId.Player2)
-                            {
-                                cardFound = true;
-                            }
-                        }
-                        if (!cardFound)
-                        {
-                            tile.GetComponent<tileColour>().TileRecievePopup(1, 1);
-                        } 
-                        
-                    }
-                }
-                
-
-                
-
+                StartActivePlayerTurn(Player.PlayerId.Player2, BoardManager.Instance);
                 break;
         }
         
+    }
+
+    private void StartActivePlayerTurn(Player.PlayerId activePlayer, BoardManager boardManager)
+    {
+        if (GameManager.instance.playerId != activePlayer || turnCount == 2) return;
+
+        ResetUnitsForTurn(activePlayer, boardManager.unitsList, boardManager.unitsCount);
+
+        var manaToGain = 9 - boardManager.GetCardAmount(activePlayer);
+        ManaManager.instance.AddManaPoints(manaToGain);
+        if (manaToGain > 0)
+        {
+            AudioManager.singleton.PlaySound("manaGain", false);
+        }
+
+        ShowManaPopupsForOpenTiles(activePlayer, boardManager);
+    }
+
+    private void ResetUnitsForTurn(Player.PlayerId activePlayer, BoardManager.Unit[] units, int unitCount)
+    {
+        for (int i = 0; i < unitCount; i++)
+        {
+            BoardManager.Unit unit = units[i];
+            if (unit.ID != activePlayer) continue;
+
+            unit.HasActed = false;
+            CardDeck.CardData data = cardList.Cards.Find(card => card.Name == unit.Name);
+            unit.Movement = data.Speed;
+            units[i] = unit;
+        }
+    }
+
+    private void ShowManaPopupsForOpenTiles(Player.PlayerId activePlayer, BoardManager boardManager)
+    {
+        foreach (var tile in boardManager.localBoard.TileTransforms)
+        {
+            var coords = boardManager.CoordinatesOf(boardManager.localBoard.TileTransforms, tile);
+            bool cardFound = false;
+
+            for (int i = 0; i < boardManager.unitsCount; i++)
+            {
+                BoardManager.Unit unit = boardManager.unitsList[i];
+                if (unit.Position == coords && unit.ID == activePlayer)
+                {
+                    cardFound = true;
+                    break;
+                }
+            }
+
+            if (!cardFound)
+            {
+                tile.GetComponent<tileColour>().TileRecievePopup(1, 1);
+            }
+        }
     }
 
     public void ChangeTurn()
@@ -355,24 +318,15 @@ public class TurnManager : NetworkBehaviour
     [Rpc(SendTo.SpecifiedInParams)]
     private void ChangeTurnRpc(TurnState turn, RpcParams rpcParams = default)
     {
-        if (turnButton.IsActive() == false)
-        {
-            turnButton.gameObject.SetActive(true);
-        }
-        else
-        {
-            turnButton.gameObject.SetActive(false);
-        }
-        currentTurn = turn;
-        currentTime = maxTimePerTurn;
-        UpdateTurnText(currentTurn);
-        OnTurnChanged(currentTurn);
-        //AudioManager.singleton.PlaySound("roundChange", false);
-        hourglassScript.FlipHourglass(maxTimePerTurn);
-        isYourTurn = !isYourTurn;
+        ApplyTurnChange(turn);
     }
     
     private void ChangeTurnLocal(TurnState turn)
+    {
+        ApplyTurnChange(turn);
+    }
+
+    private void ApplyTurnChange(TurnState turn)
     {
         if (turnButton.IsActive() == false)
         {
@@ -386,7 +340,6 @@ public class TurnManager : NetworkBehaviour
         currentTime = maxTimePerTurn;
         UpdateTurnText(currentTurn);
         OnTurnChanged(currentTurn);
-        //AudioManager.singleton.PlaySound("roundChange", false);
         hourglassScript.FlipHourglass(maxTimePerTurn);
         isYourTurn = !isYourTurn;
     }
