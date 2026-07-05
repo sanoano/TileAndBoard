@@ -39,7 +39,7 @@ public class BoardManager : NetworkBehaviour
     }
 
     [Serializable]
-    public struct DamageInstance
+    public struct DamageInstance : INetworkSerializable
     {
         public String Name;
         public Player.PlayerId ID;
@@ -70,10 +70,19 @@ public class BoardManager : NetworkBehaviour
 
             return false;
         }
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            serializer.SerializeValue(ref Name);
+            serializer.SerializeValue(ref ID);
+            serializer.SerializeValue(ref Damage);
+            serializer.SerializeValue(ref Positions);
+            serializer.SerializeValue(ref PositionCount);
+        }
     }
 
     [Serializable]
-    public struct DefenseInstance
+    public struct DefenseInstance : INetworkSerializable
     {
         public String Name;
         public Player.PlayerId ID;
@@ -104,12 +113,22 @@ public class BoardManager : NetworkBehaviour
 
             return false;
         }
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            serializer.SerializeValue(ref Name);
+            serializer.SerializeValue(ref ID);
+            serializer.SerializeValue(ref Defense);
+            serializer.SerializeValue(ref Positions);
+            serializer.SerializeValue(ref PositionCount);
+        }
     }
 
     [Serializable]
-    public struct Unit
+    public struct Unit : INetworkSerializable
     {
         public String Name;
+        public int CardID;
         public int Cost;
         public Player.PlayerId ID;
         public int Health;
@@ -121,10 +140,11 @@ public class BoardManager : NetworkBehaviour
         public Vector2Int Position;
         public bool HasActed;
 
-        public Unit(string name, int cost, Player.PlayerId id, int health, int damage, int movement,
+        public Unit(string name, int cardID, int cost, Player.PlayerId id, int health, int damage, int movement,
             IList<Vector2Int> attackPositions, Vector2Int position, int defense, bool hasActed)
         {
             Name = name;
+            CardID = cardID;
             ID = id;
             Health = health;
             Damage = damage;
@@ -141,6 +161,22 @@ public class BoardManager : NetworkBehaviour
             Defense = defense;
             HasActed = hasActed;
             Cost = cost;
+        }
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            serializer.SerializeValue(ref Name);
+            serializer.SerializeValue(ref CardID);
+            serializer.SerializeValue(ref Cost);
+            serializer.SerializeValue(ref ID);
+            serializer.SerializeValue(ref Health);
+            serializer.SerializeValue(ref Damage);
+            serializer.SerializeValue(ref Defense);
+            serializer.SerializeValue(ref Movement);
+            serializer.SerializeValue(ref AttackPositions);
+            serializer.SerializeValue(ref AttackPositionCount);
+            serializer.SerializeValue(ref Position);
+            serializer.SerializeValue(ref HasActed);
         }
     }
 
@@ -746,8 +782,6 @@ public class BoardManager : NetworkBehaviour
                     .TileRecieveSignal(0, false);
             }
 
-            string name = currentlySelectedUnit.Name;
-            int damage = currentlySelectedUnit.Damage;
             Vector2Int[] positions = new Vector2Int[workingPositions.Count];
 
             currentlySelectedUnit.HasActed = true;
@@ -779,15 +813,26 @@ public class BoardManager : NetworkBehaviour
 
             if (NetworkManager.Singleton)
             {
+                DamageInstance instance = new DamageInstance(
+                    name: currentlySelectedUnit.Name,
+                    id: GameManager.instance.playerId,
+                    damage: currentlySelectedUnit.Damage,
+                    positions: positions
+                );
+
                 foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
                 {
-                    AddDamageInstanceRpc(name, GameManager.instance.playerId, damage, positions,
-                        RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                    AddDamageInstanceRpc(instance, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
                 }
             }
             else
             {
-                AddDamageInstanceLocal(name, GameManager.instance.playerId, damage, positions);
+                AddDamageInstanceLocal(new DamageInstance(
+                    name: currentlySelectedUnit.Name,
+                    id: GameManager.instance.playerId,
+                    damage: currentlySelectedUnit.Damage,
+                    positions: positions
+                ));
             }
         }
     }
@@ -866,8 +911,6 @@ public class BoardManager : NetworkBehaviour
                     .TileRecieveSignal(0, false);
             }
 
-            string name = currentlySelectedUnit.Name;
-            int defense = currentlySelectedUnit.Defense;
             Vector2Int[] positions = new Vector2Int[workingPositions.Count];
 
             currentlySelectedUnit.HasActed = true;
@@ -900,15 +943,26 @@ public class BoardManager : NetworkBehaviour
 
             if (NetworkManager.Singleton)
             {
+                DefenseInstance instance = new DefenseInstance(
+                    name: currentlySelectedUnit.Name,
+                    id: GameManager.instance.playerId,
+                    defense: currentlySelectedUnit.Defense,
+                    positions: positions
+                );
+
                 foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
                 {
-                    AddDefenseInstanceRpc(name, GameManager.instance.playerId, defense, positions,
-                        RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                    AddDefenseInstanceRpc(instance, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
                 }
             }
             else
             {
-                AddDefenseInstanceLocal(name, GameManager.instance.playerId, defense, positions);
+                AddDefenseInstanceLocal(new DefenseInstance(
+                    name: currentlySelectedUnit.Name,
+                    id: GameManager.instance.playerId,
+                    defense: currentlySelectedUnit.Defense,
+                    positions: positions
+                ));
             }
         }
     }
@@ -1128,60 +1182,30 @@ public class BoardManager : NetworkBehaviour
 
 
     [Rpc(SendTo.SpecifiedInParams)]
-    public void AddDefenseInstanceRpc(string name, Player.PlayerId pID, int defense, Vector2Int[] positions,
-        RpcParams rpcParams = default)
+    public void AddDefenseInstanceRpc(DefenseInstance instance, RpcParams rpcParams = default)
     {
-        DefenseInstance instance = new DefenseInstance(
-            name: name,
-            id: pID,
-            defense: defense,
-            positions: positions
-        );
-
         AddDefenseInstance(instance);
 
         UpdateTileVisuals();
     }
     
-    public void AddDefenseInstanceLocal(string name, Player.PlayerId pID, int defense, Vector2Int[] positions)
+    public void AddDefenseInstanceLocal(DefenseInstance instance)
     {
-        DefenseInstance instance = new DefenseInstance(
-            name: name,
-            id: pID,
-            defense: defense,
-            positions: positions
-        );
-
         AddDefenseInstance(instance);
 
         UpdateTileVisuals();
     }
 
     [Rpc(SendTo.SpecifiedInParams)]
-    public void AddDamageInstanceRpc(string name, Player.PlayerId pID, int damage, Vector2Int[] positions,
-        RpcParams rpcParams = default)
+    public void AddDamageInstanceRpc(DamageInstance instance, RpcParams rpcParams = default)
     {
-        DamageInstance instance = new DamageInstance(
-            name: name,
-            id: pID,
-            damage: damage,
-            positions: positions
-        );
-
         AddDamageInstance(instance);
 
         UpdateTileVisuals();
     }
     
-    public void AddDamageInstanceLocal(string name, Player.PlayerId pID, int damage, Vector2Int[] positions)
+    public void AddDamageInstanceLocal(DamageInstance instance)
     {
-        DamageInstance instance = new DamageInstance(
-            name: name,
-            id: pID,
-            damage: damage,
-            positions: positions
-        );
-
         AddDamageInstance(instance);
 
         UpdateTileVisuals();
@@ -1299,6 +1323,7 @@ public class BoardManager : NetworkBehaviour
 
         Unit unit = new Unit(
             name: cardData.Name,
+            cardID: cardData.ID,
             cost: cardData.Cost,
             id: GameManager.instance.playerId,
             health: cardData.Health,
@@ -1368,7 +1393,7 @@ public class BoardManager : NetworkBehaviour
             foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
             {
                 if (clientIds == NetworkManager.Singleton.LocalClientId) continue;
-                PlaceCardRpc(cardData.ID, unit.ID, unit.Position, cardData.Health, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                PlaceCardRpc(unit, RpcTarget.Single(clientIds, RpcTargetUse.Temp));
             }
         }
         
@@ -1377,33 +1402,32 @@ public class BoardManager : NetworkBehaviour
         
     }
 
-    [Rpc(SendTo.SpecifiedInParams)]
-    public void PlaceCardRpc(int ID, Player.PlayerId playerId, Vector2Int coordinates, int unitHealth, RpcParams rpcParams = default)
+    private CardDeck.CardData CardDataFromUnit(Unit unit)
     {
-        CardDeck cardList = Resources.Load<CardDeck>("Data/MasterList");
-
-        CardDeck.CardData cardData = new CardDeck.CardData();
-
-        foreach (CardDeck.CardData card in cardList.Cards)
+        CardDeck.CardData cardData = new CardDeck.CardData
         {
-            if (card.ID == ID)
-            {
-                cardData = card;
-            }
+            ID = unit.CardID,
+            Name = unit.Name,
+            Health = unit.Health,
+            Cost = unit.Cost,
+            Speed = unit.Movement,
+            Defence = unit.Defense,
+            Damage = unit.Damage,
+            Range = new List<Vector2Int>(unit.AttackPositionCount)
+        };
+
+        for (int i = 0; i < unit.AttackPositionCount; i++)
+        {
+            cardData.Range.Add(unit.AttackPositions[i]);
         }
 
-        Unit unit = new Unit(
-            name: cardData.Name,
-            cost: cardData.Cost,
-            id: playerId,
-            health: unitHealth,
-            damage: cardData.Damage,
-            defense: cardData.Defence,
-            movement: cardData.Speed,
-            attackPositions: cardData.Range,
-            position: coordinates,
-            hasActed: true
-        );
+        return cardData;
+    }
+
+    [Rpc(SendTo.SpecifiedInParams)]
+    public void PlaceCardRpc(Unit unit, RpcParams rpcParams = default)
+    {
+        CardDeck.CardData cardData = CardDataFromUnit(unit);
 
         if (!AddUnit(unit)) return;
 
