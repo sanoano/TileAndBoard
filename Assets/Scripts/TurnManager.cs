@@ -308,7 +308,6 @@ public class TurnManager : NetworkBehaviour
         }
         else
         {
-            print("meep");
             ChangeTurnLocal(TurnState.Player2Turn);
             ChangeTurnLocal(TurnState.Player1Turn);
         }

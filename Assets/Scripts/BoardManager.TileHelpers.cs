@@ -68,20 +68,20 @@ public partial class BoardManager
             for (int j = 0; j < 3; j++)
             {
                 Vector2Int position = new Vector2Int(i, j);
-                TilePressure pressure = CalculateTilePressure(position, damageOwner, defenseOwner,
+                TotalDamage totalDamage = CalculateTotalDamage(position, damageOwner, defenseOwner,
                     damageInstances, damageInstanceCount, defenseInstances, defenseInstanceCount);
 
                 tileColour tile = board.TileTransforms[i, j].GetComponent<tileColour>();
-                tile.TileRecieveDamage(pressure.Damage, pressure.Defense);
+                tile.TileRecieveDamage(totalDamage.IncomingDamage, totalDamage.Defense);
 
-                if (!pressure.HasPressure) continue;
+                if (!totalDamage.HasAttackOrDefense) continue;
 
-                tile.TileRecieveSignal(pressure.NetDamage <= 0 ? 2 : 1, false);
+                tile.TileRecieveSignal(totalDamage.NetDamage <= 0 ? 2 : 1, false);
             }
         }
     }
 
-    private static TilePressure CalculateTilePressure(
+    private static TotalDamage CalculateTotalDamage(
         Vector2Int position,
         Player.PlayerId damageOwner,
         Player.PlayerId defenseOwner,
@@ -92,7 +92,7 @@ public partial class BoardManager
     {
         int damage = 0;
         int defense = 0;
-        bool hasPressure = false;
+        bool hasAttackOrDefense = false;
 
         for (int i = 0; i < damageInstanceCount; i++)
         {
@@ -100,7 +100,7 @@ public partial class BoardManager
             if (damageInstance.ID != damageOwner || !damageInstance.ContainsPosition(position)) continue;
 
             damage += damageInstance.Damage;
-            hasPressure = true;
+            hasAttackOrDefense = true;
         }
 
         for (int i = 0; i < defenseInstanceCount; i++)
@@ -109,10 +109,10 @@ public partial class BoardManager
             if (defenseInstance.ID != defenseOwner || !defenseInstance.ContainsPosition(position)) continue;
 
             defense += defenseInstance.Defense;
-            hasPressure = true;
+            hasAttackOrDefense = true;
         }
 
-        return new TilePressure(damage, defense, hasPressure);
+        return new TotalDamage(damage, defense, hasAttackOrDefense);
     }
 
     public Vector2Int CoordinatesOf<T>(T[,] matrix, T value)
@@ -137,18 +137,19 @@ public partial class BoardManager
         return InvalidTile;
     }
 
-    private readonly struct TilePressure
+    private readonly struct TotalDamage
     {
-        public readonly int Damage;
+        public readonly int IncomingDamage;
         public readonly int Defense;
-        public readonly bool HasPressure;
-        public int NetDamage => Damage - Defense;
+        public readonly bool HasAttackOrDefense;
+        public int NetDamage => IncomingDamage - Defense;
+        public int ClampedNetDamage => Mathf.Max(0, NetDamage);
 
-        public TilePressure(int damage, int defense, bool hasPressure)
+        public TotalDamage(int incomingDamage, int defense, bool hasAttackOrDefense)
         {
-            Damage = damage;
+            IncomingDamage = incomingDamage;
             Defense = defense;
-            HasPressure = hasPressure;
+            HasAttackOrDefense = hasAttackOrDefense;
         }
     }
 }

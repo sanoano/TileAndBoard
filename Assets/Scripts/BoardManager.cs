@@ -1229,10 +1229,7 @@ public partial class BoardManager : NetworkBehaviour
         }
     }
 
-    Vector2Int[] GetAdjacentTiles(Vector2Int position)
-    {
-        return GetAdjacentTiles(position, unitsList, unitsCount, GameManager.instance.playerId);
-    }
+
 
     public async Task EvaluateDamage(Player.PlayerId playerId)
     {
@@ -1246,41 +1243,14 @@ public partial class BoardManager : NetworkBehaviour
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    int workingDamage = 0;
-
-                    bool cardDied = false;
-                    bool damageInstancePresent = false;
-                    bool defenseInstancePresent = false;
-
-                    for (int damageIndex = 0; damageIndex < damageInstanceCount; damageIndex++)
-                    {
-                        DamageInstance damageInstance = damageInstances[damageIndex];
-                        if (damageInstance.ContainsPosition(new Vector2Int(i, j)) &&
-                            damageInstance.ID == Player.PlayerId.Player2)
-                        {
-                            damageInstancePresent = true;
-                            workingDamage += damageInstance.Damage;
-                        }
-                    }
-
-                    for (int defenseIndex = 0; defenseIndex < defenseInstanceCount; defenseIndex++)
-                    {
-                        DefenseInstance defenseInstance = defenseInstances[defenseIndex];
-                        if (defenseInstance.ContainsPosition(new Vector2Int(i, j)) &&
-                            defenseInstance.ID == Player.PlayerId.Player1)
-                        {
-                            defenseInstancePresent = true;
-                            workingDamage -= defenseInstance.Defense;
-                        }
-                    }
-
-                    if (!damageInstancePresent && !defenseInstancePresent) continue;
+                    Vector2Int position = new Vector2Int(i, j);
+                    TotalDamage totalDamage = CalculateTotalDamage(position, Player.PlayerId.Player2,
+                        Player.PlayerId.Player1, damageInstances, damageInstanceCount, defenseInstances,
+                        defenseInstanceCount);
+                    if (!totalDamage.HasAttackOrDefense) continue;
                     
-
-                    if (workingDamage < 0)
-                    {
-                        workingDamage = 0;
-                    }
+                    int workingDamage = totalDamage.ClampedNetDamage;
+                    bool cardDied = false;
 
                     bool attackBlocked = false;
                     for (int unitIndex = 0; unitIndex < unitsCount; unitIndex++)
@@ -1288,7 +1258,7 @@ public partial class BoardManager : NetworkBehaviour
                         Unit unit = unitsList[unitIndex];
                         if (unit.ID == Player.PlayerId.Player2) continue;
 
-                        if (Equals(unit.Position, new Vector2Int(i, j)))
+                        if (Equals(unit.Position, position))
                         {
                             unit.Health -= workingDamage;
                             unitsList[unitIndex] = unit;
@@ -1401,40 +1371,14 @@ public partial class BoardManager : NetworkBehaviour
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    int workingDamage = 0;
-
+                    Vector2Int position = new Vector2Int(i, j);
+                    TotalDamage totalDamage = CalculateTotalDamage(position, Player.PlayerId.Player1,
+                        Player.PlayerId.Player2, damageInstances, damageInstanceCount, defenseInstances,
+                        defenseInstanceCount);
+                    if (!totalDamage.HasAttackOrDefense) continue;
+                    
+                    int workingDamage = totalDamage.ClampedNetDamage;
                     bool cardDied = false;
-                    bool damageInstancePresent = false;
-                    bool defenseInstancePresent = false;
-
-                    for (int damageIndex = 0; damageIndex < damageInstanceCount; damageIndex++)
-                    {
-                        DamageInstance damageInstance = damageInstances[damageIndex];
-                        if (damageInstance.ContainsPosition(new Vector2Int(i, j)) &&
-                            damageInstance.ID == Player.PlayerId.Player1)
-                        {
-                            damageInstancePresent = true;
-                            workingDamage += damageInstance.Damage;
-                        }
-                    }
-
-                    for (int defenseIndex = 0; defenseIndex < defenseInstanceCount; defenseIndex++)
-                    {
-                        DefenseInstance defenseInstance = defenseInstances[defenseIndex];
-                        if (defenseInstance.ContainsPosition(new Vector2Int(i, j)) &&
-                            defenseInstance.ID == Player.PlayerId.Player2)
-                        {
-                            defenseInstancePresent = true;
-                            workingDamage -= defenseInstance.Defense;
-                        }
-                    }
-
-                    if (!damageInstancePresent && !defenseInstancePresent) continue;
-
-                    if (workingDamage < 0)
-                    {
-                        workingDamage = 0;
-                    }
 
                     bool attackBlocked = false;
                     for (int unitIndex = 0; unitIndex < unitsCount; unitIndex++)
@@ -1442,7 +1386,7 @@ public partial class BoardManager : NetworkBehaviour
                         Unit unit = unitsList[unitIndex];
                         if (unit.ID == Player.PlayerId.Player1) continue;
 
-                        if (Equals(unit.Position, new Vector2Int(i, j)))
+                        if (Equals(unit.Position, position))
                         {
                             unit.Health -= workingDamage;
                             unitsList[unitIndex] = unit;
@@ -1665,19 +1609,5 @@ public partial class BoardManager : NetworkBehaviour
     
 
 
-    // public static List<Vector2Int> convertToTupleList(List<int[]> input)
-    // {
-    //
-    //     List<Vector2Int> output = new List<Vector2Int>();
-    //
-    //     foreach (int[] array in input)
-    //     {
-    //         Vector2Int tuple = new Vector2Int(array[0], array[1]);
-    //         Debug.Log(tuple);
-    //         output.Add(tuple);
-    //     }
-    //
-    //     return output;
-    // }
 
 }
