@@ -15,21 +15,22 @@ public class UIDialogueTutorial : MonoBehaviour
 
     [Header("Tutorial Content")]
     [SerializeField] private string[] headers;
-    [SerializeField] private GameObject[] page0;//Title graphic, high concept of gameplay
+    /*[SerializeField] private GameObject[] page0;//Title graphic, high concept of gameplay
     [SerializeField] private GameObject[] page1;
     [SerializeField] private GameObject[] page2;
     [SerializeField] private GameObject[] page3;
     [SerializeField] private GameObject[] page4;
     [SerializeField] private GameObject[] page5;
-    [SerializeField] private GameObject[] page6;
-    //Right now we have to manually add pages/content.
+    [SerializeField] private GameObject[] page6;*/
 
-    GameObject[][] pages;
+    [SerializeField] private GameObject[] pages; //instead of manually adding page contents to each individual array, store that content in a single prefab, named menuHelp_X
+
+    //GameObject[][] pages;
     private int pageIndex = 0;
 
     void Start()
     {
-        pages = new GameObject[][] { page0, page1, page2, page3, page4, page5, page6 };
+        /*pages = new GameObject[][] { page0, page1, page2, page3, page4, page5, page6 };
 
         foreach (GameObject[] array in pages)
         {
@@ -42,7 +43,7 @@ public class UIDialogueTutorial : MonoBehaviour
         foreach (GameObject element in pages[pageIndex])
         {
             element.SetActive(true);
-        }
+        }*/
 
         headerTMP = header.GetComponent<TextMeshProUGUI>();
         headerTMP.text = headers[pageIndex];
@@ -65,18 +66,12 @@ public class UIDialogueTutorial : MonoBehaviour
                 pageIndex--;
         }
 
-        foreach (GameObject[] array in pages)
+        foreach (GameObject page in pages)
         {
-            foreach (GameObject element in array)
-            {
-                element.SetActive(false);
-            }
+            page.SetActive(false);
         }
 
-        foreach (GameObject element in pages[pageIndex])
-        {
-            element.SetActive(true);
-        }
+        pages[pageIndex].SetActive(true);
 
         headerTMP.text = headers[pageIndex];
         //Debug.Log(pageIndex);

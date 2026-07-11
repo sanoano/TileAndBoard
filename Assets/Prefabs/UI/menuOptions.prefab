@@ -799,7 +799,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Tutorial
+  m_text: Help
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e2e27534f6cc30e48af57eca383b5503, type: 2}
   m_sharedMaterial: {fileID: -839596086599361176, guid: e2e27534f6cc30e48af57eca383b5503, type: 2}
@@ -1358,7 +1358,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5699208251988835538}
   m_Layer: 5
-  m_Name: dialogueOptions
+  m_Name: menuOptions
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1423,7 +1423,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 229.31, y: 90.1}
+  m_SizeDelta: {x: 177.32, y: 90.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2886804943921245774
 CanvasRenderer:
@@ -2131,7 +2131,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5940605411908282148, guid: 0aa455ff9fc90614783037e4c809cf10, type: 3}
       propertyPath: m_Name
-      value: dialogueTutorial
+      value: menuHelp
       objectReference: {fileID: 0}
     - target: {fileID: 5940605411908282148, guid: 0aa455ff9fc90614783037e4c809cf10, type: 3}
       propertyPath: m_IsActive
