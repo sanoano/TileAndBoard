@@ -4,7 +4,7 @@ Welcome to hell. Every major function found in the game is listed here with its 
 
 ## AudioManager
 
-Source: `Assets/Scripts/Audio.cs`
+Source: `Assets/Scripts/Audio/Audio.cs`
 
 ### `PlaySound(string name)`
 
@@ -65,7 +65,7 @@ This is called automatically to clean stuff up, don't worry about it.
 
 ## BoardManager
 
-Sources: `Assets/Scripts/BoardManager.cs`, `Assets/Scripts/BoardManager.Collections.cs`, and `Assets/Scripts/BoardManager.TileHelpers.cs`
+Sources: `Assets/Scripts/Board/BoardManager.cs`, `Assets/Scripts/Board/BoardManager.Collections.cs`, and `Assets/Scripts/Board/BoardManager.TileHelpers.cs`
 
 ### `NullSelection()`
 
@@ -552,6 +552,8 @@ private void RemoveDefenseInstancesForPlayer(Player.PlayerId id)
 
 **Description / comments:**
 
+Self Explanatory
+
 <!-- Add description/comments here. -->
 
 ### `GetAdjacentTiles(...)`
@@ -561,12 +563,14 @@ private void RemoveDefenseInstancesForPlayer(Player.PlayerId id)
 ```csharp
 private static Vector2Int[] GetAdjacentTiles(
     Vector2Int position,
-    IReadOnlyList<Unit> units,
+    Unit[] units,
     int unitCount,
     Player.PlayerId playerId)
 ```
 
 **Description / comments:**
+
+Gets adjacent tiles for a given tile
 
 <!-- Add description/comments here. -->
 
@@ -580,6 +584,8 @@ private static bool IsTileInBounds(Vector2Int position)
 
 **Description / comments:**
 
+Checks if a tiles coordinates are actually legal
+
 <!-- Add description/comments here. -->
 
 ### `HasUnitAt(...)`
@@ -589,12 +595,14 @@ private static bool IsTileInBounds(Vector2Int position)
 ```csharp
 private static bool HasUnitAt(
     Vector2Int position,
-    IReadOnlyList<Unit> units,
+    Unit[] units,
     int unitCount,
     Player.PlayerId playerId)
 ```
 
 **Description / comments:**
+
+Checks if a certain player has a unit placed on a given tile
 
 <!-- Add description/comments here. -->
 
@@ -607,13 +615,15 @@ private static void UpdateBoardTileVisuals(
     PlayerBoard board,
     Player.PlayerId damageOwner,
     Player.PlayerId defenseOwner,
-    IReadOnlyList<DamageInstance> damageInstances,
+    DamageInstance[] damageInstances,
     int damageInstanceCount,
-    IReadOnlyList<DefenseInstance> defenseInstances,
+    DefenseInstance[] defenseInstances,
     int defenseInstanceCount)
 ```
 
 **Description / comments:**
+
+Updates all tile visuals to match current data i.e. updates display for attack and defense highlighting + floating damage numbers
 
 <!-- Add description/comments here. -->
 
@@ -626,13 +636,15 @@ private static TotalDamage CalculateTotalDamage(
     Vector2Int position,
     Player.PlayerId damageOwner,
     Player.PlayerId defenseOwner,
-    IReadOnlyList<DamageInstance> damageInstances,
+    DamageInstance[] damageInstances,
     int damageInstanceCount,
-    IReadOnlyList<DefenseInstance> defenseInstances,
+    DefenseInstance[] defenseInstances,
     int defenseInstanceCount)
 ```
 
 **Description / comments:**
+
+Calculates total damage for a given tile
 
 <!-- Add description/comments here. -->
 
@@ -646,12 +658,14 @@ private static Vector2Int FindCoordinates<T>(T[,] matrix, T value)
 
 **Description / comments:**
 
+You give it a tile and it gives you the tile coordinates
+
 <!-- Add description/comments here. -->
 
 
 ## BoardManager.PlayerBoard
 
-Source: `Assets/Scripts/BoardManager.Models.cs`
+Source: `Assets/Scripts/Board/BoardManager.Models.cs`
 
 ### `PlayerBoard(GameObject[,] tileTransforms, GameObject[,] visuals)`
 
@@ -668,7 +682,7 @@ public PlayerBoard(GameObject[,] tileTransforms, GameObject[,] visuals)
 
 ## BoardManager.DamageInstance
 
-Source: `Assets/Scripts/BoardManager.Models.cs`
+Source: `Assets/Scripts/Board/BoardManager.Models.cs`
 
 ### `DamageInstance(string name, Player.PlayerId id, int damage, IList<Vector2Int> positions)`
 
@@ -691,6 +705,7 @@ public bool ContainsPosition(Vector2Int position)
 ```
 
 **Description / comments:**
+Checks if a damage instance contains a given position
 
 <!-- Add description/comments here. -->
 
@@ -709,7 +724,7 @@ public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReade
 
 ## BoardManager.DefenseInstance
 
-Source: `Assets/Scripts/BoardManager.Models.cs`
+Source: `Assets/Scripts/Board/BoardManager.Models.cs`
 
 ### `DefenseInstance(string name, Player.PlayerId id, int defense, IList<Vector2Int> positions)`
 
@@ -733,6 +748,8 @@ public bool ContainsPosition(Vector2Int position)
 
 **Description / comments:**
 
+Checks if defense instance contains a given position
+
 <!-- Add description/comments here. -->
 
 ### `NetworkSerialize<T>(BufferSerializer<T> serializer)`
@@ -750,7 +767,7 @@ public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReade
 
 ## BoardManager.Unit
 
-Source: `Assets/Scripts/BoardManager.Models.cs`
+Source: `Assets/Scripts/Board/BoardManager.Models.cs`
 
 ### `Unit(...)`
 
@@ -790,7 +807,7 @@ public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReade
 
 ## CameraMainMenu
 
-Source: `Assets/Scripts/CameraMainMenu.cs`
+Source: `Assets/Scripts/Camera/CameraMainMenu.cs`
 
 ### `SetCameraState(int state)`
 
@@ -819,7 +836,7 @@ private IEnumerator MoveCamera(Vector3 targetPos, Quaternion targetRot)
 
 ## CardDeck
 
-Source: `Assets/Scripts/CardDeck.cs`
+Source: `Assets/Scripts/Cards/CardDeck.cs`
 
 ### `FromJsonToDeck()`
 
@@ -860,7 +877,7 @@ public void ClearDeck()
 
 ## CardManager
 
-Source: `Assets/Scripts/CardManager.cs`
+Source: `Assets/Scripts/Cards/CardManager.cs`
 
 ### `DrawCardHandler(int amount)`
 
@@ -871,6 +888,8 @@ public void DrawCardHandler(int amount)
 ```
 
 **Description / comments:**
+
+Handles draw card calls from UI buttons, because you can't call coroutines directly from them.
 
 <!-- Add description/comments here. -->
 
@@ -884,6 +903,8 @@ public void RecallCard(GameObject cardVisual, BoardManager.Unit unit)
 
 **Description / comments:**
 
+Recalls a given card
+
 <!-- Add description/comments here. -->
 
 ### `RemoveCard(GameObject cardVisual)`
@@ -895,6 +916,8 @@ public void RemoveCard(GameObject cardVisual)
 ```
 
 **Description / comments:**
+
+Removes a given card from the hand
 
 <!-- Add description/comments here. -->
 
@@ -908,6 +931,8 @@ public GameObject BuildCard(CardDeck.CardData cardData)
 
 **Description / comments:**
 
+Builds a card visual out of a card data struct.
+
 <!-- Add description/comments here. -->
 
 ### `DrawCard(int amount)`
@@ -920,7 +945,11 @@ private IEnumerator DrawCard(int amount)
 
 **Description / comments:**
 
+Draws cards by amount.
+
 <!-- Add description/comments here. -->
+
+
 
 ### `RecallCardRpc(int unitIndex, RpcParams rpcParams = default)`
 
@@ -932,149 +961,14 @@ private void RecallCardRpc(int unitIndex, RpcParams rpcParams = default)
 
 **Description / comments:**
 
-<!-- Add description/comments here. -->
-
-
-## ConnectionManager
-
-Source: `Assets/Scripts/ConnectionManager.cs`
-
-### `LeaveSessionAsync()`
-
-**Access:** Public
-
-```csharp
-public async Task LeaveSessionAsync()
-```
-
-**Description / comments:**
-
-<!-- Add description/comments here. -->
-
-### `StartOrJoin()`
-
-**Access:** Private
-
-```csharp
-private void StartOrJoin()
-```
-
-**Description / comments:**
-
-<!-- Add description/comments here. -->
-
-### `onUsernameSet(string value)`
-
-**Access:** Private
-
-```csharp
-private void onUsernameSet(string value)
-```
-
-**Description / comments:**
-
-<!-- Add description/comments here. -->
-
-### `onSessionNameSet(string value)`
-
-**Access:** Private
-
-```csharp
-private void onSessionNameSet(string value)
-```
-
-**Description / comments:**
-
-<!-- Add description/comments here. -->
-
-### `OnClientDisconnect(NetworkManager manager, ConnectionEventData connectionEventData)`
-
-**Access:** Private
-
-```csharp
-private async void OnClientDisconnect(NetworkManager manager, ConnectionEventData connectionEventData)
-```
-
-**Description / comments:**
-
-<!-- Add description/comments here. -->
-
-### `WaitForShutdown()`
-
-**Access:** Private
-
-```csharp
-private async Task WaitForShutdown()
-```
-
-**Description / comments:**
-
-<!-- Add description/comments here. -->
-
-### `ClearSessionState()`
-
-**Access:** Private
-
-```csharp
-private void ClearSessionState()
-```
-
-**Description / comments:**
-
-<!-- Add description/comments here. -->
-
-### `OnSessionOwnerPromoted(ulong sessionOwnerPromoted)`
-
-**Access:** Private
-
-```csharp
-private void OnSessionOwnerPromoted(ulong sessionOwnerPromoted)
-```
-
-**Description / comments:**
-
-<!-- Add description/comments here. -->
-
-### `OnClientConnectedCallback(ulong clientId)`
-
-**Access:** Private
-
-```csharp
-private void OnClientConnectedCallback(ulong clientId)
-```
-
-**Description / comments:**
-
-<!-- Add description/comments here. -->
-
-### `CreateOrJoinSessionAsync()`
-
-**Access:** Private
-
-```csharp
-private async Task CreateOrJoinSessionAsync()
-```
-
-**Description / comments:**
-
-<!-- Add description/comments here. -->
-
-### `OnTransportFailure()`
-
-**Access:** Private
-
-```csharp
-private void OnTransportFailure()
-```
-
-**Description / comments:**
+Networked version of Recall Card, is called automatically if network is present.
 
 <!-- Add description/comments here. -->
 
 
 ## GameManager
 
-Source: `Assets/Scripts/GameManager.cs`
+Source: `Assets/Scripts/Core/GameManager.cs`
 
 ### `DisconnectUser()`
 
@@ -1088,6 +982,8 @@ public async void DisconnectUser()
 
 <!-- Add description/comments here. -->
 
+Self-explanatory
+
 ### `GetPlayerName()`
 
 **Access:** Private
@@ -1099,6 +995,8 @@ private async void GetPlayerName()
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+Self-explanatory
 
 ### `SetPlayer1NameRpc(string name, RpcParams rpcParams = default)`
 
@@ -1112,6 +1010,8 @@ private void SetPlayer1NameRpc(string name, RpcParams rpcParams = default)
 
 <!-- Add description/comments here. -->
 
+Self-explanatory
+
 ### `SetPlayer2NameRpc(string name, RpcParams rpcParams = default)`
 
 **Access:** Private
@@ -1124,10 +1024,12 @@ private void SetPlayer2NameRpc(string name, RpcParams rpcParams = default)
 
 <!-- Add description/comments here. -->
 
+Self-explanatory
+
 
 ## Hourglass
 
-Source: `Assets/Scripts/Hourglass.cs`
+Source: `Assets/Scripts/Gameplay/Hourglass.cs`
 
 ### `AssignPositions(Transform leftPos, Transform rightPos)`
 
@@ -1168,7 +1070,7 @@ private IEnumerator InitiateTimer(float timerLength)
 
 ## InspectorButtonAttribute
 
-Source: `Assets/Scripts/InspectorButton.cs`
+Source: `Assets/Scripts/Utilities/InspectorButton.cs`
 
 ### `InspectorButtonAttribute(string MethodName)`
 
@@ -1185,7 +1087,7 @@ public InspectorButtonAttribute(string MethodName)
 
 ## Lobby
 
-Source: `Assets/Scripts/Lobby.cs`
+Source: `Assets/Scripts/Multiplayer/Lobby.cs`
 
 ### `QuerySessions()`
 
@@ -1199,6 +1101,8 @@ public async Task QuerySessions()
 
 <!-- Add description/comments here. -->
 
+Grabs the list of sessions from UGS
+
 ### `LeaveSessionAsync()`
 
 **Access:** Public
@@ -1210,6 +1114,9 @@ public async Task LeaveSessionAsync()
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+Self-explanatory
+
 
 ### `JoinSessionAsync(string id)`
 
@@ -1223,6 +1130,9 @@ public async Task JoinSessionAsync(string id)
 
 <!-- Add description/comments here. -->
 
+Self-explanatory
+
+
 ### `JoinSessionByJoinCodeAsync(string joinCode)`
 
 **Access:** Public
@@ -1234,6 +1144,9 @@ public async Task JoinSessionByJoinCodeAsync(string joinCode)
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+Self-explanatory
+
 
 ### `CheckReconnect()`
 
@@ -1247,6 +1160,8 @@ private void CheckReconnect()
 
 <!-- Add description/comments here. -->
 
+Checks every so often on the menus if user has lost connection to UGS
+
 ### `Reconnect()`
 
 **Access:** Private
@@ -1258,6 +1173,8 @@ private async void Reconnect()
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+Reconnects player to UGS
 
 ### `StartSession()`
 
@@ -1271,6 +1188,9 @@ private void StartSession()
 
 <!-- Add description/comments here. -->
 
+Self-explanatory
+
+
 ### `JoinGameByJoinCode()`
 
 **Access:** Private
@@ -1282,6 +1202,9 @@ private void JoinGameByJoinCode()
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+Self-explanatory
+
 
 ### `onUsernameSet(string value)`
 
@@ -1295,6 +1218,9 @@ private void onUsernameSet(string value)
 
 <!-- Add description/comments here. -->
 
+Self-explanatory
+
+
 ### `onSessionNameSet(string value)`
 
 **Access:** Private
@@ -1306,6 +1232,9 @@ private void onSessionNameSet(string value)
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+Self-explanatory
+
 
 ### `onJoinCodeSet(string value)`
 
@@ -1319,6 +1248,9 @@ private void onJoinCodeSet(string value)
 
 <!-- Add description/comments here. -->
 
+Self-explanatory
+
+
 ### `onPrivateSet(bool value)`
 
 **Access:** Private
@@ -1330,6 +1262,9 @@ private void onPrivateSet(bool value)
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+Self-explanatory
+
 
 ### `OnClientDisconnect(NetworkManager manager, ConnectionEventData connectionEventData)`
 
@@ -1343,6 +1278,8 @@ private async void OnClientDisconnect(NetworkManager manager, ConnectionEventDat
 
 <!-- Add description/comments here. -->
 
+Handles behaviour for when the other player disconnects
+
 ### `WaitForShutdown()`
 
 **Access:** Private
@@ -1354,6 +1291,8 @@ private async Task WaitForShutdown()
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+Just a helper function for timing related stuff
 
 ### `ClearSessionState()`
 
@@ -1367,6 +1306,9 @@ private void ClearSessionState()
 
 <!-- Add description/comments here. -->
 
+Self-explanatory
+
+
 ### `OnSessionOwnerPromoted(ulong sessionOwnerPromoted)`
 
 **Access:** Private
@@ -1378,6 +1320,8 @@ private void OnSessionOwnerPromoted(ulong sessionOwnerPromoted)
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+Basically doesnt do anything I wouldnt worry about it
 
 ### `CreateSessionAsync()`
 
@@ -1391,6 +1335,9 @@ private async Task CreateSessionAsync()
 
 <!-- Add description/comments here. -->
 
+Self-explanatory
+
+
 ### `OnTransportFailure()`
 
 **Access:** Private
@@ -1403,10 +1350,12 @@ private void OnTransportFailure()
 
 <!-- Add description/comments here. -->
 
+Handles a rare edge case that pretty much never happens
+
 
 ## ManaManager
 
-Source: `Assets/Scripts/TacticsManager.cs`
+Source: `Assets/Scripts/Gameplay/TacticsManager.cs`
 
 ### `AddManaPoints(int amount)`
 
@@ -1420,6 +1369,9 @@ public void AddManaPoints(int amount)
 
 <!-- Add description/comments here. -->
 
+Self-explanatory
+
+
 ### `RemoveManaPoints(int amount)`
 
 **Access:** Public
@@ -1431,6 +1383,9 @@ public void RemoveManaPoints(int amount)
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+Self-explanatory
+
 
 ### `CanAfford(int amount)`
 
@@ -1444,10 +1399,12 @@ public bool CanAfford(int amount)
 
 <!-- Add description/comments here. -->
 
+Checks if local player has the amount of mana passed in
+
 
 ## OrbitCamera
 
-Source: `Assets/Scripts/OrbitCamera.cs`
+Source: `Assets/Scripts/Camera/OrbitCamera.cs`
 
 ### `SwapCameraMode()`
 
@@ -1461,10 +1418,12 @@ public void SwapCameraMode()
 
 <!-- Add description/comments here. -->
 
+Swaps from static camera to orbit.
+
 
 ## Player
 
-Source: `Assets/Scripts/Player.cs`
+Source: `Assets/Scripts/Core/Player.cs`
 
 ### `AssignPlayerID()`
 
@@ -1478,10 +1437,13 @@ public static PlayerId AssignPlayerID()
 
 <!-- Add description/comments here. -->
 
+Self-explanatory
+
+
 
 ## SessionInfoDisplay
 
-Source: `Assets/Scripts/SessionInfoDisplay.cs`
+Source: `Assets/Scripts/Multiplayer/SessionInfoDisplay.cs`
 
 ### `SetSessionName(string name)`
 
@@ -1495,6 +1457,8 @@ public void SetSessionName(string name)
 
 <!-- Add description/comments here. -->
 
+Sets session name for this entry in the session list
+
 ### `SetJoinButton(string sessionID, Lobby manager)`
 
 **Access:** Public
@@ -1507,10 +1471,12 @@ public void SetJoinButton(string sessionID, Lobby manager)
 
 <!-- Add description/comments here. -->
 
+Sets up the join button for this entry in the session list
+
 
 ## Settings
 
-Source: `Assets/Scripts/Settings.cs`
+Source: `Assets/Scripts/Core/Settings.cs`
 
 ### `toggleTutorial(bool on)`
 
@@ -1527,7 +1493,7 @@ public void toggleTutorial(bool on)
 
 ## TextDialogue
 
-Source: `Assets/Scripts/TextDialogue.cs`
+Source: `Assets/Scripts/UI/TextDialogue.cs`
 
 ### `DialogueRecieveStatus(int code)`
 
@@ -1541,6 +1507,8 @@ public void DialogueRecieveStatus(int code)
 
 <!-- Add description/comments here. -->
 
+Displays error depending on status code
+
 ### `WaitACoupleSecs()`
 
 **Access:** Private
@@ -1552,6 +1520,8 @@ private IEnumerator WaitACoupleSecs()
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+Helper
 
 ### `FadeAway()`
 
@@ -1565,10 +1535,12 @@ private IEnumerator FadeAway()
 
 <!-- Add description/comments here. -->
 
+Helper
+
 
 ## TurnManager
 
-Source: `Assets/Scripts/TurnManager.cs`
+Source: `Assets/Scripts/Gameplay/TurnManager.cs`
 
 ### `ForceEndTurn()`
 
@@ -1582,6 +1554,8 @@ public void ForceEndTurn()
 
 <!-- Add description/comments here. -->
 
+This is called when a players time runs out
+
 ### `UpdateTurnText(TurnState turnState)`
 
 **Access:** Public
@@ -1593,6 +1567,9 @@ public void UpdateTurnText(TurnState turnState)
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+Self-explanatory
+
 
 ### `OnTurnChanged(TurnState current)`
 
@@ -1606,6 +1583,8 @@ public async void OnTurnChanged(TurnState current)
 
 <!-- Add description/comments here. -->
 
+Logic for when turn changes to a new turn
+
 ### `ChangeTurn()`
 
 **Access:** Public
@@ -1617,6 +1596,8 @@ public void ChangeTurn()
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+Called when end turn is pressed by player
 
 ### `SetFirstTurnRpc(TurnState turn, RpcParams rpcParams = default)`
 
@@ -1630,6 +1611,8 @@ private void SetFirstTurnRpc(TurnState turn, RpcParams rpcParams = default)
 
 <!-- Add description/comments here. -->
 
+Sends to the other player who the first turn is. The host player flips a coin for it and the result is sent in this
+
 ### `StartActivePlayerTurn(Player.PlayerId activePlayer, BoardManager boardManager)`
 
 **Access:** Private
@@ -1641,6 +1624,8 @@ private void StartActivePlayerTurn(Player.PlayerId activePlayer, BoardManager bo
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+Player-specific logic for turn start
 
 ### `ResetUnitsForTurn(Player.PlayerId activePlayer, BoardManager.Unit[] units, int unitCount)`
 
@@ -1654,6 +1639,8 @@ private void ResetUnitsForTurn(Player.PlayerId activePlayer, BoardManager.Unit[]
 
 <!-- Add description/comments here. -->
 
+Resets card movement stat on turn start
+
 ### `ShowManaPopupsForOpenTiles(Player.PlayerId activePlayer, BoardManager boardManager)`
 
 **Access:** Private
@@ -1665,6 +1652,9 @@ private void ShowManaPopupsForOpenTiles(Player.PlayerId activePlayer, BoardManag
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+Self-explanatory
+
 
 ### `ChangeTurnRpc(TurnState turn, RpcParams rpcParams = default)`
 
@@ -1678,6 +1668,9 @@ private void ChangeTurnRpc(TurnState turn, RpcParams rpcParams = default)
 
 <!-- Add description/comments here. -->
 
+Self-explanatory
+
+
 ### `ChangeTurnLocal(TurnState turn)`
 
 **Access:** Private
@@ -1689,6 +1682,9 @@ private void ChangeTurnLocal(TurnState turn)
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+Self-explanatory
+
 
 ### `ApplyTurnChange(TurnState turn)`
 
@@ -1702,10 +1698,13 @@ private void ApplyTurnChange(TurnState turn)
 
 <!-- Add description/comments here. -->
 
+Self-explanatory
+
+
 
 ## UIDialogueSlide
 
-Source: `Assets/Scripts/UIDialogueSlide.cs`
+Source: `Assets/Scripts/UI/UIDialogueSlide.cs`
 
 ### `SlideIn()`
 
@@ -1758,7 +1757,7 @@ public void SlideOutMouse()
 
 ## UIDialogueTutorial
 
-Source: `Assets/Scripts/UIDialogueTutorial.cs`
+Source: `Assets/Scripts/UI/UIDialogueTutorial.cs`
 
 ### `FlipPage(bool forwards)`
 
@@ -1775,7 +1774,7 @@ public void FlipPage(bool forwards)
 
 ## UIManager
 
-Source: `Assets/Scripts/UIManager.cs`
+Source: `Assets/Scripts/UI/UIManager.cs`
 
 ### `CreateInfoPanel(Vector2Int position, Player.PlayerId playerId)`
 
@@ -1789,6 +1788,8 @@ public void CreateInfoPanel(Vector2Int position, Player.PlayerId playerId)
 
 <!-- Add description/comments here. -->
 
+Displays tile info
+
 ### `CreateCardInfoPanel(Vector2Int position, Player.PlayerId playerId)`
 
 **Access:** Public
@@ -1800,6 +1801,8 @@ public void CreateCardInfoPanel(Vector2Int position, Player.PlayerId playerId)
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+Displays card info
 
 ### `DestroyCurrentInfoInstance()`
 
@@ -1813,6 +1816,8 @@ public void DestroyCurrentInfoInstance()
 
 <!-- Add description/comments here. -->
 
+Destroys all current UI
+
 ### `EnableControlsText()`
 
 **Access:** Public
@@ -1825,6 +1830,9 @@ public void EnableControlsText()
 
 <!-- Add description/comments here. -->
 
+Self-explanatory
+
+
 ### `DisplayEndGameScreen(Player.PlayerId id)`
 
 **Access:** Public
@@ -1836,6 +1844,9 @@ public IEnumerator DisplayEndGameScreen(Player.PlayerId id)
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+Self-explanatory
+
 
 ### `DrawTextAddCost(bool show)`
 
@@ -1861,6 +1872,9 @@ private void UpdateHealthDisplay(Player.PlayerId id)
 
 <!-- Add description/comments here. -->
 
+Self-explanatory
+
+
 ### `UpdateCardAmountDisplay()`
 
 **Access:** Private
@@ -1872,6 +1886,9 @@ private void UpdateCardAmountDisplay()
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+Self-explanatory
+
 
 ### `RotateGridShape(Transform[] children, List<Vector2Int> positions)`
 
@@ -1885,10 +1902,12 @@ private IEnumerator RotateGridShape(Transform[] children, List<Vector2Int> posit
 
 <!-- Add description/comments here. -->
 
+Rotates the card attack pattern preview in the UI
+
 
 ## UIManagerMainMenu
 
-Source: `Assets/Scripts/UIManagerMainMenu.cs`
+Source: `Assets/Scripts/UI/UIManagerMainMenu.cs`
 
 ### `SetMenuScreen(int newState)`
 
@@ -1977,7 +1996,7 @@ private void StartCredits()
 
 ## UIPopupNumbers
 
-Source: `Assets/Scripts/UIPopupNumbers.cs`
+Source: `Assets/Scripts/UI/UIPopupNumbers.cs`
 
 ### `Setup(float amount, int type)`
 
@@ -2006,7 +2025,7 @@ public static UIPopupNumbers Create(Vector3 position, Transform parent, float am
 
 ## Vector2IntConverter
 
-Source: `Assets/Scripts/CardDeck.cs`
+Source: `Assets/Scripts/Cards/CardDeck.cs`
 
 ### `ReadJson(...)`
 
@@ -2040,7 +2059,7 @@ public override void WriteJson(JsonWriter writer, Vector2Int value, JsonSerializ
 
 ## tileColour
 
-Source: `Assets/Scripts/tileColor.cs`
+Source: `Assets/Scripts/Board/tileColor.cs`
 
 ### `TileRecieveSignal(int newState, bool preview)`
 
@@ -2081,7 +2100,7 @@ public void TileRecievePopup(int amount, int type)
 
 ## tileFleshy
 
-Source: `Assets/Scripts/tileFleshy.cs`
+Source: `Assets/Scripts/Board/tileFleshy.cs`
 
 ### `StartSinglePulse(float waitInMiliseconds)`
 
@@ -2122,7 +2141,7 @@ private void CalcNoise()
 
 ## BoardManager.TotalDamage
 
-Source: `Assets/Scripts/BoardManager.TileHelpers.cs`
+Source: `Assets/Scripts/Board/BoardManager.TileHelpers.cs`
 
 ### `TotalDamage(int incomingDamage, int defense, bool hasAttackOrDefense)`
 
@@ -2136,10 +2155,12 @@ public TotalDamage(int incomingDamage, int defense, bool hasAttackOrDefense)
 
 <!-- Add description/comments here. -->
 
+Calculates total damage for given damage and defense and returns a totaldamage struct
+
 
 ## CameraFollow
 
-Source: `Assets/Scripts/CameraFollow.cs`
+Source: `Assets/Scripts/Camera/CameraFollow.cs`
 
 ### `SendPositionRpc(Vector3 position, Quaternion rotation, RpcParams rpcParams = default)`
 
@@ -2156,7 +2177,7 @@ private void SendPositionRpc(Vector3 position, Quaternion rotation, RpcParams rp
 
 ## CardDrag
 
-Source: `Assets/Scripts/CardDrag.cs`
+Source: `Assets/Scripts/Cards/CardDrag.cs`
 
 ### `GetMouseWorldPos()`
 
@@ -2170,6 +2191,8 @@ private Vector3 GetMouseWorldPos()
 
 <!-- Add description/comments here. -->
 
+Helper
+
 ### `PlaceFailed(int error)`
 
 **Access:** Private
@@ -2181,6 +2204,8 @@ private void PlaceFailed(int error)
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+Makse the right error message appear when a place fails
 
 ### `GetCost()`
 
@@ -2194,10 +2219,12 @@ private int GetCost()
 
 <!-- Add description/comments here. -->
 
+Gets cost of current card
+
 
 ## WaitingRoom
 
-Source: `Assets/Scripts/WaitingRoom.cs`
+Source: `Assets/Scripts/Multiplayer/WaitingRoom.cs`
 
 ### `UpdatePlayerList()`
 

@@ -128,8 +128,8 @@ public class WaitingRoom : NetworkBehaviour
 
     }
 
-    private void LeaveGame()
+    private async void LeaveGame()
     {
-        lobby.LeaveSessionAsync();
+        await lobby.LeaveSessionAsync();
     }
 }

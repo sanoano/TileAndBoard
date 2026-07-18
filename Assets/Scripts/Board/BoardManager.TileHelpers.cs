@@ -14,7 +14,7 @@ public partial class BoardManager
 
     private static Vector2Int[] GetAdjacentTiles(
         Vector2Int position,
-        IReadOnlyList<Unit> units,
+        Unit[] units,
         int unitCount,
         Player.PlayerId playerId)
     {
@@ -38,7 +38,7 @@ public partial class BoardManager
 
     private static bool HasUnitAt(
         Vector2Int position,
-        IReadOnlyList<Unit> units,
+        Unit[] units,
         int unitCount,
         Player.PlayerId playerId)
     {
@@ -58,9 +58,9 @@ public partial class BoardManager
         PlayerBoard board,
         Player.PlayerId damageOwner,
         Player.PlayerId defenseOwner,
-        IReadOnlyList<DamageInstance> damageInstances,
+        DamageInstance[] damageInstances,
         int damageInstanceCount,
-        IReadOnlyList<DefenseInstance> defenseInstances,
+        DefenseInstance[] defenseInstances,
         int defenseInstanceCount)
     {
         for (int i = 0; i < 3; i++)
@@ -85,9 +85,9 @@ public partial class BoardManager
         Vector2Int position,
         Player.PlayerId damageOwner,
         Player.PlayerId defenseOwner,
-        IReadOnlyList<DamageInstance> damageInstances,
+        DamageInstance[] damageInstances,
         int damageInstanceCount,
-        IReadOnlyList<DefenseInstance> defenseInstances,
+        DefenseInstance[] defenseInstances,
         int defenseInstanceCount)
     {
         int damage = 0;

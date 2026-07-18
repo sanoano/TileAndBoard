@@ -21,14 +21,12 @@ public class Hourglass : MonoBehaviour
     private bool flippedUp = false;
     private float defaultScaleValue = 0.9f;
     private Vector3 defaultScale;
-    [SerializeField] private float turnSpeed = 50.0f;
     [SerializeField] private float moveSpeed = 5.0f;
 
     //This is for all the stuff in switching from left to right
     //[SerializeField] private Transform position1, position2;
     private Transform player1Position, player2Position;
     private Vector3 player1PositionCloud, player2PositionCloud;
-    private bool positionsAssigned = false;
 
     void Start()
     {

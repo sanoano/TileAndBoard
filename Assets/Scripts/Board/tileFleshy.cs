@@ -8,13 +8,12 @@ public class tileFleshy : MonoBehaviour
     [SerializeField] private float scale;
     [SerializeField] private float waveSpeed;
     [SerializeField] private float waveHeight;
-    [SerializeField] private float flashLenghth = 0.15f;
-    private Renderer renderer;
+    private Renderer tileRenderer;
     private bool doOnce = false;
 
     private void Start()
     {
-        renderer = gameObject.GetComponent<Renderer>();
+        tileRenderer = gameObject.GetComponent<Renderer>();
     }
     void Update()
     {
@@ -56,12 +55,12 @@ public class tileFleshy : MonoBehaviour
         {
             doOnce = true;
 
-            renderer.material.SetInt("_isFlashing", 1);
+            tileRenderer.material.SetInt("_isFlashing", 1);
             waveSpeed = waveSpeed * 2;
 
             yield return new WaitForSeconds(waitInSeconds + 0.15f);
 
-            renderer.material.SetInt("_isFlashing", 0);
+            tileRenderer.material.SetInt("_isFlashing", 0);
             waveSpeed = waveSpeed / 2;
 
             doOnce = false;

@@ -12,7 +12,6 @@ public class CardDrag : MonoBehaviour
     private Vector3 returnPosition;
     private Camera cam;
     private SpriteRenderer sr;
-    private Collider collider;
     private OrbitCamera orbitCamera;
     private Canvas canvas;
     private SpriteRenderer[] canvasChildren;
@@ -55,7 +54,6 @@ public class CardDrag : MonoBehaviour
         canvas = GetComponentInChildren<Canvas>();
         canvasChildren = canvas.GetComponentsInChildren<SpriteRenderer>(true);
         sr = GetComponent<SpriteRenderer>();
-        collider = GetComponent<BoxCollider>();
         animTime = 0.25f;
         normalScale = transform.localScale;
         bigScale = new Vector3(transform.localScale.x + 1f, transform.localScale.y + 1f,

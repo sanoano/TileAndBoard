@@ -7,10 +7,8 @@ using UnityEngine.UI;
 
 public class UIPopupNumbers : MonoBehaviour
 {
-    [SerializeField] private float disappearSpeed = .1f;
     [SerializeField] public TextMeshProUGUI numbersTMP;
     [SerializeField] public Image icon;
-    private float disappearTimer = 1.0f;
     public Color textColor;
     [SerializeField] private Sprite[] icons;//0 is HP, 1 is Manna, 2 is death. LP don't have no icon
 

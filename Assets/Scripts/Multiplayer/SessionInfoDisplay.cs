@@ -16,7 +16,7 @@ public class SessionInfoDisplay : MonoBehaviour
 
     public void SetJoinButton(string sessionID, Lobby manager) 
     {
-        joinButton.onClick.AddListener(delegate {manager.JoinSessionAsync(sessionID) ;});
+        joinButton.onClick.AddListener(async () => await manager.JoinSessionAsync(sessionID));
     }
     
 

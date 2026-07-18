@@ -94,8 +94,8 @@ public class Lobby : MonoBehaviour
         joinGameDirectButton.onClick.AddListener(JoinGameByJoinCode);
         privateToggle.onValueChanged.AddListener(onPrivateSet);
         reconnectButton.onClick.AddListener(Reconnect);
-        joinButton.onClick.AddListener(delegate { QuerySessions();});
-        refreshButton.onClick.AddListener(delegate { QuerySessions();});
+        joinButton.onClick.AddListener(QuerySessionsFromButton);
+        refreshButton.onClick.AddListener(QuerySessionsFromButton);
         
         // statusText.text = "";
 
@@ -157,7 +157,7 @@ public class Lobby : MonoBehaviour
         reconnectButton.gameObject.SetActive(false);
     }
 
-    private void StartSession()
+    private async void StartSession()
     {
         UIManagerScript.SetMenuScreen(8);
         
@@ -167,11 +167,11 @@ public class Lobby : MonoBehaviour
             statusText.text = "You must set a session name before creating a session.";
             return;
         }
-        CreateSessionAsync();
+        await CreateSessionAsync();
         statusText.text = "Creating session...";
     }
     
-    private void JoinGameByJoinCode()
+    private async void JoinGameByJoinCode()
     {
         UIManagerScript.SetMenuScreen(8);
         
@@ -182,7 +182,7 @@ public class Lobby : MonoBehaviour
             return;
         }
 
-        JoinSessionByJoinCodeAsync(_sessionJoinCode);
+        await JoinSessionByJoinCodeAsync(_sessionJoinCode);
         statusText.text = "Connecting to session...";
     }
 
@@ -235,6 +235,11 @@ public class Lobby : MonoBehaviour
             statusText.text = "No sessions found.";
         }
         
+    }
+
+    private async void QuerySessionsFromButton()
+    {
+        await QuerySessions();
     }
 
     private void onUsernameSet(string value)
@@ -355,7 +360,7 @@ public class Lobby : MonoBehaviour
 
    private void OnDestroy()
    {
-       _session?.LeaveAsync();
+       _ = _session?.LeaveAsync();
        AuthenticationService.Instance.SignOut();
    }
 
@@ -457,4 +462,3 @@ public class Lobby : MonoBehaviour
 
    }
 }
-

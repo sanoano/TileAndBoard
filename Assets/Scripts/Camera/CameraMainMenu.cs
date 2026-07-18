@@ -6,8 +6,6 @@ using System.Collections;
 public class CameraMainMenu : MonoBehaviour
 {//Controls the position of the camera in the main menu, for cosmetic purposes. Switches between preset values. Controlled by buttons in-scene.
 
-    [SerializeField] private float cameraDistance = 8.0f; //Default distance the camera is from its pivot    
-
     private Vector3 pivotPos0, pivotPos1, pivotPos2;
     private Quaternion pivotAngles0, pivotAngles1, pivotAngles2;
 
