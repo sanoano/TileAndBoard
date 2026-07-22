@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4782735842205327309}
   - component: {fileID: 7890865934588215580}
   m_Layer: 5
-  m_Name: TurnButton
+  m_Name: buttonTurn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

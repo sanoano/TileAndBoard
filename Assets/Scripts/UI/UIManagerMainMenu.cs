@@ -37,11 +37,11 @@ public class UIManagerMainMenu : MonoBehaviour
     GameObject[][] UIlist;
     private int currentState = 0;
 
-    [Header("Credits")]
-    private Vector2 startPos;
+    [Header("Credits")] 
     [SerializeField] private RectTransform creditsListTrans;
     [SerializeField] private float crawlSpeed;
     private float crawlRate;
+    private Vector2 startPos;
 
     [Header("Audio")]
     [SerializeField] private AudioClip parchment;
@@ -213,6 +213,11 @@ public class UIManagerMainMenu : MonoBehaviour
         {
             element.SetActive(true);
         }
+    }
+
+    public void OpenWebsite()
+    {
+        Application.OpenURL("https://splitchance.com/games.html");
     }
 
     //Audio events
