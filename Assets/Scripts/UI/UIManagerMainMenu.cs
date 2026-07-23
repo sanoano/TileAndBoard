@@ -205,6 +205,11 @@ public class UIManagerMainMenu : MonoBehaviour
         Application.Quit();
     }
 
+    public void OpenStudioWebsite()
+    {
+        Application.OpenURL("https://www.splitchance.com");
+    }
+
     private void StartCredits()
     {
         creditsListTrans.anchoredPosition = startPos;
