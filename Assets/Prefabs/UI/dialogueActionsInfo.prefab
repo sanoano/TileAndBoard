@@ -272,7 +272,7 @@ GameObject:
   - component: {fileID: 1400831618319629302}
   - component: {fileID: 1387474653441791273}
   m_Layer: 5
-  m_Name: ActionsInfo
+  m_Name: dialogueActionsInfo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

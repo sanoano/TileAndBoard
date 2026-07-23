@@ -545,7 +545,7 @@ GameObject:
   - component: {fileID: 4828777377255998790}
   - component: {fileID: 3897195762202823531}
   m_Layer: 5
-  m_Name: SessionInfo
+  m_Name: menuSessionInfo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

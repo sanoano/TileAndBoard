@@ -1993,6 +1993,18 @@ private void StartCredits()
 
 <!-- Add description/comments here. -->
 
+### `OpenWebsite()`
+
+**Access:** Public
+
+```csharp
+public void OpenWebsite()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
 
 ## UIPopupNumbers
 
