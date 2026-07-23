@@ -1945,18 +1945,6 @@ public void QuitGame()
 
 <!-- Add description/comments here. -->
 
-### `OpenStudioWebsite()`
-
-**Access:** Public
-
-```csharp
-public void OpenStudioWebsite()
-```
-
-**Description / comments:**
-
-<!-- Add description/comments here. -->
-
 ### `AudioParchment()`
 
 **Access:** Public
