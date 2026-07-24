@@ -970,6 +970,18 @@ Networked version of Recall Card, is called automatically if network is present.
 
 Source: `Assets/Scripts/Core/GameManager.cs`
 
+### `ReturnToLobby()`
+
+**Access:** Public
+
+```csharp
+public void ReturnToLobby()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
 ### `DisconnectUser()`
 
 **Access:** Public

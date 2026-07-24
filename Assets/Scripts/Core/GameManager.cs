@@ -57,7 +57,7 @@ public class GameManager : NetworkBehaviour
 
         headInstanceNO = headInstance.GetComponent<NetworkObject>();
         
-        headInstanceNO.Spawn(false);
+        headInstanceNO.Spawn(destroyWithScene: true);
         
         GetPlayerName();
 
@@ -144,6 +144,18 @@ public class GameManager : NetworkBehaviour
             SceneManager.LoadScene("MainMenu");
         }
         
+    }
+
+    public void ReturnToLobby()
+    {
+        if (NetworkManager.Singleton)
+        {
+            StopAllCoroutines();
+            if (playerId == Player.PlayerId.Player1)
+            {
+                NetworkManager.Singleton.SceneManager.LoadScene("PlayerLobby", LoadSceneMode.Single);
+            }
+        }
     }
 
 }
