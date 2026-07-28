@@ -42,7 +42,8 @@ public class WaitingRoom : NetworkBehaviour
     private void Update()
     {
         bool isSessionOwner = NetworkManager.Singleton.LocalClient.IsSessionOwner;
-        bool canStartGame = CanStartGame();
+        //bool canStartGame = CanStartGame();
+        bool playersReady = AreAllPlayersReady();
 
         //startGameButtonObject.SetActive(isSessionOwner);
         //startGameButton.interactable = !isStartingGame && canStartGame;
@@ -58,7 +59,7 @@ public class WaitingRoom : NetworkBehaviour
 
         UIManagerLobby.Instance.UpdateSessionInfo(lobby._session.Name, $"Join Code: {lobby._session.Code}");
 
-        if (canStartGame)
+        if (playersReady)
         {
             StartCoroutine(StartCountdown());
         }
@@ -215,6 +216,7 @@ public class WaitingRoom : NetworkBehaviour
                 yield break;
             }                
 
+            //Graphical indicator for timer
             if (timer > 0 && timer < 1)
                 UIManagerLobby.Instance.CountdownUI("3");
             else if (timer > 1 && timer < 2)
