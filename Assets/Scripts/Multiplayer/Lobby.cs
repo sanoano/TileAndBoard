@@ -19,8 +19,8 @@ public class Lobby : MonoBehaviour
    public ISession _session;
    [HideInInspector] public NetworkManager m_NetworkManager;
 
-    [Header("UI References")]
-    [SerializeField] private UIManagerMainMenu UIManagerScript;
+   [Header("UI References")]
+   [SerializeField] private UIManagerMainMenu UIManagerScript;
    [SerializeField] private TMP_InputField username;
    [SerializeField] private TMP_InputField sessionName;
    [SerializeField] private TMP_InputField joinCodeInput;
@@ -159,31 +159,38 @@ public class Lobby : MonoBehaviour
 
     private async void StartSession()
     {
-        UIManagerScript.SetMenuScreen(8);
+        
         
         if (_sessionName == String.Empty)
         {
             UIManagerScript.SetMenuScreen(3);
-            statusText.text = "You must set a session name before creating a session.";
+            statusText.text = "You must set a game name before creating a session.";
             return;
         }
-        await CreateSessionAsync();
-        statusText.text = "Creating session...";
+        else
+        {
+            UIManagerScript.SetMenuScreen(8);
+            await CreateSessionAsync();
+            statusText.text = "Creating game...";
+        }
+            
     }
     
     private async void JoinGameByJoinCode()
-    {
-        UIManagerScript.SetMenuScreen(8);
-        
+    {        
         if (_sessionJoinCode == String.Empty)
         {
             UIManagerScript.SetMenuScreen(5);
             statusText.text = "You must provide a join code.";
             return;
         }
-
-        await JoinSessionByJoinCodeAsync(_sessionJoinCode);
-        statusText.text = "Connecting to session...";
+        else
+        {
+            UIManagerScript.SetMenuScreen(8);
+            await JoinSessionByJoinCodeAsync(_sessionJoinCode);
+            statusText.text = "Connecting to game...";
+        }
+            
     }
 
     public async Task QuerySessions()
