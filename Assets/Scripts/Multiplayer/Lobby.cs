@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Netcode;
@@ -12,10 +13,17 @@ using UnityEngine.UI;
 
 public class Lobby : MonoBehaviour
 {
+   private const string TurnTimePropertyKey = "turnTimeSeconds";
+   private const string StartingHealthPropertyKey = "startingPlayerHealth";
+   public const int DefaultTurnTimeSeconds = 60;
+   public const int DefaultStartingPlayerHealth = 50;
+
    private string _sessionName;
    private string _sessionJoinCode;
    private int _maxPlayers = 2;
    private bool isPrivate;
+   private int selectedTurnTimeSeconds = DefaultTurnTimeSeconds;
+   private int selectedStartingPlayerHealth = DefaultStartingPlayerHealth;
    public ISession _session;
    [HideInInspector] public NetworkManager m_NetworkManager;
 
@@ -37,6 +45,8 @@ public class Lobby : MonoBehaviour
    [SerializeField] private Button backButtonJoin;
    [SerializeField] private Toggle privateToggle;
    [SerializeField] private Button reconnectButton;
+   [SerializeField] private TMP_Dropdown timerSelect;
+   [SerializeField] private TMP_Dropdown healthSelect;
 
    [Header("Session Prefab")] 
    [SerializeField] private GameObject sessionInfoPrefab;
@@ -45,6 +55,14 @@ public class Lobby : MonoBehaviour
    [SerializeField] private float checkDisconnectTime;
 
    private static Lobby instance;
+
+   public int TurnTimeSeconds => GetPositiveSessionSetting(
+       TurnTimePropertyKey,
+       selectedTurnTimeSeconds);
+
+   public int StartingPlayerHealth => GetPositiveSessionSetting(
+       StartingHealthPropertyKey,
+       selectedStartingPlayerHealth);
    
 
     private async void Awake()
@@ -96,6 +114,10 @@ public class Lobby : MonoBehaviour
         reconnectButton.onClick.AddListener(Reconnect);
         joinButton.onClick.AddListener(QuerySessionsFromButton);
         refreshButton.onClick.AddListener(QuerySessionsFromButton);
+        timerSelect.onValueChanged.AddListener(SetTurnTimePerTurn);
+        healthSelect.onValueChanged.AddListener(SetStartingPlayerHealth);
+
+        ResetMatchSettings();
         
         // statusText.text = "";
 
@@ -266,6 +288,31 @@ public class Lobby : MonoBehaviour
     {
         isPrivate = value;
     }
+
+    private void SetTurnTimePerTurn(int optionIndex)
+    {
+        selectedTurnTimeSeconds = GetDropdownSetting(
+            timerSelect,
+            optionIndex,
+            DefaultTurnTimeSeconds);
+    }
+
+    private void SetStartingPlayerHealth(int optionIndex)
+    {
+        selectedStartingPlayerHealth = GetDropdownSetting(
+            healthSelect,
+            optionIndex,
+            DefaultStartingPlayerHealth);
+    }
+
+    public void ResetMatchSettings()
+    {
+        SetDropdownToSetting(timerSelect, DefaultTurnTimeSeconds);
+        SetDropdownToSetting(healthSelect, DefaultStartingPlayerHealth);
+
+        SetTurnTimePerTurn(timerSelect.value);
+        SetStartingPlayerHealth(healthSelect.value);
+    }
     
     private async void OnClientDisconnect(NetworkManager manager,ConnectionEventData connectionEventData )
     {
@@ -415,23 +462,17 @@ public class Lobby : MonoBehaviour
    {
        try
        {
-           SessionOptions options;
-           
-           if (isPrivate)
+           SessionOptions options = new SessionOptions()
            {
-               options = new SessionOptions() {
-                   Name = _sessionName,
-                   MaxPlayers = _maxPlayers,
-                   IsPrivate = true
-               }.WithDistributedAuthorityNetwork().WithPlayerName(VisibilityPropertyOptions.Public);
-           }
-           else
-           {
-               options = new SessionOptions() {
-                   Name = _sessionName,
-                   MaxPlayers = _maxPlayers
-               }.WithDistributedAuthorityNetwork().WithPlayerName(VisibilityPropertyOptions.Public);
-           }
+               Name = _sessionName,
+               MaxPlayers = _maxPlayers,
+               IsPrivate = isPrivate,
+               SessionProperties = new Dictionary<string, SessionProperty>
+               {
+                   [TurnTimePropertyKey] = new SessionProperty(selectedTurnTimeSeconds.ToString()),
+                   [StartingHealthPropertyKey] = new SessionProperty(selectedStartingPlayerHealth.ToString())
+               }
+           }.WithDistributedAuthorityNetwork().WithPlayerName(VisibilityPropertyOptions.Public);
            
 
            _session = await MultiplayerService.Instance.CreateSessionAsync(options);
@@ -450,6 +491,48 @@ public class Lobby : MonoBehaviour
            UIManagerScript.SetMenuScreen(0);
        }
        
+   }
+
+   private int GetPositiveSessionSetting(string key, int fallback)
+   {
+       if (_session != null &&
+           _session.Properties.TryGetValue(key, out SessionProperty property))
+       {
+           return ParsePositiveSetting(property.Value, fallback);
+       }
+
+       return fallback;
+   }
+
+   private static int ParsePositiveSetting(string value, int fallback)
+   {
+       return int.TryParse(value, out int parsedValue) && parsedValue > 0
+           ? parsedValue
+           : fallback;
+   }
+
+   private static int GetDropdownSetting(TMP_Dropdown dropdown, int optionIndex, int fallback)
+   {
+       if (dropdown == null || optionIndex < 0 || optionIndex >= dropdown.options.Count)
+       {
+           return fallback;
+       }
+
+       return ParsePositiveSetting(dropdown.options[optionIndex].text, fallback);
+   }
+
+   private static void SetDropdownToSetting(TMP_Dropdown dropdown, int setting)
+   {
+       if (dropdown == null) return;
+
+       for (int i = 0; i < dropdown.options.Count; i++)
+       {
+           if (ParsePositiveSetting(dropdown.options[i].text, -1) != setting) continue;
+
+           dropdown.SetValueWithoutNotify(i);
+           dropdown.RefreshShownValue();
+           return;
+       }
    }
 
    void OnTransportFailure()

@@ -1265,6 +1265,44 @@ private void onPrivateSet(bool value)
 
 Self-explanatory
 
+### `SetTurnTimePerTurn(int optionIndex)`
+
+**Access:** Private
+
+```csharp
+private void SetTurnTimePerTurn(int optionIndex)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+
+### `SetStartingPlayerHealth(int optionIndex)`
+
+**Access:** Private
+
+```csharp
+private void SetStartingPlayerHealth(int optionIndex)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+
+### `ResetMatchSettings()`
+
+**Access:** Public
+
+```csharp
+public void ResetMatchSettings()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
 
 ### `OnClientDisconnect(NetworkManager manager, ConnectionEventData connectionEventData)`
 
@@ -1336,6 +1374,57 @@ private async Task CreateSessionAsync()
 <!-- Add description/comments here. -->
 
 Self-explanatory
+
+### `GetPositiveSessionSetting(string key, int fallback)`
+
+**Access:** Private
+
+```csharp
+private int GetPositiveSessionSetting(string key, int fallback)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+
+### `ParsePositiveSetting(string value, int fallback)`
+
+**Access:** Private
+
+```csharp
+private static int ParsePositiveSetting(string value, int fallback)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+
+### `GetDropdownSetting(TMP_Dropdown dropdown, int optionIndex, int fallback)`
+
+**Access:** Private
+
+```csharp
+private static int GetDropdownSetting(TMP_Dropdown dropdown, int optionIndex, int fallback)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+
+### `SetDropdownToSetting(TMP_Dropdown dropdown, int setting)`
+
+**Access:** Private
+
+```csharp
+private static void SetDropdownToSetting(TMP_Dropdown dropdown, int setting)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
 
 
 ### `OnTransportFailure()`
