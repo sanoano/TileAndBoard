@@ -461,7 +461,7 @@ GameObject:
   - component: {fileID: 4124266250958444502}
   - component: {fileID: 804488273153372990}
   m_Layer: 0
-  m_Name: roundTimer
+  m_Name: timerHourglass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

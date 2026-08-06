@@ -286,7 +286,7 @@ GameObject:
   - component: {fileID: 4191304597333797356}
   - component: {fileID: 3749780451353729848}
   m_Layer: 5
-  m_Name: menuQuit
+  m_Name: dialogueQuit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
