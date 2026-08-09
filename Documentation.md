@@ -1375,6 +1375,19 @@ private async Task CreateSessionAsync()
 
 Self-explanatory
 
+### `ValidateJoinedSessionVersionAsync()`
+
+**Access:** Private
+
+```csharp
+private async Task ValidateJoinedSessionVersionAsync()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+
 ### `GetPositiveSessionSetting(string key, int fallback)`
 
 **Access:** Private

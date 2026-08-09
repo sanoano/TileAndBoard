@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
@@ -15,6 +16,9 @@ public class Lobby : MonoBehaviour
 {
    private const string TurnTimePropertyKey = "turnTimeSeconds";
    private const string StartingHealthPropertyKey = "startingPlayerHealth";
+   private const string GameVersionPropertyKey = "gameVersion";
+   private const string VersionMismatchMessage =
+       "Version mismatch. Please use the same game version as the host.";
    public const int DefaultTurnTimeSeconds = 60;
    public const int DefaultStartingPlayerHealth = 50;
 
@@ -24,6 +28,7 @@ public class Lobby : MonoBehaviour
    private bool isPrivate;
    private int selectedTurnTimeSeconds = DefaultTurnTimeSeconds;
    private int selectedStartingPlayerHealth = DefaultStartingPlayerHealth;
+   private static string pendingStatusMessage;
    public ISession _session;
    [HideInInspector] public NetworkManager m_NetworkManager;
 
@@ -134,6 +139,17 @@ public class Lobby : MonoBehaviour
         InvokeRepeating(nameof(CheckReconnect), checkDisconnectTime, checkDisconnectTime);
 
     }
+
+    private IEnumerator Start()
+    {
+        yield return null;
+
+        if (string.IsNullOrEmpty(pendingStatusMessage)) yield break;
+
+        UIManagerScript.SetMenuScreen(5);
+        statusText.text = pendingStatusMessage;
+        pendingStatusMessage = null;
+    }
     
 
     private void CheckReconnect()
@@ -204,8 +220,8 @@ public class Lobby : MonoBehaviour
             return;
         }
 
-        await JoinSessionByJoinCodeAsync(_sessionJoinCode);
         statusText.text = "Connecting to session...";
+        await JoinSessionByJoinCodeAsync(_sessionJoinCode);
     }
 
     public async Task QuerySessions()
@@ -420,10 +436,11 @@ public class Lobby : MonoBehaviour
        
        try
        {
-           _session = await MultiplayerService.Instance.JoinSessionByIdAsync(id, new JoinSessionOptions().
-               WithPlayerName(VisibilityPropertyOptions.Public));
-           
-          
+           _session = await MultiplayerService.Instance.JoinSessionByIdAsync(
+               id,
+               new JoinSessionOptions().WithPlayerName(VisibilityPropertyOptions.Public));
+
+           await ValidateJoinedSessionVersionAsync();
        }
        catch (Exception e)
        {
@@ -442,10 +459,11 @@ public class Lobby : MonoBehaviour
        try
        {
 
-           _session = await MultiplayerService.Instance.JoinSessionByCodeAsync(joinCode, new JoinSessionOptions().
-               WithPlayerName(VisibilityPropertyOptions.Public));
-           
-           
+           _session = await MultiplayerService.Instance.JoinSessionByCodeAsync(
+               joinCode,
+               new JoinSessionOptions().WithPlayerName(VisibilityPropertyOptions.Public));
+
+           await ValidateJoinedSessionVersionAsync();
        }
        catch (Exception e)
        {
@@ -470,13 +488,13 @@ public class Lobby : MonoBehaviour
                SessionProperties = new Dictionary<string, SessionProperty>
                {
                    [TurnTimePropertyKey] = new SessionProperty(selectedTurnTimeSeconds.ToString()),
-                   [StartingHealthPropertyKey] = new SessionProperty(selectedStartingPlayerHealth.ToString())
+                   [StartingHealthPropertyKey] = new SessionProperty(selectedStartingPlayerHealth.ToString()),
+                   [GameVersionPropertyKey] = new SessionProperty(Application.version)
                }
            }.WithDistributedAuthorityNetwork().WithPlayerName(VisibilityPropertyOptions.Public);
            
 
            _session = await MultiplayerService.Instance.CreateSessionAsync(options);
-            
             
            statusText.text = "Session created! Waiting for player...";
            
@@ -491,6 +509,19 @@ public class Lobby : MonoBehaviour
            UIManagerScript.SetMenuScreen(0);
        }
        
+   }
+
+   private async Task ValidateJoinedSessionVersionAsync()
+   {
+       if (_session != null &&
+           _session.Properties.TryGetValue(GameVersionPropertyKey, out SessionProperty versionProperty) &&
+           string.Equals(versionProperty.Value, Application.version, StringComparison.Ordinal))
+       {
+           return;
+       }
+
+       pendingStatusMessage = VersionMismatchMessage;
+       await LeaveSessionAsync();
    }
 
    private int GetPositiveSessionSetting(string key, int fallback)
