@@ -71,7 +71,7 @@ public class UIManagerMainMenu : MonoBehaviour
 
         if (newState == 3)
         {
-            lobby?.ResetMatchSettings();
+            lobby?.LoadPreferredMatchSettings();
         }
 
         // try

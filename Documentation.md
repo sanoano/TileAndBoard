@@ -1303,6 +1303,53 @@ public void ResetMatchSettings()
 
 <!-- Add description/comments here. -->
 
+Restores the create game dropdowns to the built-in match defaults.
+
+
+### `LoadPreferredMatchSettings()`
+
+**Access:** Public
+
+```csharp
+public void LoadPreferredMatchSettings()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+Loads the saved create game preferences from the persistent data folder and applies them to the dropdowns. Falls back to the built-in defaults if there is no valid saved value.
+
+
+### `SavePreferredMatchSettings()`
+
+**Access:** Public
+
+```csharp
+public void SavePreferredMatchSettings()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+Saves the currently selected create game settings as JSON in the persistent data folder.
+
+
+### `GetMatchPreferencesPath()`
+
+**Access:** Private
+
+```csharp
+private static string GetMatchPreferencesPath()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+Returns the platform-specific path of the create game preferences file.
+
 
 ### `OnClientDisconnect(NetworkManager manager, ConnectionEventData connectionEventData)`
 

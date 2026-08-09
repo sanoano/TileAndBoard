@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Netcode;
@@ -17,6 +18,7 @@ public class Lobby : MonoBehaviour
    private const string TurnTimePropertyKey = "turnTimeSeconds";
    private const string StartingHealthPropertyKey = "startingPlayerHealth";
    private const string GameVersionPropertyKey = "gameVersion";
+   private const string MatchPreferencesFileName = "create-game-preferences.json";
    private const string VersionMismatchMessage =
        "Version mismatch. Please use the same game version as the host.";
    public const int DefaultTurnTimeSeconds = 60;
@@ -60,6 +62,13 @@ public class Lobby : MonoBehaviour
    [SerializeField] private float checkDisconnectTime;
 
    private static Lobby instance;
+
+   [Serializable]
+   private class MatchPreferences
+   {
+       public int turnTimeSeconds;
+       public int startingPlayerHealth;
+   }
 
    public int TurnTimeSeconds => GetPositiveSessionSetting(
        TurnTimePropertyKey,
@@ -122,7 +131,7 @@ public class Lobby : MonoBehaviour
         timerSelect.onValueChanged.AddListener(SetTurnTimePerTurn);
         healthSelect.onValueChanged.AddListener(SetStartingPlayerHealth);
 
-        ResetMatchSettings();
+        LoadPreferredMatchSettings();
         
         // statusText.text = "";
 
@@ -328,6 +337,61 @@ public class Lobby : MonoBehaviour
 
         SetTurnTimePerTurn(timerSelect.value);
         SetStartingPlayerHealth(healthSelect.value);
+    }
+
+    public void LoadPreferredMatchSettings()
+    {
+        ResetMatchSettings();
+
+        string preferencesPath = GetMatchPreferencesPath();
+        if (!File.Exists(preferencesPath)) return;
+
+        try
+        {
+            string json = File.ReadAllText(preferencesPath);
+            MatchPreferences preferences = JsonUtility.FromJson<MatchPreferences>(json);
+            if (preferences == null) return;
+
+            SetDropdownToSetting(timerSelect, preferences.turnTimeSeconds);
+            SetDropdownToSetting(healthSelect, preferences.startingPlayerHealth);
+
+            SetTurnTimePerTurn(timerSelect.value);
+            SetStartingPlayerHealth(healthSelect.value);
+        }
+        catch (Exception exception)
+        {
+            Debug.LogWarning($"Could not load create game preferences from '{preferencesPath}'. {exception.Message}");
+        }
+    }
+
+    public void SavePreferredMatchSettings()
+    {
+        SetTurnTimePerTurn(timerSelect.value);
+        SetStartingPlayerHealth(healthSelect.value);
+
+        MatchPreferences preferences = new MatchPreferences
+        {
+            turnTimeSeconds = selectedTurnTimeSeconds,
+            startingPlayerHealth = selectedStartingPlayerHealth
+        };
+
+        string preferencesPath = GetMatchPreferencesPath();
+
+        try
+        {
+            Directory.CreateDirectory(Application.persistentDataPath);
+            File.WriteAllText(preferencesPath, JsonUtility.ToJson(preferences, true));
+            Debug.Log($"Saved create game preferences to '{preferencesPath}'.");
+        }
+        catch (Exception exception)
+        {
+            Debug.LogError($"Could not save create game preferences to '{preferencesPath}'. {exception.Message}");
+        }
+    }
+
+    private static string GetMatchPreferencesPath()
+    {
+        return Path.Combine(Application.persistentDataPath, MatchPreferencesFileName);
     }
     
     private async void OnClientDisconnect(NetworkManager manager,ConnectionEventData connectionEventData )
