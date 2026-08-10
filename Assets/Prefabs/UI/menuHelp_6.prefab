@@ -70,7 +70,8 @@ MonoBehaviour:
     the maximum amount of spaces it can move per round. Cards can only move into
     adjacent spaces (no diagonal movement) that aren't already occupied by a friendly
     card.   \nCards do not need to move the maximum amount of spaces each time they
-    Move. \n\nRecall: Players can Recall a card from their board to their hand. "
+    Move. \n\nBanish: Players can remove one of their cards on their island from
+    play. "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e2e27534f6cc30e48af57eca383b5503, type: 2}
   m_sharedMaterial: {fileID: -839596086599361176, guid: e2e27534f6cc30e48af57eca383b5503, type: 2}

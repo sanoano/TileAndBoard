@@ -34,7 +34,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 7.9, y: 60.799984}
+  m_AnchoredPosition: {x: 7.9, y: 20}
   m_SizeDelta: {x: 30, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6641047344261555449
@@ -140,10 +140,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Drawing: Players can draw a card into their hand, costing 3 Mna. \r\n\r\nPlaying:
-    For a card to perform actions, it needs to be played from a player\u2019s hand
-    to their island, costing an amount of Mna equal to the amount of blue pips (   
-    ) below the card's name. "
+  m_text: "Refresh Hand: Players can spend 2 Mna to shuffle their current hand back
+    into their deck and pull a new hand of three cards.\r\n\r\nPlaying: For a card
+    to perform actions, it needs to be played from a player\u2019s hand to their
+    island, costing an amount of Mna equal to the amount of blue pips (    ) below
+    the card's name. "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e2e27534f6cc30e48af57eca383b5503, type: 2}
   m_sharedMaterial: {fileID: -839596086599361176, guid: e2e27534f6cc30e48af57eca383b5503, type: 2}
