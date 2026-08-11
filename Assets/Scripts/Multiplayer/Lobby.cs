@@ -19,8 +19,7 @@ public class Lobby : MonoBehaviour
    private const string StartingHealthPropertyKey = "startingPlayerHealth";
    private const string GameVersionPropertyKey = "gameVersion";
    private const string MatchPreferencesFileName = "create-game-preferences.json";
-   private const string VersionMismatchMessage =
-       "Version mismatch. Please use the same game version as the host.";
+   
    public const int DefaultTurnTimeSeconds = 60;
    public const int DefaultStartingPlayerHealth = 50;
 
@@ -274,7 +273,8 @@ public class Lobby : MonoBehaviour
                 var infoDisplayInstance = instance.GetComponent<SessionInfoDisplay>();
                 infoDisplayInstance.SetSessionName(session.Name);
                 infoDisplayInstance.SetJoinButton(session.Id, this);
-
+                infoDisplayInstance.SetMaxTimeText($"Timer: {session.Properties["turnTimeSeconds"].Value}");
+                infoDisplayInstance.SetMaxLPText($"Starting LP: {session.Properties["startingPlayerHealth"].Value}");
             }
         }
         else
@@ -584,7 +584,7 @@ public class Lobby : MonoBehaviour
            return;
        }
 
-       pendingStatusMessage = VersionMismatchMessage;
+       pendingStatusMessage = "Version mismatch. Please use the same game version as the host.";
        await LeaveSessionAsync();
    }
 
