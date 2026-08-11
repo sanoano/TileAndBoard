@@ -109,7 +109,8 @@ MonoBehaviour:
 
 
     Players recieve a new hand of three cards at
-    the start of each turn, any previously held cards shuffled back into their deck.'
+    the start of each turn, with any previously held cards shuffled back into their
+    deck.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e2e27534f6cc30e48af57eca383b5503, type: 2}
   m_sharedMaterial: {fileID: -839596086599361176, guid: e2e27534f6cc30e48af57eca383b5503, type: 2}
