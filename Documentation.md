@@ -1422,12 +1422,12 @@ private async Task CreateSessionAsync()
 
 Self-explanatory
 
-### `ValidateJoinedSessionVersionAsync()`
+### `GetProtocolVersion()`
 
 **Access:** Private
 
 ```csharp
-private async Task ValidateJoinedSessionVersionAsync()
+private static ushort GetProtocolVersion()
 ```
 
 **Description / comments:**

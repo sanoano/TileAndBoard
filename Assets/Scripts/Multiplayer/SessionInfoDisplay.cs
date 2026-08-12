@@ -12,6 +12,7 @@ public class SessionInfoDisplay : MonoBehaviour
     [SerializeField] private TextMeshProUGUI sessionName;
     [SerializeField] private TextMeshProUGUI maxTimeText;
     [SerializeField] private TextMeshProUGUI maxLPText;
+    [SerializeField] private TextMeshProUGUI hostName; 
 
     public void SetSessionName(string name)
     {
@@ -31,6 +32,11 @@ public class SessionInfoDisplay : MonoBehaviour
     public void SetMaxLPText(string life)
     {
         maxLPText.text = life;
+    }
+
+    public void SetHostName(string name)
+    {
+        hostName.text = name;
     }
     
 

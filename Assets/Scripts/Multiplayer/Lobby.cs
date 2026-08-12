@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -17,7 +16,7 @@ public class Lobby : MonoBehaviour
 {
    private const string TurnTimePropertyKey = "turnTimeSeconds";
    private const string StartingHealthPropertyKey = "startingPlayerHealth";
-   private const string GameVersionPropertyKey = "gameVersion";
+   private const string HostNamePropertyKey = "hostName";
    private const string MatchPreferencesFileName = "create-game-preferences.json";
    
    public const int DefaultTurnTimeSeconds = 60;
@@ -29,7 +28,6 @@ public class Lobby : MonoBehaviour
    private bool isPrivate;
    private int selectedTurnTimeSeconds = DefaultTurnTimeSeconds;
    private int selectedStartingPlayerHealth = DefaultStartingPlayerHealth;
-   private static string pendingStatusMessage;
    public ISession _session;
    [HideInInspector] public NetworkManager m_NetworkManager;
 
@@ -91,6 +89,7 @@ public class Lobby : MonoBehaviour
 
 
         m_NetworkManager = GetComponent<NetworkManager>();
+        m_NetworkManager.NetworkConfig.ProtocolVersion = GetProtocolVersion();
         
         m_NetworkManager.SetSingleton();
         // m_NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
@@ -147,18 +146,6 @@ public class Lobby : MonoBehaviour
         InvokeRepeating(nameof(CheckReconnect), checkDisconnectTime, checkDisconnectTime);
 
     }
-
-    private IEnumerator Start()
-    {
-        yield return null;
-
-        if (string.IsNullOrEmpty(pendingStatusMessage)) yield break;
-
-        UIManagerScript.SetMenuScreen(5);
-        statusText.text = pendingStatusMessage;
-        pendingStatusMessage = null;
-    }
-    
 
     private void CheckReconnect()
     {
@@ -273,8 +260,9 @@ public class Lobby : MonoBehaviour
                 var infoDisplayInstance = instance.GetComponent<SessionInfoDisplay>();
                 infoDisplayInstance.SetSessionName(session.Name);
                 infoDisplayInstance.SetJoinButton(session.Id, this);
-                infoDisplayInstance.SetMaxTimeText($"Timer: {session.Properties["turnTimeSeconds"].Value}");
-                infoDisplayInstance.SetMaxLPText($"Starting LP: {session.Properties["startingPlayerHealth"].Value}");
+                infoDisplayInstance.SetMaxTimeText($"Time: {session.Properties["turnTimeSeconds"].Value}");
+                infoDisplayInstance.SetMaxLPText($"LP: {session.Properties["startingPlayerHealth"].Value}");
+                infoDisplayInstance.SetHostName(session.Properties["hostName"].Value);
             }
         }
         else
@@ -504,13 +492,12 @@ public class Lobby : MonoBehaviour
                id,
                new JoinSessionOptions().WithPlayerName(VisibilityPropertyOptions.Public));
 
-           await ValidateJoinedSessionVersionAsync();
        }
        catch (Exception e)
        {
            Debug.LogException(e);
            NetworkManager.Singleton.Shutdown();
-           statusText.text = "Failed to connect. Please try again.";
+           statusText.text = "Failed to connect. Make sure you are using the same game version as the host.";
             UIManagerScript.SetMenuScreen(5);
        }
 
@@ -527,13 +514,12 @@ public class Lobby : MonoBehaviour
                joinCode,
                new JoinSessionOptions().WithPlayerName(VisibilityPropertyOptions.Public));
 
-           await ValidateJoinedSessionVersionAsync();
        }
        catch (Exception e)
        {
            Debug.LogException(e);
            NetworkManager.Singleton.Shutdown();
-           statusText.text = "Failed to connect. Check join code and try again.";
+           statusText.text = "Failed to connect. Check the join code and make sure you are using the same game version as the host.";
            UIManagerScript.SetMenuScreen(5);
         }
        
@@ -553,7 +539,9 @@ public class Lobby : MonoBehaviour
                {
                    [TurnTimePropertyKey] = new SessionProperty(selectedTurnTimeSeconds.ToString()),
                    [StartingHealthPropertyKey] = new SessionProperty(selectedStartingPlayerHealth.ToString()),
-                   [GameVersionPropertyKey] = new SessionProperty(Application.version)
+                   [HostNamePropertyKey] = new SessionProperty(
+                       AuthenticationService.Instance.PlayerName,
+                       VisibilityPropertyOptions.Public)
                }
            }.WithDistributedAuthorityNetwork().WithPlayerName(VisibilityPropertyOptions.Public);
            
@@ -575,17 +563,11 @@ public class Lobby : MonoBehaviour
        
    }
 
-   private async Task ValidateJoinedSessionVersionAsync()
+   private static ushort GetProtocolVersion()
    {
-       if (_session != null &&
-           _session.Properties.TryGetValue(GameVersionPropertyKey, out SessionProperty versionProperty) &&
-           string.Equals(versionProperty.Value, Application.version, StringComparison.Ordinal))
-       {
-           return;
-       }
+       if (!Version.TryParse(Application.version, out Version version)) return 0;
 
-       pendingStatusMessage = "Version mismatch. Please use the same game version as the host.";
-       await LeaveSessionAsync();
+       return (ushort)(version.Major * 10000 + version.Minor * 100 + version.Build);
    }
 
    private int GetPositiveSessionSetting(string key, int fallback)
