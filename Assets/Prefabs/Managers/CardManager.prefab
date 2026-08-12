@@ -54,4 +54,5 @@ MonoBehaviour:
   initialDrawAmount: 3
   cardDisplayOffset: 1.45
   cardLayoutTime: 0.35
+  cardDrawCost: 3
   cardDrawInProgress: 0

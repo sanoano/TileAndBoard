@@ -58,10 +58,8 @@ public class CardManager : NetworkBehaviour
 
     }
 
-    public void DrawCardHandler(int amount)
+    public void RefreshHandHandler(int amount)
     {
-        
-        
         if (!ManaManager.instance.CanAfford(cardDrawCost))
         {   
             TextDialogue.instance.DialogueRecieveStatus(1);
@@ -74,23 +72,41 @@ public class CardManager : NetworkBehaviour
             return;
         }
 
-        if (playerHand.Count >= maxCards)
+        if (BoardManager.Instance.attackInProgress || cardDrawInProgress)
         {
-            TextDialogue.instance.DialogueRecieveStatus(4);
             return;
         }
 
-        if (BoardManager.Instance.attackInProgress)
-        {
-            return;
-        }
-        
+        var discardedCards = new List<CardDeck.CardData>(playerHand);
+        ClearHand();
+
         ManaManager.instance.RemoveManaPoints(cardDrawCost);
-        StartCoroutine(DrawCard(amount));
-        
+        StartCoroutine(DrawCard(amount, discardedCards));
     }
 
-    private IEnumerator DrawCard(int amount)
+    public void ReturnHandToDeck()
+    {
+        playerDeck.AddRange(playerHand);
+        ClearHand();
+    }
+
+    public void DrawNewHand()
+    {
+        StartCoroutine(DrawCard(initialDrawAmount));
+    }
+
+    private void ClearHand()
+    {
+        foreach (GameObject cardVisual in playerHandVisuals)
+        {
+            Destroy(cardVisual);
+        }
+
+        playerHand.Clear();
+        playerHandVisuals.Clear();
+    }
+
+    private IEnumerator DrawCard(int amount, List<CardDeck.CardData> cardsToReturnAfterDraw = null)
     {
 
         cardDrawInProgress = true;
@@ -174,128 +190,80 @@ public class CardManager : NetworkBehaviour
             
         }
 
+        if (cardsToReturnAfterDraw != null)
+        {
+            playerDeck.AddRange(cardsToReturnAfterDraw);
+        }
+
         cardDrawInProgress = false;
         yield return null;
         
     }
 
-    public void RecallCard(GameObject cardVisual, BoardManager.Unit unit)
+    public void BanishCard(GameObject cardVisual, BoardManager.Unit unit)
     {
+        if (!ManaManager.instance.CanAfford(unit.Cost))
+        {
+            TextDialogue.instance.DialogueRecieveStatus(1);
+            return;
+        }
 
-        if (playerHand.Count >= maxCards) return;
-        
+        if (!TurnManager.instance.isYourTurn)
+        {
+            TextDialogue.instance.DialogueRecieveStatus(5);
+            return;
+        }
+
+        int unitIndex = BoardManager.Instance.IndexOfUnit(unit);
+        if (unitIndex < 0) return;
+
         ManaManager.instance.RemoveManaPoints(unit.Cost);
-        
-        AudioManager.singleton.PlaySound("cardRecall2", true);
-        
+
         UIManager.Instance.DestroyCurrentInfoInstance();
-        
         BoardManager.Instance.NullSelection();
 
+        BoardManager.Instance.localBoard.TileTransforms[unit.Position.x, unit.Position.y]
+            .GetComponent<tileColour>().TileRecievePopup(0, 3);
+        AudioManager.singleton.PlaySound("cardDie2", true, 0.3f);
+        Destroy(cardVisual);
         BoardManager.Instance.localBoard.Visuals[unit.Position.x, unit.Position.y] = null;
-        
-        CardDeck cardList = Resources.Load<CardDeck>("Data/MasterList");
 
-        CardDeck.CardData cardData = new CardDeck.CardData();
-
-        foreach (CardDeck.CardData card in cardList.Cards)
+        var randInt = Random.Range(0, 10);
+        if (randInt == 9) 
         {
-            if (card.Name == unit.Name)
-            {
-                cardData = card;
-            }
+            AudioManager.singleton.PlaySound("cardDie", true, 0.3f);
         }
-
-        cardData.Health = unit.Health;
-        
-        playerHand.Add(cardData);
-        playerHandVisuals.Add(cardVisual);
-
-        cardVisual.transform.parent = cardHoldPosition.transform;
-        
-        if (playerHand.Count != 1)
+        else 
         {
-
-            var pos = new Vector3(0 - (cardDisplayOffset * playerHand.Count - cardDisplayOffset),
-                0,
-                0);
-
-            var tween = new LocalPositionTween
-            {
-                to = pos,
-                duration = cardLayoutTime,
-                easeType = EaseType.ElasticOut
-            };
-            
-            var rotTween = new LocalRotationTween
-            {
-                to = Quaternion.identity,
-                duration = cardLayoutTime,
-                easeType = EaseType.ElasticOut
-            };
-
-            var scaleTween = new LocalScaleTween
-            {
-                to = new Vector3(4, 4, 4),
-                duration = cardLayoutTime,
-                easeType = EaseType.ElasticOut
-            };
-
-            cardVisual.AddTween(tween);
-            cardVisual.AddTween(rotTween);
-            cardVisual.AddTween(scaleTween);
-            
-            foreach (GameObject card in playerHandVisuals)
-            {
-                if (card == cardVisual) continue;
-
-                var pos2 = new Vector3(card.transform.localPosition.x + cardDisplayOffset,
-                    card.transform.localPosition.y,
-                    card.transform.localPosition.z);
-
-                var tween2 = new LocalPositionTween()
-                {
-                    to = pos2,
-                    duration = cardLayoutTime,
-                    easeType = EaseType.ElasticOut
-                };
-
-                card.AddTween(tween2);
-            }
-                
-          
+            AudioManager.singleton.PlaySound("cardDie2", true, 0.3f);
         }
-        
-        
-        cardVisual.GetComponent<CardDrag>().isPlaced = false;
 
         if (NetworkManager.Singleton)
         {
-            int unitIndex = BoardManager.Instance.IndexOfUnit(unit);
-            if (unitIndex < 0) return;
-
             foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
             {
                 if (clientIds == NetworkManager.Singleton.LocalClientId) continue;
-                RecallCardRpc(unitIndex,RpcTarget.Single(clientIds, RpcTargetUse.Temp));
+                BanishCardRpc(unitIndex,RpcTarget.Single(clientIds, RpcTargetUse.Temp));
             }
         }
-        
 
         BoardManager.Instance.RemoveUnit(unit);
+        BoardManager.Instance.cardDied.Invoke();
 
     }
     [Rpc(SendTo.SpecifiedInParams)]
-    private void RecallCardRpc(int unitIndex, RpcParams rpcParams = default)
+    private void BanishCardRpc(int unitIndex, RpcParams rpcParams = default)
     {
-
         BoardManager.Unit unit = BoardManager.Instance.unitsList[unitIndex];
-        
+
+        BoardManager.Instance.enemyBoard.TileTransforms[unit.Position.x, unit.Position.y]
+            .GetComponent<tileColour>().TileRecievePopup(0, 3);
+        AudioManager.singleton.PlaySound("cardDie2", true, 0.3f);
         Destroy(BoardManager.Instance.enemyBoard.Visuals[unit.Position.x, unit.Position.y]);
+        BoardManager.Instance.enemyBoard.Visuals[unit.Position.x, unit.Position.y] = null;
 
         BoardManager.Instance.RemoveUnitAt(unitIndex);
-
-
+        BoardManager.Instance.cardDied.Invoke();
     }
 
     public void RemoveCard(GameObject cardVisual)

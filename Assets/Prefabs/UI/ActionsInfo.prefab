@@ -442,7 +442,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Recall (-1 TP)
+  m_text: 'Banish (-1 Mna)
 
 '
   m_isRightToLeft: 0
@@ -529,7 +529,7 @@ GameObject:
   - component: {fileID: 4846602108609087105}
   - component: {fileID: 6534505768321424541}
   m_Layer: 5
-  m_Name: RecallButton
+  m_Name: BanishButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
