@@ -224,7 +224,7 @@ public class CardManager : NetworkBehaviour
 
         BoardManager.Instance.localBoard.TileTransforms[unit.Position.x, unit.Position.y]
             .GetComponent<tileColour>().TileRecievePopup(0, 3);
-        AudioManager.singleton.PlaySound("cardDie2", true, 0.3f);
+        
         Destroy(cardVisual);
         BoardManager.Instance.localBoard.Visuals[unit.Position.x, unit.Position.y] = null;
 
@@ -258,7 +258,15 @@ public class CardManager : NetworkBehaviour
 
         BoardManager.Instance.enemyBoard.TileTransforms[unit.Position.x, unit.Position.y]
             .GetComponent<tileColour>().TileRecievePopup(0, 3);
-        AudioManager.singleton.PlaySound("cardDie2", true, 0.3f);
+        var randInt = Random.Range(0, 10);
+        if (randInt == 9) 
+        {
+            AudioManager.singleton.PlaySound("cardDie", true, 0.3f);
+        }
+        else 
+        {
+            AudioManager.singleton.PlaySound("cardDie2", true, 0.3f);
+        }
         Destroy(BoardManager.Instance.enemyBoard.Visuals[unit.Position.x, unit.Position.y]);
         BoardManager.Instance.enemyBoard.Visuals[unit.Position.x, unit.Position.y] = null;
 
