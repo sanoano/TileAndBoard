@@ -3405,7 +3405,7 @@ GameObject:
   - component: {fileID: 6752475854097917018}
   - component: {fileID: 5900979995974968387}
   m_Layer: 5
-  m_Name: CardInfoNew
+  m_Name: dialogueCardInfo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -970,6 +970,18 @@ Networked version of Recall Card, is called automatically if network is present.
 
 Source: `Assets/Scripts/Core/GameManager.cs`
 
+### `ReturnToLobby()`
+
+**Access:** Public
+
+```csharp
+public void ReturnToLobby()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
 ### `DisconnectUser()`
 
 **Access:** Public
@@ -1265,6 +1277,91 @@ private void onPrivateSet(bool value)
 
 Self-explanatory
 
+### `SetTurnTimePerTurn(int optionIndex)`
+
+**Access:** Private
+
+```csharp
+private void SetTurnTimePerTurn(int optionIndex)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+
+### `SetStartingPlayerHealth(int optionIndex)`
+
+**Access:** Private
+
+```csharp
+private void SetStartingPlayerHealth(int optionIndex)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+
+### `ResetMatchSettings()`
+
+**Access:** Public
+
+```csharp
+public void ResetMatchSettings()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+Restores the create game dropdowns to the built-in match defaults.
+
+
+### `LoadPreferredMatchSettings()`
+
+**Access:** Public
+
+```csharp
+public void LoadPreferredMatchSettings()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+Loads the saved create game preferences from the persistent data folder and applies them to the dropdowns. Falls back to the built-in defaults if there is no valid saved value.
+
+
+### `SavePreferredMatchSettings()`
+
+**Access:** Public
+
+```csharp
+public void SavePreferredMatchSettings()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+Saves the currently selected create game settings as JSON in the persistent data folder.
+
+
+### `GetMatchPreferencesPath()`
+
+**Access:** Private
+
+```csharp
+private static string GetMatchPreferencesPath()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+Returns the platform-specific path of the create game preferences file.
+
 
 ### `OnClientDisconnect(NetworkManager manager, ConnectionEventData connectionEventData)`
 
@@ -1336,6 +1433,70 @@ private async Task CreateSessionAsync()
 <!-- Add description/comments here. -->
 
 Self-explanatory
+
+### `GetProtocolVersion()`
+
+**Access:** Private
+
+```csharp
+private static ushort GetProtocolVersion()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+
+### `GetPositiveSessionSetting(string key, int fallback)`
+
+**Access:** Private
+
+```csharp
+private int GetPositiveSessionSetting(string key, int fallback)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+
+### `ParsePositiveSetting(string value, int fallback)`
+
+**Access:** Private
+
+```csharp
+private static int ParsePositiveSetting(string value, int fallback)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+
+### `GetDropdownSetting(TMP_Dropdown dropdown, int optionIndex, int fallback)`
+
+**Access:** Private
+
+```csharp
+private static int GetDropdownSetting(TMP_Dropdown dropdown, int optionIndex, int fallback)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+
+### `SetDropdownToSetting(TMP_Dropdown dropdown, int setting)`
+
+**Access:** Private
+
+```csharp
+private static void SetDropdownToSetting(TMP_Dropdown dropdown, int setting)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
 
 
 ### `OnTransportFailure()`
@@ -1993,6 +2154,18 @@ private void StartCredits()
 
 <!-- Add description/comments here. -->
 
+### `OpenWebsite()`
+
+**Access:** Public
+
+```csharp
+public void OpenWebsite()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
 
 ## UIPopupNumbers
 
@@ -2226,6 +2399,18 @@ Gets cost of current card
 
 Source: `Assets/Scripts/Multiplayer/WaitingRoom.cs`
 
+### `Start()`
+
+**Access:** Private
+
+```csharp
+private async void Start()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
 ### `UpdatePlayerList()`
 
 **Access:** Private
@@ -2244,6 +2429,114 @@ private void UpdatePlayerList()
 
 ```csharp
 private void OnClientConnectedCallback(ulong id)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+### `OnClientDisconnectCallback(ulong id)`
+
+**Access:** Private
+
+```csharp
+private void OnClientDisconnectCallback(ulong id)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+### `ToggleReady()`
+
+**Access:** Private
+
+```csharp
+private async void ToggleReady()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+### `SetReadyStateAsync(bool isReady)`
+
+**Access:** Private
+
+```csharp
+private async Task SetReadyStateAsync(bool isReady)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+### `UpdateReadyButton()`
+
+**Access:** Private
+
+```csharp
+private void UpdateReadyButton()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+### `UpdateWaitingText()`
+
+**Access:** Private
+
+```csharp
+private void UpdateWaitingText()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+### `CanStartGame()`
+
+**Access:** Private
+
+```csharp
+private bool CanStartGame()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+### `AreAllPlayersReady()`
+
+**Access:** Private
+
+```csharp
+private bool AreAllPlayersReady()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+### `IsLocalPlayerReady()`
+
+**Access:** Private
+
+```csharp
+private bool IsLocalPlayerReady()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+### `IsPlayerReady(IReadOnlyPlayer player)`
+
+**Access:** Private
+
+```csharp
+private static bool IsPlayerReady(IReadOnlyPlayer player)
 ```
 
 **Description / comments:**
@@ -2291,7 +2584,19 @@ private IEnumerator StartGameRoutine()
 **Access:** Private
 
 ```csharp
-private void LeaveGame()
+private async void LeaveGame()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+### `OnDestroy()`
+
+**Access:** Public
+
+```csharp
+public override void OnDestroy()
 ```
 
 **Description / comments:**

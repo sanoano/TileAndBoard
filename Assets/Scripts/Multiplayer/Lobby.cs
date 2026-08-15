@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Netcode;
@@ -12,10 +14,20 @@ using UnityEngine.UI;
 
 public class Lobby : MonoBehaviour
 {
+   private const string TurnTimePropertyKey = "turnTimeSeconds";
+   private const string StartingHealthPropertyKey = "startingPlayerHealth";
+   private const string HostNamePropertyKey = "hostName";
+   private const string MatchPreferencesFileName = "create-game-preferences.json";
+   
+   public const int DefaultTurnTimeSeconds = 60;
+   public const int DefaultStartingPlayerHealth = 50;
+
    private string _sessionName;
    private string _sessionJoinCode;
    private int _maxPlayers = 2;
    private bool isPrivate;
+   private int selectedTurnTimeSeconds = DefaultTurnTimeSeconds;
+   private int selectedStartingPlayerHealth = DefaultStartingPlayerHealth;
    public ISession _session;
    [HideInInspector] public NetworkManager m_NetworkManager;
 
@@ -37,6 +49,8 @@ public class Lobby : MonoBehaviour
    [SerializeField] private Button backButtonJoin;
    [SerializeField] private Toggle privateToggle;
    [SerializeField] private Button reconnectButton;
+   [SerializeField] private TMP_Dropdown timerSelect;
+   [SerializeField] private TMP_Dropdown healthSelect;
 
    [Header("Session Prefab")] 
    [SerializeField] private GameObject sessionInfoPrefab;
@@ -45,6 +59,21 @@ public class Lobby : MonoBehaviour
    [SerializeField] private float checkDisconnectTime;
 
    private static Lobby instance;
+
+   [Serializable]
+   private class MatchPreferences
+   {
+       public int turnTimeSeconds;
+       public int startingPlayerHealth;
+   }
+
+   public int TurnTimeSeconds => GetPositiveSessionSetting(
+       TurnTimePropertyKey,
+       selectedTurnTimeSeconds);
+
+   public int StartingPlayerHealth => GetPositiveSessionSetting(
+       StartingHealthPropertyKey,
+       selectedStartingPlayerHealth);
    
 
     private async void Awake()
@@ -60,6 +89,7 @@ public class Lobby : MonoBehaviour
 
 
         m_NetworkManager = GetComponent<NetworkManager>();
+        m_NetworkManager.NetworkConfig.ProtocolVersion = GetProtocolVersion();
         
         m_NetworkManager.SetSingleton();
         // m_NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
@@ -96,6 +126,10 @@ public class Lobby : MonoBehaviour
         reconnectButton.onClick.AddListener(Reconnect);
         joinButton.onClick.AddListener(QuerySessionsFromButton);
         refreshButton.onClick.AddListener(QuerySessionsFromButton);
+        timerSelect.onValueChanged.AddListener(SetTurnTimePerTurn);
+        healthSelect.onValueChanged.AddListener(SetStartingPlayerHealth);
+
+        LoadPreferredMatchSettings();
         
         // statusText.text = "";
 
@@ -112,7 +146,6 @@ public class Lobby : MonoBehaviour
         InvokeRepeating(nameof(CheckReconnect), checkDisconnectTime, checkDisconnectTime);
 
     }
-    
 
     private void CheckReconnect()
     {
@@ -182,8 +215,8 @@ public class Lobby : MonoBehaviour
             return;
         }
 
-        await JoinSessionByJoinCodeAsync(_sessionJoinCode);
         statusText.text = "Connecting to session...";
+        await JoinSessionByJoinCodeAsync(_sessionJoinCode);
     }
 
     public async Task QuerySessions()
@@ -227,7 +260,9 @@ public class Lobby : MonoBehaviour
                 var infoDisplayInstance = instance.GetComponent<SessionInfoDisplay>();
                 infoDisplayInstance.SetSessionName(session.Name);
                 infoDisplayInstance.SetJoinButton(session.Id, this);
-
+                infoDisplayInstance.SetMaxTimeText($"Time: {session.Properties["turnTimeSeconds"].Value}");
+                infoDisplayInstance.SetMaxLPText($"LP: {session.Properties["startingPlayerHealth"].Value}");
+                infoDisplayInstance.SetHostName(session.Properties["hostName"].Value);
             }
         }
         else
@@ -265,6 +300,86 @@ public class Lobby : MonoBehaviour
     private void onPrivateSet(bool value)
     {
         isPrivate = value;
+    }
+
+    private void SetTurnTimePerTurn(int optionIndex)
+    {
+        selectedTurnTimeSeconds = GetDropdownSetting(
+            timerSelect,
+            optionIndex,
+            DefaultTurnTimeSeconds);
+    }
+
+    private void SetStartingPlayerHealth(int optionIndex)
+    {
+        selectedStartingPlayerHealth = GetDropdownSetting(
+            healthSelect,
+            optionIndex,
+            DefaultStartingPlayerHealth);
+    }
+
+    public void ResetMatchSettings()
+    {
+        SetDropdownToSetting(timerSelect, DefaultTurnTimeSeconds);
+        SetDropdownToSetting(healthSelect, DefaultStartingPlayerHealth);
+
+        SetTurnTimePerTurn(timerSelect.value);
+        SetStartingPlayerHealth(healthSelect.value);
+    }
+
+    public void LoadPreferredMatchSettings()
+    {
+        ResetMatchSettings();
+
+        string preferencesPath = GetMatchPreferencesPath();
+        if (!File.Exists(preferencesPath)) return;
+
+        try
+        {
+            string json = File.ReadAllText(preferencesPath);
+            MatchPreferences preferences = JsonUtility.FromJson<MatchPreferences>(json);
+            if (preferences == null) return;
+
+            SetDropdownToSetting(timerSelect, preferences.turnTimeSeconds);
+            SetDropdownToSetting(healthSelect, preferences.startingPlayerHealth);
+
+            SetTurnTimePerTurn(timerSelect.value);
+            SetStartingPlayerHealth(healthSelect.value);
+        }
+        catch (Exception exception)
+        {
+            Debug.LogWarning($"Could not load create game preferences from '{preferencesPath}'. {exception.Message}");
+        }
+    }
+
+    public void SavePreferredMatchSettings()
+    {
+        SetTurnTimePerTurn(timerSelect.value);
+        SetStartingPlayerHealth(healthSelect.value);
+
+        MatchPreferences preferences = new MatchPreferences
+        {
+            turnTimeSeconds = selectedTurnTimeSeconds,
+            startingPlayerHealth = selectedStartingPlayerHealth
+        };
+
+        string preferencesPath = GetMatchPreferencesPath();
+
+        try
+        {
+            Directory.CreateDirectory(Application.persistentDataPath);
+            File.WriteAllText(preferencesPath, JsonUtility.ToJson(preferences, true));
+            Debug.Log($"Saved create game preferences to '{preferencesPath}'.");
+        }
+        catch (Exception exception)
+        {
+            Debug.LogError($"Could not save create game preferences to '{preferencesPath}'. {exception.Message}");
+        }
+    }
+
+    private static string GetMatchPreferencesPath()
+    {
+        return Path.Combine(Application.persistentDataPath, MatchPreferencesFileName);
     }
     
     private async void OnClientDisconnect(NetworkManager manager,ConnectionEventData connectionEventData )
@@ -373,16 +488,16 @@ public class Lobby : MonoBehaviour
        
        try
        {
-           _session = await MultiplayerService.Instance.JoinSessionByIdAsync(id, new JoinSessionOptions().
-               WithPlayerName(VisibilityPropertyOptions.Public));
-           
-          
+           _session = await MultiplayerService.Instance.JoinSessionByIdAsync(
+               id,
+               new JoinSessionOptions().WithPlayerName(VisibilityPropertyOptions.Public));
+
        }
        catch (Exception e)
        {
            Debug.LogException(e);
            NetworkManager.Singleton.Shutdown();
-           statusText.text = "Failed to connect. Please try again.";
+           statusText.text = "Failed to connect. Verify host game version.";
             UIManagerScript.SetMenuScreen(5);
        }
 
@@ -395,16 +510,16 @@ public class Lobby : MonoBehaviour
        try
        {
 
-           _session = await MultiplayerService.Instance.JoinSessionByCodeAsync(joinCode, new JoinSessionOptions().
-               WithPlayerName(VisibilityPropertyOptions.Public));
-           
-           
+           _session = await MultiplayerService.Instance.JoinSessionByCodeAsync(
+               joinCode,
+               new JoinSessionOptions().WithPlayerName(VisibilityPropertyOptions.Public));
+
        }
        catch (Exception e)
        {
            Debug.LogException(e);
            NetworkManager.Singleton.Shutdown();
-           statusText.text = "Failed to connect. Check join code and try again.";
+           statusText.text = "Failed to connect. Check the join code and make sure you are using the same game version as the host.";
            UIManagerScript.SetMenuScreen(5);
         }
        
@@ -415,27 +530,23 @@ public class Lobby : MonoBehaviour
    {
        try
        {
-           SessionOptions options;
-           
-           if (isPrivate)
+           SessionOptions options = new SessionOptions()
            {
-               options = new SessionOptions() {
-                   Name = _sessionName,
-                   MaxPlayers = _maxPlayers,
-                   IsPrivate = true
-               }.WithDistributedAuthorityNetwork().WithPlayerName(VisibilityPropertyOptions.Public);
-           }
-           else
-           {
-               options = new SessionOptions() {
-                   Name = _sessionName,
-                   MaxPlayers = _maxPlayers
-               }.WithDistributedAuthorityNetwork().WithPlayerName(VisibilityPropertyOptions.Public);
-           }
+               Name = _sessionName,
+               MaxPlayers = _maxPlayers,
+               IsPrivate = isPrivate,
+               SessionProperties = new Dictionary<string, SessionProperty>
+               {
+                   [TurnTimePropertyKey] = new SessionProperty(selectedTurnTimeSeconds.ToString()),
+                   [StartingHealthPropertyKey] = new SessionProperty(selectedStartingPlayerHealth.ToString()),
+                   [HostNamePropertyKey] = new SessionProperty(
+                       AuthenticationService.Instance.PlayerName,
+                       VisibilityPropertyOptions.Public)
+               }
+           }.WithDistributedAuthorityNetwork().WithPlayerName(VisibilityPropertyOptions.Public);
            
 
            _session = await MultiplayerService.Instance.CreateSessionAsync(options);
-            
             
            statusText.text = "Session created! Waiting for player...";
            
@@ -450,6 +561,55 @@ public class Lobby : MonoBehaviour
            UIManagerScript.SetMenuScreen(0);
        }
        
+   }
+
+   private static ushort GetProtocolVersion()
+   {
+       if (!Version.TryParse(Application.version, out Version version)) return 0;
+
+       return (ushort)(version.Major * 10000 + version.Minor * 100 + version.Build);
+   }
+
+   private int GetPositiveSessionSetting(string key, int fallback)
+   {
+       if (_session != null &&
+           _session.Properties.TryGetValue(key, out SessionProperty property))
+       {
+           return ParsePositiveSetting(property.Value, fallback);
+       }
+
+       return fallback;
+   }
+
+   private static int ParsePositiveSetting(string value, int fallback)
+   {
+       return int.TryParse(value, out int parsedValue) && parsedValue > 0
+           ? parsedValue
+           : fallback;
+   }
+
+   private static int GetDropdownSetting(TMP_Dropdown dropdown, int optionIndex, int fallback)
+   {
+       if (dropdown == null || optionIndex < 0 || optionIndex >= dropdown.options.Count)
+       {
+           return fallback;
+       }
+
+       return ParsePositiveSetting(dropdown.options[optionIndex].text, fallback);
+   }
+
+   private static void SetDropdownToSetting(TMP_Dropdown dropdown, int setting)
+   {
+       if (dropdown == null) return;
+
+       for (int i = 0; i < dropdown.options.Count; i++)
+       {
+           if (ParsePositiveSetting(dropdown.options[i].text, -1) != setting) continue;
+
+           dropdown.SetValueWithoutNotify(i);
+           dropdown.RefreshShownValue();
+           return;
+       }
    }
 
    void OnTransportFailure()

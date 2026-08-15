@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.UI;
@@ -11,6 +12,7 @@ public class UIManagerMainMenu : MonoBehaviour
 {//Mmmm buttons
 
     [SerializeField] private CameraMainMenu cameraScript;
+    private Lobby lobby;
 
     [Header("Components")]
     [SerializeField] private GameObject title;//Title graphic
@@ -38,10 +40,10 @@ public class UIManagerMainMenu : MonoBehaviour
     private int currentState = 0;
 
     [Header("Credits")]
-    private Vector2 startPos;
     [SerializeField] private RectTransform creditsListTrans;
     [SerializeField] private float crawlSpeed;
     private float crawlRate;
+    private Vector2 startPos;
 
     [Header("Audio")]
     [SerializeField] private AudioClip parchment;
@@ -60,10 +62,17 @@ public class UIManagerMainMenu : MonoBehaviour
         startPos = creditsListTrans.anchoredPosition;
 
         source = gameObject.GetComponent<AudioSource>();
+
+        lobby = NetworkManager.Singleton.GetComponent<Lobby>();
     }
 
     public void SetMenuScreen(int newState)
     {//Each screen has an ID. When setting up buttons, you just need to know the code for what screen you want a button to bring up.
+
+        if (newState == 3)
+        {
+            lobby?.LoadPreferredMatchSettings();
+        }
 
         // try
         // {
@@ -147,6 +156,7 @@ public class UIManagerMainMenu : MonoBehaviour
             cameraScript.SetCameraState(0); 
 
         currentState = newState;
+
     }
 
     public void SetMenuLevel(int menuLevel)
@@ -213,6 +223,11 @@ public class UIManagerMainMenu : MonoBehaviour
         {
             element.SetActive(true);
         }
+    }
+
+    public void OpenWebsite()
+    {
+        Application.OpenURL("https://splitchance.com/games.html");
     }
 
     //Audio events
