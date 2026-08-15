@@ -107,6 +107,13 @@ public partial class BoardManager : NetworkBehaviour
 
     private void Start()
     {
+        if (NetworkManager.Singleton != null &&
+            NetworkManager.Singleton.TryGetComponent(out Lobby lobby) &&
+            lobby._session != null)
+        {
+            startingPlayerHealth = lobby.StartingPlayerHealth;
+        }
+
         player1Board = new PlayerBoard(new GameObject[3, 3],
             new GameObject[3, 3]
         );

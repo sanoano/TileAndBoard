@@ -111,6 +111,13 @@ public class TurnManager : NetworkBehaviour
 
     private void Start()
     {
+        if (NetworkManager.Singleton != null &&
+            NetworkManager.Singleton.TryGetComponent(out Lobby lobby) &&
+            lobby._session != null)
+        {
+            maxTimePerTurn = lobby.TurnTimeSeconds;
+        }
+
         currentTime = maxTimePerTurn;
         
         if (!NetworkManager.Singleton)

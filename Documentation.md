@@ -1277,6 +1277,91 @@ private void onPrivateSet(bool value)
 
 Self-explanatory
 
+### `SetTurnTimePerTurn(int optionIndex)`
+
+**Access:** Private
+
+```csharp
+private void SetTurnTimePerTurn(int optionIndex)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+
+### `SetStartingPlayerHealth(int optionIndex)`
+
+**Access:** Private
+
+```csharp
+private void SetStartingPlayerHealth(int optionIndex)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+
+### `ResetMatchSettings()`
+
+**Access:** Public
+
+```csharp
+public void ResetMatchSettings()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+Restores the create game dropdowns to the built-in match defaults.
+
+
+### `LoadPreferredMatchSettings()`
+
+**Access:** Public
+
+```csharp
+public void LoadPreferredMatchSettings()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+Loads the saved create game preferences from the persistent data folder and applies them to the dropdowns. Falls back to the built-in defaults if there is no valid saved value.
+
+
+### `SavePreferredMatchSettings()`
+
+**Access:** Public
+
+```csharp
+public void SavePreferredMatchSettings()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+Saves the currently selected create game settings as JSON in the persistent data folder.
+
+
+### `GetMatchPreferencesPath()`
+
+**Access:** Private
+
+```csharp
+private static string GetMatchPreferencesPath()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+Returns the platform-specific path of the create game preferences file.
+
 
 ### `OnClientDisconnect(NetworkManager manager, ConnectionEventData connectionEventData)`
 
@@ -1348,6 +1433,70 @@ private async Task CreateSessionAsync()
 <!-- Add description/comments here. -->
 
 Self-explanatory
+
+### `GetProtocolVersion()`
+
+**Access:** Private
+
+```csharp
+private static ushort GetProtocolVersion()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+
+### `GetPositiveSessionSetting(string key, int fallback)`
+
+**Access:** Private
+
+```csharp
+private int GetPositiveSessionSetting(string key, int fallback)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+
+### `ParsePositiveSetting(string value, int fallback)`
+
+**Access:** Private
+
+```csharp
+private static int ParsePositiveSetting(string value, int fallback)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+
+### `GetDropdownSetting(TMP_Dropdown dropdown, int optionIndex, int fallback)`
+
+**Access:** Private
+
+```csharp
+private static int GetDropdownSetting(TMP_Dropdown dropdown, int optionIndex, int fallback)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+
+### `SetDropdownToSetting(TMP_Dropdown dropdown, int setting)`
+
+**Access:** Private
+
+```csharp
+private static void SetDropdownToSetting(TMP_Dropdown dropdown, int setting)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
 
 
 ### `OnTransportFailure()`
