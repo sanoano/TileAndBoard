@@ -497,7 +497,7 @@ public class Lobby : MonoBehaviour
        {
            Debug.LogException(e);
            NetworkManager.Singleton.Shutdown();
-           statusText.text = "Failed to connect. Make sure you are using the same game version as the host.";
+           statusText.text = "Failed to connect. Verify host game version.";
             UIManagerScript.SetMenuScreen(5);
        }
 
