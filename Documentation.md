@@ -970,6 +970,18 @@ Networked version of Recall Card, is called automatically if network is present.
 
 Source: `Assets/Scripts/Core/GameManager.cs`
 
+### `ReturnToLobby()`
+
+**Access:** Public
+
+```csharp
+public void ReturnToLobby()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
 ### `DisconnectUser()`
 
 **Access:** Public
@@ -2142,6 +2154,18 @@ private void StartCredits()
 
 <!-- Add description/comments here. -->
 
+### `OpenWebsite()`
+
+**Access:** Public
+
+```csharp
+public void OpenWebsite()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
 
 ## UIPopupNumbers
 
@@ -2375,6 +2399,18 @@ Gets cost of current card
 
 Source: `Assets/Scripts/Multiplayer/WaitingRoom.cs`
 
+### `Start()`
+
+**Access:** Private
+
+```csharp
+private async void Start()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
 ### `UpdatePlayerList()`
 
 **Access:** Private
@@ -2393,6 +2429,114 @@ private void UpdatePlayerList()
 
 ```csharp
 private void OnClientConnectedCallback(ulong id)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+### `OnClientDisconnectCallback(ulong id)`
+
+**Access:** Private
+
+```csharp
+private void OnClientDisconnectCallback(ulong id)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+### `ToggleReady()`
+
+**Access:** Private
+
+```csharp
+private async void ToggleReady()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+### `SetReadyStateAsync(bool isReady)`
+
+**Access:** Private
+
+```csharp
+private async Task SetReadyStateAsync(bool isReady)
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+### `UpdateReadyButton()`
+
+**Access:** Private
+
+```csharp
+private void UpdateReadyButton()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+### `UpdateWaitingText()`
+
+**Access:** Private
+
+```csharp
+private void UpdateWaitingText()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+### `CanStartGame()`
+
+**Access:** Private
+
+```csharp
+private bool CanStartGame()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+### `AreAllPlayersReady()`
+
+**Access:** Private
+
+```csharp
+private bool AreAllPlayersReady()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+### `IsLocalPlayerReady()`
+
+**Access:** Private
+
+```csharp
+private bool IsLocalPlayerReady()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+### `IsPlayerReady(IReadOnlyPlayer player)`
+
+**Access:** Private
+
+```csharp
+private static bool IsPlayerReady(IReadOnlyPlayer player)
 ```
 
 **Description / comments:**
@@ -2440,7 +2584,19 @@ private IEnumerator StartGameRoutine()
 **Access:** Private
 
 ```csharp
-private void LeaveGame()
+private async void LeaveGame()
+```
+
+**Description / comments:**
+
+<!-- Add description/comments here. -->
+
+### `OnDestroy()`
+
+**Access:** Public
+
+```csharp
+public override void OnDestroy()
 ```
 
 **Description / comments:**

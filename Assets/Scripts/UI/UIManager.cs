@@ -686,7 +686,7 @@ public class UIManager : MonoBehaviour
 
         yield return new WaitForSeconds(5.0f);
         
-        GameManager.instance.DisconnectUser();
+        GameManager.instance.ReturnToLobby();
 
         yield return null;
     }
