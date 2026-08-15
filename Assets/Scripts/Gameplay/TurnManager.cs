@@ -227,6 +227,7 @@ public class TurnManager : NetworkBehaviour
     {
         if (GameManager.instance.playerId != activePlayer || turnCount == 2) return;
 
+        CardManager.instance.DrawNewHand();
         ResetUnitsForTurn(activePlayer, boardManager.unitsList, boardManager.unitsCount);
 
         var manaToGain = 9 - boardManager.GetCardAmount(activePlayer);
@@ -293,8 +294,10 @@ public class TurnManager : NetworkBehaviour
             return; 
         } 
         if (BoardManager.Instance.attackInProgress) return;
+        if (CardManager.instance.cardDrawInProgress) return;
         
         UIManager.Instance.DestroyCurrentInfoInstance();
+        CardManager.instance.ReturnHandToDeck();
 
         if (NetworkManager.Singleton)
         {

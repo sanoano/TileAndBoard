@@ -19365,7 +19365,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2267532356269244621, guid: b2509c2143eb5411bade94ca1ca7e1f9, type: 3}
       propertyPath: m_text
-      value: Draw Card
+      value: Refresh Hand
       objectReference: {fileID: 0}
     - target: {fileID: 2267532356269244621, guid: b2509c2143eb5411bade94ca1ca7e1f9, type: 3}
       propertyPath: m_fontSize
@@ -19505,7 +19505,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3723557376818597944, guid: b2509c2143eb5411bade94ca1ca7e1f9, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: DrawCardHandler
+      value: RefreshHandHandler
       objectReference: {fileID: 0}
     - target: {fileID: 3723557376818597944, guid: b2509c2143eb5411bade94ca1ca7e1f9, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
@@ -19521,7 +19521,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3723557376818597944, guid: b2509c2143eb5411bade94ca1ca7e1f9, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3723557376818597944, guid: b2509c2143eb5411bade94ca1ca7e1f9, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_IntArgument

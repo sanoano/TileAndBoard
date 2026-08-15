@@ -352,7 +352,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Recall (-1 Mna)
+  m_text: Banish (-1 Mna)
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0f2daa753b9bcc8478de3df8256b3b82, type: 2}
   m_sharedMaterial: {fileID: 4573730923201330667, guid: 0f2daa753b9bcc8478de3df8256b3b82, type: 2}
@@ -1741,7 +1741,7 @@ GameObject:
   - component: {fileID: 8080733648215001436}
   - component: {fileID: 5215138869686092507}
   m_Layer: 5
-  m_Name: actionRecall
+  m_Name: actionBanish
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
