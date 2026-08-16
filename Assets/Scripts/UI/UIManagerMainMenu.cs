@@ -21,6 +21,11 @@ public class UIManagerMainMenu : MonoBehaviour
     //[SerializeField] private GameObject versionText;
     private TextMeshProUGUI statusTMP;
 
+    [Header("Tooltips")]
+    [SerializeField] private GameObject ttipLP;//(0)
+    [SerializeField] private GameObject ttipPriv;//(1)
+    [SerializeField] private GameObject ttipTime;//(2)
+
     [Header("Screens")]
     [SerializeField] private GameObject[] presstostart; //(0)
 
@@ -116,10 +121,19 @@ public class UIManagerMainMenu : MonoBehaviour
                     }
 
                     foreach (GameObject button in buttons1)
-                    {// This won't work because buttons1 is disabled atp. oh well.
+                    {// This won't work because buttons1 is disabled at this point. oh well.
                         UIDialogueSlide buttons1SlideScript = button.GetComponent<UIDialogueSlide>();
                         if (buttons1SlideScript != null)
                             StartCoroutine(PlaySlideNextFrame(buttons1SlideScript, false));
+                    }
+                }
+                else if (newState == 3)
+                {
+                    foreach (GameObject menu in createGame)
+                    {
+                        UIDialogueSlide menuSlideScript = menu.GetComponent<UIDialogueSlide>();
+                        if (menuSlideScript != null)
+                            StartCoroutine(PlaySlideNextFrame(menuSlideScript, true));
                     }
                 }
             }
@@ -160,7 +174,7 @@ public class UIManagerMainMenu : MonoBehaviour
     }
 
     public void SetMenuLevel(int menuLevel)
-    {//0 is the press to start screen, 1 is buttons1, 2 is buttons2, 3 is anything beyond that. Helps determine visiblity of title
+    {//0 is the press to start screen, 1 is buttons1, 2 is buttons2, 3 is anything beyond that. Helps determine visiblity of title logo
         if (menuLevel < 3)
             title.SetActive(true);
         else

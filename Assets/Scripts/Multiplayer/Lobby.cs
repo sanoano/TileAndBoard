@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static Unity.Entities.EntitiesJournaling;
 
 public class Lobby : MonoBehaviour
 {
@@ -23,6 +24,7 @@ public class Lobby : MonoBehaviour
    public const int DefaultStartingPlayerHealth = 50;
 
    private string _sessionName;
+    private string PreferredSessionName;
    private string _sessionJoinCode;
    private int _maxPlayers = 2;
    private bool isPrivate;
@@ -31,29 +33,30 @@ public class Lobby : MonoBehaviour
    public ISession _session;
    [HideInInspector] public NetworkManager m_NetworkManager;
 
-    [Header("UI References")]
-    [SerializeField] private UIManagerMainMenu UIManagerScript;
+   [Header("UI References")]
+   [SerializeField] private UIManagerMainMenu UIManagerScript;
    [SerializeField] private TMP_InputField username;
-   [SerializeField] private TMP_InputField sessionName;
-   [SerializeField] private TMP_InputField joinCodeInput;
-   [SerializeField] private Button createGameButton;
-   [SerializeField] private Button createButton;
-   [SerializeField] private Button joinButton;
    [SerializeField] private TextMeshProUGUI statusText;
+   [SerializeField] private Button reconnectButton;
+
+    [Header("Create Game UI")]
+    [SerializeField] private Button createGameButton;
+    [SerializeField] private Toggle privateToggle;
+    //[SerializeField] private Toggle timerToggle; Need code to deal with no timer in games
+    [SerializeField] private TMP_InputField sessionName;
+    [SerializeField] private TMP_InputField timerInput;
+    [SerializeField] private TMP_InputField lpInput;
+     /*[SerializeField] private TMP_Dropdown timerSelect;
+      [SerializeField] private TMP_Dropdown healthSelect;*/
+
+    [Header("Join Game UI")] 
+   [SerializeField] private GameObject sessionInfoPrefab;
+   [SerializeField] private Button joinGameDirectButton;
+   [SerializeField] private Button refreshButton; 
+   [SerializeField] private TMP_InputField joinCodeInput;
    [SerializeField] private GameObject sessionListContent;
    [SerializeField] private GameObject sessionList;
-   [SerializeField] private Button backButton;
-   [SerializeField] private Button refreshButton;
-   //[SerializeField] private Button joinDirectButton;
-   [SerializeField] private Button joinGameDirectButton;
-   [SerializeField] private Button backButtonJoin;
-   [SerializeField] private Toggle privateToggle;
-   [SerializeField] private Button reconnectButton;
-   [SerializeField] private TMP_Dropdown timerSelect;
-   [SerializeField] private TMP_Dropdown healthSelect;
-
-   [Header("Session Prefab")] 
-   [SerializeField] private GameObject sessionInfoPrefab;
+   [SerializeField] private Button joinButton;
 
    [Header("Parameters")] 
    [SerializeField] private float checkDisconnectTime;
@@ -65,6 +68,7 @@ public class Lobby : MonoBehaviour
    {
        public int turnTimeSeconds;
        public int startingPlayerHealth;
+       public string gameName;
    }
 
    public int TurnTimeSeconds => GetPositiveSessionSetting(
@@ -75,7 +79,7 @@ public class Lobby : MonoBehaviour
        StartingHealthPropertyKey,
        selectedStartingPlayerHealth);
    
-
+   
     private async void Awake()
     {
 
@@ -123,11 +127,12 @@ public class Lobby : MonoBehaviour
         createGameButton.onClick.AddListener(StartSession);
         joinGameDirectButton.onClick.AddListener(JoinGameByJoinCode);
         privateToggle.onValueChanged.AddListener(onPrivateSet);
+        //timerToggle.onValueChanged.AddListener(onTimerSet);
         reconnectButton.onClick.AddListener(Reconnect);
         joinButton.onClick.AddListener(QuerySessionsFromButton);
         refreshButton.onClick.AddListener(QuerySessionsFromButton);
-        timerSelect.onValueChanged.AddListener(SetTurnTimePerTurn);
-        healthSelect.onValueChanged.AddListener(SetStartingPlayerHealth);
+        //timerSelect.onValueChanged.AddListener(SetTurnTimePerTurn);
+        //healthSelect.onValueChanged.AddListener(SetStartingPlayerHealth);
 
         LoadPreferredMatchSettings();
         
@@ -193,10 +198,12 @@ public class Lobby : MonoBehaviour
     private async void StartSession()
     {
         UIManagerScript.SetMenuScreen(8);
-        
+        UIManagerScript.SetMenuLevel(1);
+
         if (_sessionName == String.Empty)
         {
             UIManagerScript.SetMenuScreen(3);
+            UIManagerScript.SetMenuLevel(3);
             statusText.text = "You must set a session name before creating a session.";
             return;
         }
@@ -258,10 +265,10 @@ public class Lobby : MonoBehaviour
             {
                 var instance = Instantiate(sessionInfoPrefab, sessionListContent.transform);
                 var infoDisplayInstance = instance.GetComponent<SessionInfoDisplay>();
-                infoDisplayInstance.SetSessionName(session.Name);
+                infoDisplayInstance.SetSessionName(session.Name + " |");
                 infoDisplayInstance.SetJoinButton(session.Id, this);
                 infoDisplayInstance.SetMaxTimeText($"Time: {session.Properties["turnTimeSeconds"].Value}");
-                infoDisplayInstance.SetMaxLPText($"LP: {session.Properties["startingPlayerHealth"].Value}");
+                infoDisplayInstance.SetMaxLPText($"Life Points: {session.Properties["startingPlayerHealth"].Value}");
                 infoDisplayInstance.SetHostName(session.Properties["hostName"].Value);
             }
         }
@@ -302,29 +309,75 @@ public class Lobby : MonoBehaviour
         isPrivate = value;
     }
 
-    private void SetTurnTimePerTurn(int optionIndex)
+    public void SaveSessionNamePreference()
     {
-        selectedTurnTimeSeconds = GetDropdownSetting(
-            timerSelect,
-            optionIndex,
-            DefaultTurnTimeSeconds);
+        PreferredSessionName = sessionName.text;
     }
 
-    private void SetStartingPlayerHealth(int optionIndex)
-    {
-        selectedStartingPlayerHealth = GetDropdownSetting(
+
+    public void SetTurnTimePerTurn(bool defaults)
+    {//This function is fired when you stop editing one of the input fields
+
+        //(int optionIndex)
+        /*selectedTurnTimeSeconds = GetDropdownSetting(
+            timerSelect,
+            optionIndex,
+            DefaultTurnTimeSeconds);*/
+
+        if (!defaults)
+        {
+            if (int.Parse(timerInput.text) < 30)
+            {
+                selectedTurnTimeSeconds = 30;
+                timerInput.text = "30";
+            }
+            else if (int.Parse(timerInput.text) >= 999)
+            {
+                selectedTurnTimeSeconds = 999;
+                timerInput.text = "999";
+            }
+            else
+                selectedTurnTimeSeconds = int.Parse(timerInput.text);
+        }
+        else
+            selectedTurnTimeSeconds = DefaultTurnTimeSeconds;
+    }
+
+    public void SetStartingPlayerHealth(bool defaults)
+    {//This function is fired when you stop editing one of the input fields
+
+        //(int optionIndex)
+        /*selectedStartingPlayerHealth = GetDropdownSetting( 
             healthSelect,
             optionIndex,
-            DefaultStartingPlayerHealth);
+            DefaultStartingPlayerHealth);*/
+
+        if (!defaults)
+        {
+            if (int.Parse(lpInput.text) < 10)
+            {
+                selectedStartingPlayerHealth = 10;
+                lpInput.text = "10";
+            }
+            else if (int.Parse(lpInput.text) >= 99)
+            {
+                selectedStartingPlayerHealth = 99;
+                lpInput.text = "99";
+            }
+            else
+                selectedStartingPlayerHealth = int.Parse(lpInput.text);
+        }
+        else
+            selectedStartingPlayerHealth = DefaultStartingPlayerHealth;
     }
 
     public void ResetMatchSettings()
     {
-        SetDropdownToSetting(timerSelect, DefaultTurnTimeSeconds);
-        SetDropdownToSetting(healthSelect, DefaultStartingPlayerHealth);
+        //SetDropdownToSetting(timerSelect, DefaultTurnTimeSeconds);
+        //SetDropdownToSetting(healthSelect, DefaultStartingPlayerHealth);
 
-        SetTurnTimePerTurn(timerSelect.value);
-        SetStartingPlayerHealth(healthSelect.value);
+        //SetTurnTimePerTurn(timerSelect.value);
+        //SetStartingPlayerHealth(healthSelect.value);
     }
 
     public void LoadPreferredMatchSettings()
@@ -332,19 +385,40 @@ public class Lobby : MonoBehaviour
         ResetMatchSettings();
 
         string preferencesPath = GetMatchPreferencesPath();
-        if (!File.Exists(preferencesPath)) return;
+        if (!File.Exists(preferencesPath))
+        {
+            lpInput.text = DefaultStartingPlayerHealth.ToString();
+            timerInput.text = DefaultTurnTimeSeconds.ToString();
+
+            SetTurnTimePerTurn(true);
+            SetStartingPlayerHealth(true);
+            return;
+        }
 
         try
         {
             string json = File.ReadAllText(preferencesPath);
             MatchPreferences preferences = JsonUtility.FromJson<MatchPreferences>(json);
-            if (preferences == null) return;
+            if (preferences == null)
+            {
+                lpInput.text = DefaultStartingPlayerHealth.ToString();
+                timerInput.text = DefaultTurnTimeSeconds.ToString();
 
-            SetDropdownToSetting(timerSelect, preferences.turnTimeSeconds);
-            SetDropdownToSetting(healthSelect, preferences.startingPlayerHealth);
+                SetTurnTimePerTurn(true);
+                SetStartingPlayerHealth(true);
+                return;
+            }
 
-            SetTurnTimePerTurn(timerSelect.value);
-            SetStartingPlayerHealth(healthSelect.value);
+            //SetDropdownToSetting(timerSelect, preferences.turnTimeSeconds);
+            //SetDropdownToSetting(healthSelect, preferences.startingPlayerHealth);
+
+            lpInput.text = preferences.startingPlayerHealth.ToString();
+            timerInput.text = preferences.turnTimeSeconds.ToString();
+            sessionName.text = preferences.gameName;
+
+            SetTurnTimePerTurn(false);
+            SetStartingPlayerHealth(false);
+            
         }
         catch (Exception exception)
         {
@@ -354,13 +428,14 @@ public class Lobby : MonoBehaviour
 
     public void SavePreferredMatchSettings()
     {
-        SetTurnTimePerTurn(timerSelect.value);
-        SetStartingPlayerHealth(healthSelect.value);
+        /*SetTurnTimePerTurn(timerSelect.value);
+        SetStartingPlayerHealth(healthSelect.value);*/
 
         MatchPreferences preferences = new MatchPreferences
         {
             turnTimeSeconds = selectedTurnTimeSeconds,
-            startingPlayerHealth = selectedStartingPlayerHealth
+            startingPlayerHealth = selectedStartingPlayerHealth,
+            gameName = PreferredSessionName
         };
 
         string preferencesPath = GetMatchPreferencesPath();
