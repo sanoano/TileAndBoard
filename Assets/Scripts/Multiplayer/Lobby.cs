@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static Unity.Entities.EntitiesJournaling;
+//using static Unity.Entities.EntitiesJournaling;
 
 public class Lobby : MonoBehaviour
 {

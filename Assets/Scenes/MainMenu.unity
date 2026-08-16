@@ -14188,6 +14188,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: acIsland
       objectReference: {fileID: 0}
+    - target: {fileID: 4077497313411710536, guid: 67c7b20828f75c54d87cbf6cef5c2051, type: 3}
+      propertyPath: precomputeOutline
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4077497313411710536, guid: 67c7b20828f75c54d87cbf6cef5c2051, type: 3}
+      propertyPath: bakeKeys.Array.size
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 4077497313411710536, guid: 67c7b20828f75c54d87cbf6cef5c2051, type: 3}
+      propertyPath: bakeValues.Array.size
+      value: 14
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
