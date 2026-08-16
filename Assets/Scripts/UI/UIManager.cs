@@ -1,5 +1,5 @@
 using JetBrains.Annotations;
-using Mono.Cecil.Cil;
+//using Mono.Cecil.Cil;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -37,7 +37,7 @@ public class UIManager : MonoBehaviour
     [Header("Canvas")]
     public GameObject Canvas;
 
-    [Header("Draw Card Button")]
+    [Header("Refresh Hand Button")]
     [SerializeField] private GameObject DrawCardButton;
     private UIDialogueSlide drawCardSlide;
     private bool slideOnce;
@@ -502,7 +502,7 @@ public class UIManager : MonoBehaviour
 
             var buttons = cardInfoPrefabInstance.GetComponentsInChildren<Button>();
 
-            buttons[3].GetComponentInChildren<TextMeshProUGUI>().text = $"Recall (-{unitToDisplay.Cost} Mna)";
+            buttons[3].GetComponentInChildren<TextMeshProUGUI>().text = $"Banish (-{unitToDisplay.Cost} Mna)";
             if (unitToDisplay.HasActed == false)//need to add clause for when the card is first placed
             {
                 if (unitToDisplay.Damage > 0)
@@ -591,13 +591,11 @@ public class UIManager : MonoBehaviour
                 }
             }
 
-            buttons[3].onClick.AddListener(delegate { CardManager.instance.RecallCard(cardVisual, unitToDisplay); });
-            if (!ManaManager.instance.CanAfford(unitToDisplay.Cost) || !TurnManager.instance.isYourTurn
-                || CardManager.instance.playerHand.Count >= CardManager.instance.maxCards)
+            buttons[3].onClick.AddListener(delegate { CardManager.instance.BanishCard(cardVisual, unitToDisplay); });
+            if (!ManaManager.instance.CanAfford(unitToDisplay.Cost))
             {
-                buttons[2].onClick.AddListener(() => TextDialogue.instance.DialogueRecieveStatus(1));
-                TextMeshProUGUI RecallButtonText = buttons[3].gameObject.GetComponentInChildren<TextMeshProUGUI>();
-                RecallButtonText.fontStyle = FontStyles.Strikethrough;
+                TextMeshProUGUI BanishButtonText = buttons[3].gameObject.GetComponentInChildren<TextMeshProUGUI>();
+                BanishButtonText.fontStyle = FontStyles.Strikethrough;
             }
 
         }
@@ -686,7 +684,7 @@ public class UIManager : MonoBehaviour
 
         yield return new WaitForSeconds(5.0f);
         
-        GameManager.instance.DisconnectUser();
+        GameManager.instance.ReturnToLobby();
 
         yield return null;
     }
@@ -696,9 +694,9 @@ public class UIManager : MonoBehaviour
         TextMeshProUGUI DrawCardButtonTMP = DrawCardButton.GetComponentInChildren<TextMeshProUGUI>();
 
         if (show)
-            DrawCardButtonTMP.text = "Draw Card (-3 Mna)";
+            DrawCardButtonTMP.text = "Refresh Hand (-3 Mna)";
         else
-            DrawCardButtonTMP.text = "Draw Card";
+            DrawCardButtonTMP.text = "Refresh Hand";
     }
 
     private IEnumerator RotateGridShape(Transform[] children, List<Vector2Int> positions)

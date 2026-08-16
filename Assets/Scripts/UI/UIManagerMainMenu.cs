@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.UI;
@@ -11,6 +12,7 @@ public class UIManagerMainMenu : MonoBehaviour
 {//Mmmm buttons
 
     [SerializeField] private CameraMainMenu cameraScript;
+    private Lobby lobby;
 
     [Header("Components")]
     [SerializeField] private GameObject title;//Title graphic
@@ -18,6 +20,11 @@ public class UIManagerMainMenu : MonoBehaviour
     [SerializeField] private GameObject[] playerNameElements;
     //[SerializeField] private GameObject versionText;
     private TextMeshProUGUI statusTMP;
+
+    [Header("Tooltips")]
+    [SerializeField] private GameObject ttipLP;//(0)
+    [SerializeField] private GameObject ttipPriv;//(1)
+    [SerializeField] private GameObject ttipTime;//(2)
 
     [Header("Screens")]
     [SerializeField] private GameObject[] presstostart; //(0)
@@ -38,10 +45,10 @@ public class UIManagerMainMenu : MonoBehaviour
     private int currentState = 0;
 
     [Header("Credits")]
-    private Vector2 startPos;
     [SerializeField] private RectTransform creditsListTrans;
     [SerializeField] private float crawlSpeed;
     private float crawlRate;
+    private Vector2 startPos;
 
     [Header("Audio")]
     [SerializeField] private AudioClip parchment;
@@ -60,10 +67,17 @@ public class UIManagerMainMenu : MonoBehaviour
         startPos = creditsListTrans.anchoredPosition;
 
         source = gameObject.GetComponent<AudioSource>();
+
+        lobby = NetworkManager.Singleton.GetComponent<Lobby>();
     }
 
     public void SetMenuScreen(int newState)
     {//Each screen has an ID. When setting up buttons, you just need to know the code for what screen you want a button to bring up.
+
+        if (newState == 3)
+        {
+            lobby?.LoadPreferredMatchSettings();
+        }
 
         // try
         // {
@@ -107,10 +121,19 @@ public class UIManagerMainMenu : MonoBehaviour
                     }
 
                     foreach (GameObject button in buttons1)
-                    {// This won't work because buttons1 is disabled atp. oh well.
+                    {// This won't work because buttons1 is disabled at this point. oh well.
                         UIDialogueSlide buttons1SlideScript = button.GetComponent<UIDialogueSlide>();
                         if (buttons1SlideScript != null)
                             StartCoroutine(PlaySlideNextFrame(buttons1SlideScript, false));
+                    }
+                }
+                else if (newState == 3)
+                {
+                    foreach (GameObject menu in createGame)
+                    {
+                        UIDialogueSlide menuSlideScript = menu.GetComponent<UIDialogueSlide>();
+                        if (menuSlideScript != null)
+                            StartCoroutine(PlaySlideNextFrame(menuSlideScript, true));
                     }
                 }
             }
@@ -147,10 +170,11 @@ public class UIManagerMainMenu : MonoBehaviour
             cameraScript.SetCameraState(0); 
 
         currentState = newState;
+
     }
 
     public void SetMenuLevel(int menuLevel)
-    {//0 is the press to start screen, 1 is buttons1, 2 is buttons2, 3 is anything beyond that. Helps determine visiblity of title
+    {//0 is the press to start screen, 1 is buttons1, 2 is buttons2, 3 is anything beyond that. Helps determine visiblity of title logo
         if (menuLevel < 3)
             title.SetActive(true);
         else
@@ -213,6 +237,11 @@ public class UIManagerMainMenu : MonoBehaviour
         {
             element.SetActive(true);
         }
+    }
+
+    public void OpenWebsite()
+    {
+        Application.OpenURL("https://splitchance.com/games.html");
     }
 
     //Audio events
