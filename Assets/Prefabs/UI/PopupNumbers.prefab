@@ -67,8 +67,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: -100
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0f2daa753b9bcc8478de3df8256b3b82, type: 2}
-  m_sharedMaterial: {fileID: 4573730923201330667, guid: 0f2daa753b9bcc8478de3df8256b3b82, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 90d4bbf9daeed6a4381dfc58e2e905d4, type: 2}
+  m_sharedMaterial: {fileID: 4573730923201330667, guid: 90d4bbf9daeed6a4381dfc58e2e905d4, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -224,7 +224,7 @@ GameObject:
   - component: {fileID: 1668326056661432307}
   - component: {fileID: 4503109143689236700}
   m_Layer: 5
-  m_Name: popupNumbers
+  m_Name: PopupNumbers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -271,7 +271,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fdd2b83bde0eac4a84bd786d81099c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIPopupNumbers
-  disappearSpeed: 12
   numbersTMP: {fileID: 5458556303231858228}
   icon: {fileID: 5147229297704565345}
   textColor: {r: 0, g: 0, b: 0, a: 1}
