@@ -1639,6 +1639,30 @@ Sets up the join button for this entry in the session list
 
 Source: `Assets/Scripts/Core/Settings.cs`
 
+### `SetMusicVolume(float volume)`
+
+**Access:** Private
+
+```csharp
+private void SetMusicVolume(float volume)
+```
+
+### `SetSfxVolume(float volume)`
+
+**Access:** Private
+
+```csharp
+private void SetSfxVolume(float volume)
+```
+
+### `VolumeToDecibels(float volume)`
+
+**Access:** Private static
+
+```csharp
+private static float VolumeToDecibels(float volume)
+```
+
 ### `toggleTutorial(bool on)`
 
 **Access:** Public
@@ -2100,30 +2124,6 @@ public void SetMenuLevel(int menuLevel)
 
 ```csharp
 public void QuitGame()
-```
-
-**Description / comments:**
-
-<!-- Add description/comments here. -->
-
-### `AudioParchment()`
-
-**Access:** Public
-
-```csharp
-public void AudioParchment()
-```
-
-**Description / comments:**
-
-<!-- Add description/comments here. -->
-
-### `AudioStone()`
-
-**Access:** Public
-
-```csharp
-public void AudioStone()
 ```
 
 **Description / comments:**
