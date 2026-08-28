@@ -3,13 +3,18 @@ using UnityEngine;
 public class envSkyboxRotate : MonoBehaviour
 {
     [SerializeField] private float rotateSpeed = 0.9f;
+    private Material runtimeSkybox;
+
     private void Start()
     {
-        RenderSettings.skybox.SetFloat("_Rotation", 0);
+        runtimeSkybox = new Material(RenderSettings.skybox);
+        RenderSettings.skybox = runtimeSkybox;
+
+        runtimeSkybox.SetFloat("_Rotation", 0);
     }
 
     void Update()
     {
-        RenderSettings.skybox.SetFloat("_Rotation", Time.time * rotateSpeed);
+        runtimeSkybox.SetFloat("_Rotation", Time.time * rotateSpeed);
     }
 }
