@@ -10,6 +10,7 @@ using UnityEngine.UI;
 
 public class UIManagerMainMenu : MonoBehaviour
 {//Mmmm buttons
+    private const string GamesWonKey = "GamesWon";
 
     [SerializeField] private CameraMainMenu cameraScript;
     private Lobby lobby;
@@ -241,6 +242,11 @@ public class UIManagerMainMenu : MonoBehaviour
     public void OpenWebsite()
     {
         Application.OpenURL("https://splitchance.com/games.html");
+    }
+
+    public int GetGamesWon()
+    {
+        return PlayerPrefs.GetInt(GamesWonKey, 0);
     }
 
 }

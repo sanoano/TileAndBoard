@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : NetworkBehaviour
 {
+    private const string GamesWonKey = "GamesWon";
 
     [SerializeField] private GameObject playerHead;
     private GameObject headInstance;
@@ -156,6 +157,16 @@ public class GameManager : NetworkBehaviour
                 NetworkManager.Singleton.SceneManager.LoadScene("PlayerLobby", LoadSceneMode.Single);
             }
         }
+    }
+
+    public void SaveGameWin(Player.PlayerId winner)
+    {
+        if (playerId != winner)
+            return;
+
+        int gamesWon = PlayerPrefs.GetInt(GamesWonKey, 0);
+        PlayerPrefs.SetInt(GamesWonKey, gamesWon + 1);
+        PlayerPrefs.Save();
     }
 
 }
