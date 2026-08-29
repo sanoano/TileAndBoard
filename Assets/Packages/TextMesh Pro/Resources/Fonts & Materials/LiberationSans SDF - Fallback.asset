@@ -165,7 +165,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
-  m_Name: LiberationSans SDF - Fallback 1
+  m_Name: LiberationSans SDF - Fallback
   m_EditorClassIdentifier: 
   m_Version: 1.1.0
   m_FaceInfo:
@@ -211,23 +211,23 @@ MonoBehaviour:
     fontStyleModifier: 0
     renderMode: 4169
     includeFontFeatures: 1
-  m_SourceFontFile: {fileID: 12800000, guid: e3265ab4bf004d28a9537516768c1c75, type: 3}
+  m_SourceFontFile: {fileID: 0}
   m_SourceFontFilePath: 
-  m_AtlasPopulationMode: 1
+  m_AtlasPopulationMode: 0
   InternalDynamicOS: 0
   m_GlyphTable:
-  - m_Index: 2030
+  - m_Index: 6
     m_Metrics:
-      m_Width: 64
-      m_Height: 9
-      m_HorizontalBearingX: 11
-      m_HorizontalBearingY: 9
-      m_HorizontalAdvance: 86
+      m_Width: 48
+      m_Height: 59
+      m_HorizontalBearingX: 0
+      m_HorizontalBearingY: 59
+      m_HorizontalAdvance: 48
     m_GlyphRect:
-      m_X: 10
+      m_X: 154
       m_Y: 10
-      m_Width: 64
-      m_Height: 9
+      m_Width: 48
+      m_Height: 59
     m_Scale: 1
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0
@@ -261,21 +261,6 @@ MonoBehaviour:
     m_Scale: 1
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0
-  - m_Index: 6
-    m_Metrics:
-      m_Width: 48
-      m_Height: 59
-      m_HorizontalBearingX: 0
-      m_HorizontalBearingY: 59
-      m_HorizontalAdvance: 48
-    m_GlyphRect:
-      m_X: 154
-      m_Y: 10
-      m_Width: 48
-      m_Height: 59
-    m_Scale: 1
-    m_AtlasIndex: 0
-    m_ClassDefinitionType: 0
   - m_Index: 2020
     m_Metrics:
       m_Width: 9
@@ -291,10 +276,25 @@ MonoBehaviour:
     m_Scale: 1
     m_AtlasIndex: 0
     m_ClassDefinitionType: 0
+  - m_Index: 2030
+    m_Metrics:
+      m_Width: 64
+      m_Height: 9
+      m_HorizontalBearingX: 11
+      m_HorizontalBearingY: 9
+      m_HorizontalAdvance: 86
+    m_GlyphRect:
+      m_X: 10
+      m_Y: 10
+      m_Width: 64
+      m_Height: 9
+    m_Scale: 1
+    m_AtlasIndex: 0
+    m_ClassDefinitionType: 0
   m_CharacterTable:
   - m_ElementType: 1
-    m_Unicode: 8230
-    m_GlyphIndex: 2030
+    m_Unicode: 35
+    m_GlyphIndex: 6
     m_Scale: 1
   - m_ElementType: 1
     m_Unicode: 43
@@ -305,12 +305,12 @@ MonoBehaviour:
     m_GlyphIndex: 868
     m_Scale: 1
   - m_ElementType: 1
-    m_Unicode: 35
-    m_GlyphIndex: 6
-    m_Scale: 1
-  - m_ElementType: 1
     m_Unicode: 8217
     m_GlyphIndex: 2020
+    m_Scale: 1
+  - m_ElementType: 1
+    m_Unicode: 8230
+    m_GlyphIndex: 2030
     m_Scale: 1
   m_AtlasTextures:
   - {fileID: 28268798066460806}
@@ -3199,7 +3199,7 @@ Texture2D:
   m_MipsStripped: 0
   m_TextureFormat: 1
   m_MipCount: 1
-  m_IsReadable: 1
+  m_IsReadable: 0
   m_IsPreProcessed: 0
   m_IgnoreMipmapLimit: 0
   m_MipmapLimitGroupName: 
