@@ -33,7 +33,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject uiInfoPrefab;
     private GameObject uiInfoPrefabInstance;
     [SerializeField] private GameObject InfoPanelPos;
-    
+    private RectTransform InfoPanelPosRect;
+    private Vector2 InfoPanelPosOriginal;
+
     [Header("Canvas")]
     public GameObject Canvas;
 
@@ -46,6 +48,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject cardInfoPrefab;
     private GameObject cardInfoPrefabInstance;
     [SerializeField] private GameObject CardInfoPanelPos;
+    private RectTransform CardInfoPanelPosRect;
+    private Vector2 CardInfoPanelPosOriginal;
 
     [Header("Actions Info Panel")]
     [SerializeField] private GameObject actionsInfoPrefab;
@@ -136,6 +140,12 @@ public class UIManager : MonoBehaviour
 
         var instance = lensCap.gameObject.AddTween(backgroundTween);
         drawCardSlide = DrawCardButton.GetComponent<UIDialogueSlide>();
+
+        CardInfoPanelPosRect = CardInfoPanelPos.GetComponent<RectTransform>();
+        CardInfoPanelPosOriginal = CardInfoPanelPosRect.anchoredPosition;
+
+        InfoPanelPosRect = InfoPanelPos.GetComponent<RectTransform>();
+        InfoPanelPosOriginal = InfoPanelPosRect.anchoredPosition;
     }
 
     private void Update()
@@ -280,6 +290,7 @@ public class UIManager : MonoBehaviour
         }
         
         uiInfoPrefabInstance = Instantiate(uiInfoPrefab, InfoPanelPos.transform.position, Quaternion.identity, InfoPanelPos.transform);
+        UIDialogueSlide slideScript = InfoPanelPos.GetComponent<UIDialogueSlide>();
 
         Transform[] children = uiInfoPrefabInstance.GetComponentsInChildren<Transform>();
 
@@ -333,7 +344,8 @@ public class UIManager : MonoBehaviour
 
         totalText.text = total.ToString();
 
-
+        slideScript.SlideIn();
+        AudioManager.singleton.PlaySound("scrollOpen", true, 0.6f);
 
     }
 
@@ -607,7 +619,7 @@ public class UIManager : MonoBehaviour
                 button.gameObject.SetActive(false);
         }
 
-        AudioManager.singleton.PlaySound("scrollOpen", true, 0.6f);
+        
         slideScript.SlideIn();
 
     }
@@ -617,12 +629,14 @@ public class UIManager : MonoBehaviour
         if (uiInfoPrefabInstance)
         {
             DestroyImmediate(uiInfoPrefabInstance);
+            InfoPanelPosRect.anchoredPosition = InfoPanelPosOriginal;
         }
         
         if (cardInfoPrefabInstance)
         {
             DestroyImmediate(cardInfoPrefabInstance);
-        }
+            CardInfoPanelPosRect.anchoredPosition = CardInfoPanelPosOriginal;
+        }       
 
         StopAllCoroutines();
 
