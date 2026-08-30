@@ -970,6 +970,14 @@ Networked version of Recall Card, is called automatically if network is present.
 
 Source: `Assets/Scripts/Core/GameManager.cs`
 
+### `SaveGameWin(Player.PlayerId winner)`
+
+**Access:** Public
+
+```csharp
+public void SaveGameWin(Player.PlayerId winner)
+```
+
 ### `ReturnToLobby()`
 
 **Access:** Public
@@ -2273,6 +2281,14 @@ Rotates the card attack pattern preview in the UI
 ## UIManagerMainMenu
 
 Source: `Assets/Scripts/UI/UIManagerMainMenu.cs`
+
+### `GetGamesWon()`
+
+**Access:** Public
+
+```csharp
+public int GetGamesWon()
+```
 
 ### `SetMenuScreen(int newState)`
 

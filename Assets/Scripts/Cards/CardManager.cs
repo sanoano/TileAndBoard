@@ -326,6 +326,11 @@ public class CardManager : NetworkBehaviour
         var cardSprites = cardVisual.GetComponentsInChildren<SpriteRenderer>(true);
         var cardManna = cardVisual.GetComponentsInChildren<Image>(true);
 
+        if (cardData.Name.Length > 13)//Shrinks text slightly on longer names. Default is 0.5
+            textFields[0].fontSize = 0.35f;
+        else
+            textFields[0].fontSize = 0.5f;
+
         textFields[0].text = cardData.Name;
         textFields[1].text = cardData.Health.ToString();
 

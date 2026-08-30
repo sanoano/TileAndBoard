@@ -671,6 +671,8 @@ public class UIManager : MonoBehaviour
 
     public IEnumerator DisplayEndGameScreen(Player.PlayerId id)
     {
+        GameManager.instance.SaveGameWin(id);
+
         victoryText.gameObject.SetActive(true);
         
         if (id == Player.PlayerId.Player1)
