@@ -51,6 +51,7 @@ public class Lobby : MonoBehaviour
     [SerializeField] private TMP_InputField sessionName;
     [SerializeField] private TMP_InputField timerInput;
     [SerializeField] private TMP_InputField lpInput;
+    [SerializeField] private Button createLocalGameButton;
      /*[SerializeField] private TMP_Dropdown timerSelect;
       [SerializeField] private TMP_Dropdown healthSelect;*/
 
@@ -62,6 +63,7 @@ public class Lobby : MonoBehaviour
    [SerializeField] private GameObject sessionListContent;
    [SerializeField] private GameObject sessionList;
    [SerializeField] private Button joinButton;
+   [SerializeField] private Button searchLocalButton;
 
    [Header("Parameters")] 
    [SerializeField] private float checkDisconnectTime;
@@ -136,12 +138,14 @@ public class Lobby : MonoBehaviour
         sessionName.onValueChanged.AddListener(onSessionNameSet);
         joinCodeInput.onValueChanged.AddListener(onJoinCodeSet);
         createGameButton.onClick.AddListener(StartSession);
+        createLocalGameButton.onClick.AddListener(StartLanSession);
         joinGameDirectButton.onClick.AddListener(JoinGameByJoinCode);
         privateToggle.onValueChanged.AddListener(onPrivateSet);
         //timerToggle.onValueChanged.AddListener(onTimerSet);
         reconnectButton.onClick.AddListener(Reconnect);
         joinButton.onClick.AddListener(QuerySessionsFromButton);
         refreshButton.onClick.AddListener(QuerySessionsFromButton);
+        searchLocalButton.onClick.AddListener(QueryLanSessions);
         //timerSelect.onValueChanged.AddListener(SetTurnTimePerTurn);
         //healthSelect.onValueChanged.AddListener(SetStartingPlayerHealth);
 
@@ -691,29 +695,29 @@ public class Lobby : MonoBehaviour
            : fallback;
    }
 
-   private static int GetDropdownSetting(TMP_Dropdown dropdown, int optionIndex, int fallback)
-   {
-       if (dropdown == null || optionIndex < 0 || optionIndex >= dropdown.options.Count)
-       {
-           return fallback;
-       }
+//    private static int GetDropdownSetting(TMP_Dropdown dropdown, int optionIndex, int fallback)
+//    {
+//        if (dropdown == null || optionIndex < 0 || optionIndex >= dropdown.options.Count)
+//        {
+//            return fallback;
+//        }
 
-       return ParsePositiveSetting(dropdown.options[optionIndex].text, fallback);
-   }
+//        return ParsePositiveSetting(dropdown.options[optionIndex].text, fallback);
+//    }
 
-   private static void SetDropdownToSetting(TMP_Dropdown dropdown, int setting)
-   {
-       if (dropdown == null) return;
+//    private static void SetDropdownToSetting(TMP_Dropdown dropdown, int setting)
+//    {
+//        if (dropdown == null) return;
 
-       for (int i = 0; i < dropdown.options.Count; i++)
-       {
-           if (ParsePositiveSetting(dropdown.options[i].text, -1) != setting) continue;
+//        for (int i = 0; i < dropdown.options.Count; i++)
+//        {
+//            if (ParsePositiveSetting(dropdown.options[i].text, -1) != setting) continue;
 
-           dropdown.SetValueWithoutNotify(i);
-           dropdown.RefreshShownValue();
-           return;
-       }
-   }
+//            dropdown.SetValueWithoutNotify(i);
+//            dropdown.RefreshShownValue();
+//            return;
+//        }
+//    }
 
    void OnTransportFailure()
    {
@@ -762,6 +766,7 @@ public class Lobby : MonoBehaviour
 
        UnityTransport transport = UseLanTransport();
        transport.SetConnectionData(session.address, (ushort)session.port);
+       m_NetworkManager.NetworkConfig.ConnectionApproval = true;
 
        if (!m_NetworkManager.StartClient())
        {
@@ -885,16 +890,18 @@ public class Lobby : MonoBehaviour
            : "";
    }
 
-   private void ClearSessionList()
-   {
-       foreach (Transform child in sessionListContent.GetComponentsInChildren<Transform>())
-       {
-           if (child.gameObject != sessionListContent)
-           {
-               Destroy(child.gameObject);
-           }
-       }
-   }
+    private void ClearSessionList()
+    {
+        if (sessionListContent == null) return;
+
+        foreach (Transform child in sessionListContent.GetComponentsInChildren<Transform>())
+        {
+            if (child.gameObject != sessionListContent)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+    }
 
    private string GetPlayerDisplayName()
    {
