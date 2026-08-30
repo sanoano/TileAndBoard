@@ -156,7 +156,7 @@ public class UIManagerLobby : MonoBehaviour
 
         yield return instance.AwaitDecommission();
 
-        if (NetworkManager.Singleton.LocalClient.IsSessionOwner)
+        if (NetworkManager.Singleton.LocalClient.IsSessionOwner || NetworkManager.Singleton.IsHost)
         {
             NetworkManager.Singleton.SceneManager.LoadScene("BattleArena", LoadSceneMode.Single);
         }

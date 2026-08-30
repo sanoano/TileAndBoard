@@ -4,6 +4,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using TMPro;
 using Tweens;
+using Unity.Collections;
 using Unity.Entities.UniversalDelegates;
 using Unity.IO.LowLevel.Unsafe;
 using Unity.Netcode;
@@ -21,6 +22,22 @@ public class WaitingRoom : NetworkBehaviour
     private Lobby lobby;
     private bool isUpdatingReadyState;
     private bool isStartingGame;
+    private readonly NetworkVariable<FixedString64Bytes> lanHostName = new(
+        default,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server);
+    private readonly NetworkVariable<FixedString64Bytes> lanClientName = new(
+        default,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server);
+    private readonly NetworkVariable<bool> lanHostReady = new(
+        false,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server);
+    private readonly NetworkVariable<bool> lanClientReady = new(
+        false,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server);
 
     [Header("UI References")] 
     [SerializeField] private Button readyGameButton;
@@ -34,14 +51,26 @@ public class WaitingRoom : NetworkBehaviour
         lobby.m_NetworkManager.OnClientDisconnectCallback += OnClientDisconnectCallback;
 
         
-        await SetReadyStateAsync(false);
+        if (!lobby.IsLanSession)
+        {
+            await SetReadyStateAsync(false);
+        }
 
         UIManagerLobby.Instance.UpdateReadyButton(0);
     }
 
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+
+        lobby = NetworkManager.Singleton.gameObject.GetComponent<Lobby>();
+        if (!lobby.IsLanSession) return;
+
+        RegisterLanPlayerRpc(new FixedString64Bytes(lobby.PlayerDisplayName));
+    }
+
     private void Update()
     {
-        bool isSessionOwner = NetworkManager.Singleton.LocalClient.IsSessionOwner;
         //bool canStartGame = CanStartGame();
         bool playersReady = AreAllPlayersReady();
 
@@ -57,7 +86,14 @@ public class WaitingRoom : NetworkBehaviour
         UpdateReadyButton();
         UpdateWaitingText();
 
-        UIManagerLobby.Instance.UpdateSessionInfo(lobby._session.Name, $"Join Code: {lobby._session.Code}");
+        if (lobby.IsLanSession)
+        {
+            UIManagerLobby.Instance.UpdateSessionInfo(lobby.LanSessionName, "Nearby game");
+        }
+        else
+        {
+            UIManagerLobby.Instance.UpdateSessionInfo(lobby._session.Name, $"Join Code: {lobby._session.Code}");
+        }
 
         if (playersReady)
         {
@@ -69,6 +105,13 @@ public class WaitingRoom : NetworkBehaviour
 
     private void UpdatePlayerName()
     {
+        if (lobby.IsLanSession)
+        {
+            UIManagerLobby.Instance.UpdatePlayerName(true, lanHostName.Value.ToString());
+            UIManagerLobby.Instance.UpdatePlayerName(false, lanClientName.Value.ToString());
+            return;
+        }
+
         for (int i = 0; i < lobby._session.Players.Count; i++)
         {
             var player = lobby._session.Players[i];
@@ -83,6 +126,17 @@ public class WaitingRoom : NetworkBehaviour
 
     private void UpdatePlayerStatus()
     {
+        if (lobby.IsLanSession)
+        {
+            UIManagerLobby.Instance.UpdatePlayerStatus(true, lanHostReady.Value ? "READY" : "NOT READY");
+            UIManagerLobby.Instance.UpdatePlayerStatus(
+                false,
+                string.IsNullOrEmpty(lanClientName.Value.ToString())
+                    ? ""
+                    : lanClientReady.Value ? "READY" : "NOT READY");
+            return;
+        }
+
         for (int i = 0; i < lobby._session.Players.Count; i++)
         {
             var player = lobby._session.Players[i];
@@ -99,6 +153,12 @@ public class WaitingRoom : NetworkBehaviour
 
     private void OnClientDisconnectCallback(ulong id)
     {
+        if (lobby.IsLanSession && IsServer && id != NetworkManager.ServerClientId)
+        {
+            lanClientName.Value = default;
+            lanClientReady.Value = false;
+        }
+
         UpdatePlayerName();
     }
 
@@ -109,7 +169,18 @@ public class WaitingRoom : NetworkBehaviour
 
     private async Task SetReadyStateAsync(bool isReady)
     {
-        if (isStartingGame || isUpdatingReadyState || lobby?._session?.CurrentPlayer == null)
+        if (isStartingGame || isUpdatingReadyState)
+        {
+            return;
+        }
+
+        if (lobby != null && lobby.IsLanSession)
+        {
+            SetLanReadyRpc(isReady);
+            return;
+        }
+
+        if (lobby?._session?.CurrentPlayer == null)
         {
             return;
         }
@@ -167,11 +238,22 @@ public class WaitingRoom : NetworkBehaviour
 
     private bool CanStartGame()
     {
-        return NetworkManager.Singleton.LocalClient.IsSessionOwner && AreAllPlayersReady();
+        bool controlsSession = lobby.IsLanSession
+            ? NetworkManager.Singleton.IsHost
+            : NetworkManager.Singleton.LocalClient.IsSessionOwner;
+
+        return controlsSession && AreAllPlayersReady();
     }
 
     private bool AreAllPlayersReady()
     {
+        if (lobby.IsLanSession)
+        {
+            return NetworkManager.Singleton.ConnectedClientsIds.Count == 2 &&
+                   lanHostReady.Value &&
+                   lanClientReady.Value;
+        }
+
         if (NetworkManager.Singleton.ConnectedClientsIds.Count != 2 ||
             lobby._session.Players.Count != 2)
         {
@@ -191,7 +273,40 @@ public class WaitingRoom : NetworkBehaviour
 
     private bool IsLocalPlayerReady()
     {
+        if (lobby != null && lobby.IsLanSession)
+        {
+            return NetworkManager.Singleton.LocalClientId == NetworkManager.ServerClientId
+                ? lanHostReady.Value
+                : lanClientReady.Value;
+        }
+
         return lobby?._session?.CurrentPlayer != null && IsPlayerReady(lobby._session.CurrentPlayer);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void RegisterLanPlayerRpc(FixedString64Bytes playerName, RpcParams rpcParams = default)
+    {
+        if (rpcParams.Receive.SenderClientId == NetworkManager.ServerClientId)
+        {
+            lanHostName.Value = playerName;
+        }
+        else
+        {
+            lanClientName.Value = playerName;
+        }
+    }
+
+    [Rpc(SendTo.Server)]
+    private void SetLanReadyRpc(bool isReady, RpcParams rpcParams = default)
+    {
+        if (rpcParams.Receive.SenderClientId == NetworkManager.ServerClientId)
+        {
+            lanHostReady.Value = isReady;
+        }
+        else
+        {
+            lanClientReady.Value = isReady;
+        }
     }
 
     private static bool IsPlayerReady(IReadOnlyPlayer player)

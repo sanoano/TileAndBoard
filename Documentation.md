@@ -1038,6 +1038,14 @@ private void SetPlayer2NameRpc(string name, RpcParams rpcParams = default)
 
 Self-explanatory
 
+### `TrimPlayerName(string name)`
+
+**Access:** Private
+
+```csharp
+private static string TrimPlayerName(string name)
+```
+
 
 ## Hourglass
 
@@ -1277,12 +1285,12 @@ private void onPrivateSet(bool value)
 
 Self-explanatory
 
-### `SetTurnTimePerTurn(int optionIndex)`
+### `SetTurnTimePerTurn(bool defaults)`
 
-**Access:** Private
+**Access:** Public
 
 ```csharp
-private void SetTurnTimePerTurn(int optionIndex)
+public void SetTurnTimePerTurn(bool defaults)
 ```
 
 **Description / comments:**
@@ -1290,12 +1298,12 @@ private void SetTurnTimePerTurn(int optionIndex)
 <!-- Add description/comments here. -->
 
 
-### `SetStartingPlayerHealth(int optionIndex)`
+### `SetStartingPlayerHealth(bool defaults)`
 
-**Access:** Private
+**Access:** Public
 
 ```csharp
-private void SetStartingPlayerHealth(int optionIndex)
+public void SetStartingPlayerHealth(bool defaults)
 ```
 
 **Description / comments:**
@@ -1513,6 +1521,170 @@ private void OnTransportFailure()
 
 Handles a rare edge case that pretty much never happens
 
+### `QueryLanSessions()`
+
+**Access:** Public
+
+```csharp
+public void QueryLanSessions()
+```
+
+### `StopLanDiscovery()`
+
+**Access:** Public
+
+```csharp
+public void StopLanDiscovery()
+```
+
+### `JoinLanSession(LanSessionInfo session)`
+
+**Access:** Public
+
+```csharp
+public void JoinLanSession(LanSessionInfo session)
+```
+
+### `StartLanSession()`
+
+**Access:** Public
+
+```csharp
+public void StartLanSession()
+```
+
+### `UseLanTransport()`
+
+**Access:** Private
+
+```csharp
+private UnityTransport UseLanTransport()
+```
+
+### `UseOnlineTransport()`
+
+**Access:** Private
+
+```csharp
+private void UseOnlineTransport()
+```
+
+### `ApproveLanConnection(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)`
+
+**Access:** Private
+
+```csharp
+private void ApproveLanConnection(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
+```
+
+### `DisplayNearbySessions()`
+
+**Access:** Private
+
+```csharp
+private void DisplayNearbySessions()
+```
+
+### `ClearSessionList()`
+
+**Access:** Private
+
+```csharp
+private void ClearSessionList()
+```
+
+### `GetPlayerDisplayName()`
+
+**Access:** Private
+
+```csharp
+private string GetPlayerDisplayName()
+```
+
+## LanDiscovery
+
+Source: `Assets/Scripts/Multiplayer/LanDiscovery.cs`
+
+### `StartHosting(LanSessionInfo session)`
+
+**Access:** Public
+
+```csharp
+public void StartHosting(LanSessionInfo session)
+```
+
+### `StartSearching()`
+
+**Access:** Public
+
+```csharp
+public void StartSearching()
+```
+
+### `Stop()`
+
+**Access:** Public
+
+```csharp
+public void Stop()
+```
+
+### `Update()`
+
+**Access:** Private
+
+```csharp
+private void Update()
+```
+
+### `OpenSocket()`
+
+**Access:** Private
+
+```csharp
+private void OpenSocket()
+```
+
+### `BroadcastSession()`
+
+**Access:** Private
+
+```csharp
+private void BroadcastSession()
+```
+
+### `ReceiveSessions()`
+
+**Access:** Private
+
+```csharp
+private void ReceiveSessions()
+```
+
+### `RemoveStaleSessions()`
+
+**Access:** Private
+
+```csharp
+private void RemoveStaleSessions()
+```
+
+### `IsValid(LanSessionInfo session)`
+
+**Access:** Private
+
+```csharp
+private static bool IsValid(LanSessionInfo session)
+```
+
+### `OnDestroy()`
+
+**Access:** Private
+
+```csharp
+private void OnDestroy()
+```
+
 
 ## ManaManager
 
@@ -1633,6 +1805,14 @@ public void SetJoinButton(string sessionID, Lobby manager)
 <!-- Add description/comments here. -->
 
 Sets up the join button for this entry in the session list
+
+### `SetLanJoinButton(LanSessionInfo session, Lobby manager)`
+
+**Access:** Public
+
+```csharp
+public void SetLanJoinButton(LanSessionInfo session, Lobby manager)
+```
 
 
 ## Settings
@@ -2411,6 +2591,14 @@ private async void Start()
 
 <!-- Add description/comments here. -->
 
+### `OnNetworkSpawn()`
+
+**Access:** Public
+
+```csharp
+public override void OnNetworkSpawn()
+```
+
 ### `UpdatePlayerList()`
 
 **Access:** Private
@@ -2449,10 +2637,10 @@ private void OnClientDisconnectCallback(ulong id)
 
 ### `ToggleReady()`
 
-**Access:** Private
+**Access:** Public
 
 ```csharp
-private async void ToggleReady()
+public async void ToggleReady()
 ```
 
 **Description / comments:**
@@ -2530,6 +2718,22 @@ private bool IsLocalPlayerReady()
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+### `RegisterLanPlayerRpc(FixedString64Bytes playerName, RpcParams rpcParams = default)`
+
+**Access:** Private
+
+```csharp
+private void RegisterLanPlayerRpc(FixedString64Bytes playerName, RpcParams rpcParams = default)
+```
+
+### `SetLanReadyRpc(bool isReady, RpcParams rpcParams = default)`
+
+**Access:** Private
+
+```csharp
+private void SetLanReadyRpc(bool isReady, RpcParams rpcParams = default)
+```
 
 ### `IsPlayerReady(IReadOnlyPlayer player)`
 
