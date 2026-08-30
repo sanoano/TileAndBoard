@@ -57,6 +57,7 @@ public class WaitingRoom : NetworkBehaviour
         }
 
         UIManagerLobby.Instance.UpdateReadyButton(0);
+        UIManagerLobby.Instance.SetParameterValues(lobby.TurnTimeSeconds, lobby.StartingPlayerHealth);
     }
 
     public override void OnNetworkSpawn()
@@ -88,7 +89,7 @@ public class WaitingRoom : NetworkBehaviour
 
         if (lobby.IsLanSession)
         {
-            UIManagerLobby.Instance.UpdateSessionInfo(lobby.LanSessionName, "Nearby game");
+            UIManagerLobby.Instance.UpdateSessionInfo(lobby.LanSessionName, "Local Game");
         }
         else
         {
