@@ -44,9 +44,17 @@ public class UIManagerLobby : MonoBehaviour
     private void Awake()
     {
         if (Instance == null)
+        {
             Instance = this;
+        }
         else
+        {
             Destroy(gameObject);
+            return;
+        }
+
+        readyGameButtonTMP = readyGameButton.GetComponentInChildren<TextMeshProUGUI>();
+        waitingStatusTMP = waitingStatus.GetComponentInChildren<TextMeshProUGUI>();
     }
 
     void Start()
@@ -61,8 +69,6 @@ public class UIManagerLobby : MonoBehaviour
 
         otherIsland.SetActive(false);
 
-        readyGameButtonTMP = readyGameButton.GetComponentInChildren<TextMeshProUGUI>();
-        waitingStatusTMP = waitingStatus.GetComponentInChildren<TextMeshProUGUI>();
     }
 
     public void CountdownUI(string number)
@@ -156,7 +162,7 @@ public class UIManagerLobby : MonoBehaviour
 
         yield return instance.AwaitDecommission();
 
-        if (NetworkManager.Singleton.LocalClient.IsSessionOwner)
+        if (NetworkManager.Singleton.LocalClient.IsSessionOwner || NetworkManager.Singleton.IsHost)
         {
             NetworkManager.Singleton.SceneManager.LoadScene("BattleArena", LoadSceneMode.Single);
         }

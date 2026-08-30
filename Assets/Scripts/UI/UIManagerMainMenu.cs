@@ -81,6 +81,11 @@ public class UIManagerMainMenu : MonoBehaviour
             lobby?.LoadPreferredMatchSettings();
         }
 
+        if (newState != 5)
+        {
+            lobby?.StopLanDiscovery();
+        }
+
         // try
         // {
         foreach (GameObject[] array in UIlist)

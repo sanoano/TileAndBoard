@@ -70,7 +70,10 @@ public class GameManager : NetworkBehaviour
     {
         try
         {
-            playerName = await AuthenticationService.Instance.GetPlayerNameAsync();
+            Lobby lobby = NetworkManager.Singleton.GetComponent<Lobby>();
+            playerName = lobby.IsLanSession
+                ? lobby.PlayerDisplayName
+                : await AuthenticationService.Instance.GetPlayerNameAsync();
 
             if (playerId == Player.PlayerId.Player1)
             {
@@ -97,7 +100,7 @@ public class GameManager : NetworkBehaviour
     [Rpc(SendTo.SpecifiedInParams)]
     void SetPlayer1NameRpc(string name, RpcParams rpcParams = default)
     {
-        string trimmedName = name.Substring(0, name.Length - 5); // Removes the username suffix ie. #XXXX
+        string trimmedName = TrimPlayerName(name);
         if (playerId == Player.PlayerId.Player1)
         {
             UIManager.Instance.player1Name.text = trimmedName;
@@ -113,7 +116,7 @@ public class GameManager : NetworkBehaviour
     [Rpc(SendTo.SpecifiedInParams)]
     void SetPlayer2NameRpc(string name, RpcParams rpcParams = default)
     {
-        string trimmedName = name.Substring(0, name.Length - 5); 
+        string trimmedName = TrimPlayerName(name);
         if (playerId == Player.PlayerId.Player1)
         {
             UIManager.Instance.player2Name.text = trimmedName;
@@ -123,6 +126,12 @@ public class GameManager : NetworkBehaviour
             UIManager.Instance.player1Name.text = trimmedName;
 
         }
+    }
+
+    private static string TrimPlayerName(string name)
+    {
+        int suffixIndex = name.LastIndexOf('#');
+        return suffixIndex > 0 ? name.Substring(0, suffixIndex) : name;
     }
 
     public async void DisconnectUser()
