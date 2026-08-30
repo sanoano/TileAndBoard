@@ -44,9 +44,17 @@ public class UIManagerLobby : MonoBehaviour
     private void Awake()
     {
         if (Instance == null)
+        {
             Instance = this;
+        }
         else
+        {
             Destroy(gameObject);
+            return;
+        }
+
+        readyGameButtonTMP = readyGameButton.GetComponentInChildren<TextMeshProUGUI>();
+        waitingStatusTMP = waitingStatus.GetComponentInChildren<TextMeshProUGUI>();
     }
 
     void Start()
@@ -61,8 +69,6 @@ public class UIManagerLobby : MonoBehaviour
 
         otherIsland.SetActive(false);
 
-        readyGameButtonTMP = readyGameButton.GetComponentInChildren<TextMeshProUGUI>();
-        waitingStatusTMP = waitingStatus.GetComponentInChildren<TextMeshProUGUI>();
     }
 
     public void CountdownUI(string number)
