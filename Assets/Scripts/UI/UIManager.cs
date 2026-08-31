@@ -507,12 +507,15 @@ public class UIManager : MonoBehaviour
             {
                 if (unitToDisplay.Damage > 0)
                 {
-                    buttons[0].onClick.AddListener(BoardManager.Instance.PrepareAttack);
                     if (!ManaManager.instance.CanAfford(unitToDisplay.Cost) || !TurnManager.instance.isYourTurn)
                     {
                         buttons[0].onClick.AddListener(() => TextDialogue.instance.DialogueRecieveStatus(1));
                         TextMeshProUGUI AttackButtonText = buttons[0].gameObject.GetComponentInChildren<TextMeshProUGUI>();
                         AttackButtonText.fontStyle = FontStyles.Strikethrough;
+                    }
+                    else
+                    {
+                        buttons[0].onClick.AddListener(BoardManager.Instance.PrepareAttack);
                     }
                 }
                 else
@@ -523,12 +526,15 @@ public class UIManager : MonoBehaviour
 
                 if (unitToDisplay.Defense > 0)
                 {
-                    buttons[1].onClick.AddListener(BoardManager.Instance.PrepareDefense);
                     if (!ManaManager.instance.CanAfford(unitToDisplay.Cost) || !TurnManager.instance.isYourTurn)
                     {
                         buttons[1].onClick.AddListener(() => TextDialogue.instance.DialogueRecieveStatus(1));
                         TextMeshProUGUI DefendButtonText = buttons[1].gameObject.GetComponentInChildren<TextMeshProUGUI>();
                         DefendButtonText.fontStyle = FontStyles.Strikethrough;
+                    }
+                    else
+                    {
+                        buttons[1].onClick.AddListener(BoardManager.Instance.PrepareDefense);
                     }
                 }
                 else
@@ -538,12 +544,15 @@ public class UIManager : MonoBehaviour
 
                 if (unitToDisplay.Movement > 0)
                 {
-                    buttons[2].onClick.AddListener(BoardManager.Instance.PrepareMovement);
                     if (!ManaManager.instance.CanAfford(unitToDisplay.Cost) || !TurnManager.instance.isYourTurn)
                     {
                         buttons[2].onClick.AddListener(() => TextDialogue.instance.DialogueRecieveStatus(1));
                         TextMeshProUGUI MoveButtonText = buttons[2].gameObject.GetComponentInChildren<TextMeshProUGUI>();
                         MoveButtonText.fontStyle = FontStyles.Strikethrough;
+                    }
+                    else
+                    {
+                        buttons[2].onClick.AddListener(BoardManager.Instance.PrepareMovement);
                     }
                 }
                 else
