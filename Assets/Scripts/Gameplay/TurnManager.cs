@@ -105,7 +105,7 @@ public class TurnManager : NetworkBehaviour
 
         if (!isYourTurn)
         {
-            turnButton.gameObject.SetActive(false);
+            turnButton.interactable = false;
         }
     }
 
@@ -284,7 +284,7 @@ public class TurnManager : NetworkBehaviour
 
         if (!turnForceEnded)
         {
-            AudioManager.singleton.PlaySound("stonePush", false, 0.4f);
+            AudioManager.singleton.PlaySound("scrollOpen", false, 0.4f);
         }
         turnForceEnded = false;
 
@@ -337,13 +337,13 @@ public class TurnManager : NetworkBehaviour
 
     private void ApplyTurnChange(TurnState turn)
     {
-        if (turnButton.IsActive() == false)
+        if (turnButton.interactable == false)
         {
-            turnButton.gameObject.SetActive(true);
+            turnButton.interactable = true;
         }
         else
         {
-            turnButton.gameObject.SetActive(false);
+            turnButton.interactable = false;
         }
         currentTurn = turn;
         currentTime = maxTimePerTurn;

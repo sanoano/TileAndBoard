@@ -80,6 +80,8 @@ public class UIManager : MonoBehaviour
     [Header("Turn Display")] 
     [SerializeField] private TextMeshProUGUI turnCountText;
     [SerializeField] private TextMeshProUGUI turnTimer;
+    [SerializeField] private Button EndTurnButton;
+    private UIDialogueSlide endTurnSlide;
 
     [Header("Usernames")] 
     public TextMeshProUGUI player1Name;
@@ -140,6 +142,7 @@ public class UIManager : MonoBehaviour
 
         var instance = lensCap.gameObject.AddTween(backgroundTween);
         drawCardSlide = DrawCardButton.GetComponent<UIDialogueSlide>();
+        endTurnSlide = EndTurnButton.GetComponent<UIDialogueSlide>();
 
         CardInfoPanelPosRect = CardInfoPanelPos.GetComponent<RectTransform>();
         CardInfoPanelPosOriginal = CardInfoPanelPosRect.anchoredPosition;
@@ -156,11 +159,11 @@ public class UIManager : MonoBehaviour
             DestroyCurrentInfoInstance();
         }
 
-        tacticsText.text = $"Manna: {ManaManager.instance.currentManaPoints}";
+        tacticsText.text = $": {ManaManager.instance.currentManaPoints}";
 
         handAmount.text = $"{CardManager.instance.playerHand.Count} / {CardManager.instance.maxCards}";
 
-        turnCountText.text = $"Turn {TurnManager.instance.turnCount}";
+        turnCountText.text = $"Round {TurnManager.instance.turnCount}";
 
         /*if (TurnManager.instance.isYourTurn)
         {
@@ -171,16 +174,18 @@ public class UIManager : MonoBehaviour
             turnTimer.text = String.Empty;
         }*/
 
-        turnTimer.text = String.Format("{0:0}:{1:00}", Mathf.Floor(((int)TurnManager.instance.currentTime) / 60), ((int)TurnManager.instance.currentTime) % 60);
+        turnTimer.text = String.Format("{00:00}:{1:00}", Mathf.Floor(((int)TurnManager.instance.currentTime) / 60), ((int)TurnManager.instance.currentTime) % 60);
 
         if (TurnManager.instance.isYourTurn && !slideOnce)
         {
             drawCardSlide.SlideIn();
+            endTurnSlide.SlideIn();
             slideOnce = true;
         }
         else if (!TurnManager.instance.isYourTurn && slideOnce)
         {
             drawCardSlide.SlideOut();
+            endTurnSlide.SlideOut();
             slideOnce = false;
         }
     }
