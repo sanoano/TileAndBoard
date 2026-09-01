@@ -5,21 +5,25 @@ using TMPro;
 using Tweens;
 using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static UIManager;
+using static UnityEngine.GraphicsBuffer;
 
 public class UIManagerLobby : MonoBehaviour
 {// This controls all manner of 2D and 3D interface and decorations for the lobby
 
     public static UIManagerLobby Instance;
 
-    [Header("UI References")]
+    [Header("Session Info")]
     [SerializeField] private TextMeshProUGUI sessionNameTMP;
     [SerializeField] private TextMeshProUGUI joinCodeTMP;
-    //[SerializeField] private TextMeshProUGUI playerListTMP;
+    [SerializeField] private TextMeshProUGUI timerLengthTMP;
+    [SerializeField] private TextMeshProUGUI lifePointsTMP;
+
     [SerializeField] private TextMeshProUGUI player1NameTMP, player2NameTMP, player1StatusTMP, player2StatusTMP;
 
     [SerializeField] private TextMeshProUGUI countdownTMP;
@@ -35,11 +39,19 @@ public class UIManagerLobby : MonoBehaviour
 
     [SerializeField] private Image lensCap;
 
+    [SerializeField] private GameObject nameBanner;
+    [SerializeField] private GameObject infoBanner;
+    private RectTransform infoBannerRect;
+
+    
+
+    [Header("3D Objects")]
     [SerializeField] private GameObject otherIsland;
     private bool islandDoOnce = false;
 
     [Header("Parameters")]
     [SerializeField] private float fadeDuration;
+    private int gameTime, gameLP;
 
     private void Awake()
     {
@@ -55,6 +67,11 @@ public class UIManagerLobby : MonoBehaviour
 
         readyGameButtonTMP = readyGameButton.GetComponentInChildren<TextMeshProUGUI>();
         waitingStatusTMP = waitingStatus.GetComponentInChildren<TextMeshProUGUI>();
+
+        infoBannerRect = infoBanner.GetComponent<RectTransform>();
+        infoBannerRect.sizeDelta = new Vector2(300, 290);
+        timerLengthTMP.text = "";
+        lifePointsTMP.text = "";
     }
 
     void Start()
@@ -69,6 +86,43 @@ public class UIManagerLobby : MonoBehaviour
 
         otherIsland.SetActive(false);
 
+        UIDialogueSlide slideScript = nameBanner.GetComponent<UIDialogueSlide>();
+        slideScript.SlideIn();
+
+        StartCoroutine(UnfurlSessionInfo());
+
+    }
+
+    private IEnumerator UnfurlSessionInfo()
+    {
+        Vector2 start = infoBannerRect.sizeDelta;
+        Vector2 end = new Vector2(620, 290);
+
+        float timer = 0.0f;
+        float duration = 0.25f;
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+
+            float t = timer / duration;
+            t = Mathf.SmoothStep(0f, 1f, t);
+
+            infoBannerRect.sizeDelta = Vector2.Lerp(start, end, t);
+
+            yield return null;
+        }
+
+        timerLengthTMP.text = "Timer Duration: " + gameTime;
+        lifePointsTMP.text = "Life Points: " + gameLP;
+
+        yield return null;
+    }
+
+    public void SetParameterValues(int time, int lp)
+    {
+        gameTime = time;
+        gameLP = lp;
     }
 
     public void CountdownUI(string number)
