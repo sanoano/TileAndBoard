@@ -82,6 +82,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI turnTimer;
     [SerializeField] private Button EndTurnButton;
     private UIDialogueSlide endTurnSlide;
+    [SerializeField] private GameObject roundMsgBg;
+    private RectTransform roundMsgBgRect;
 
     [Header("Usernames")] 
     public TextMeshProUGUI player1Name;
@@ -149,6 +151,8 @@ public class UIManager : MonoBehaviour
 
         InfoPanelPosRect = InfoPanelPos.GetComponent<RectTransform>();
         InfoPanelPosOriginal = InfoPanelPosRect.anchoredPosition;
+
+        roundMsgBgRect = roundMsgBg.GetComponent<RectTransform>();
     }
 
     private void Update()
@@ -162,8 +166,6 @@ public class UIManager : MonoBehaviour
         tacticsText.text = $": {ManaManager.instance.currentManaPoints}";
 
         handAmount.text = $"{CardManager.instance.playerHand.Count} / {CardManager.instance.maxCards}";
-
-        turnCountText.text = $"Round {TurnManager.instance.turnCount}";
 
         /*if (TurnManager.instance.isYourTurn)
         {
@@ -798,6 +800,49 @@ public class UIManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public IEnumerator RoundNumberCounter()
+    {//Shows a message after both players have taken their turns.
+
+        Vector2 start = roundMsgBgRect.sizeDelta;
+        Vector2 end = new Vector2(2050, 300);
+
+        float timer = 0.0f;
+        float duration = 0.25f;
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+
+            float t = timer / duration;
+            t = Mathf.SmoothStep(0f, 1f, t);
+
+            roundMsgBgRect.sizeDelta = Vector2.Lerp(start, end, t);
+
+            yield return null;
+        }
+
+        turnCountText.text = $"Round {(TurnManager.instance.turnCount / 2) + 1}";
+
+        yield return new WaitForSeconds(1);
+
+        turnCountText.text = "";
+        timer = 0.0f;
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+
+            float t = timer / duration;
+            t = Mathf.SmoothStep(0f, 1f, t);
+
+            roundMsgBgRect.sizeDelta = Vector2.Lerp(end, start, t);
+
+            yield return null;
+        }
+
+        yield return null;
     }
 }
           

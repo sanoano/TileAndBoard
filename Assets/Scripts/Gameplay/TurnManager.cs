@@ -220,6 +220,9 @@ public class TurnManager : NetworkBehaviour
                 StartActivePlayerTurn(Player.PlayerId.Player2, BoardManager.Instance);
                 break;
         }
+
+        if (turnCount % 2 == 0)
+            StartCoroutine(UIManager.Instance.RoundNumberCounter());
         
     }
 
