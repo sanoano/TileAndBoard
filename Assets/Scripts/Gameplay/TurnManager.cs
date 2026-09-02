@@ -190,16 +190,13 @@ public class TurnManager : NetworkBehaviour
 
     public void UpdateTurnText(TurnState turnState)
     {
+        Player.PlayerId activePlayer = turnState == TurnState.Player1Turn
+            ? Player.PlayerId.Player1
+            : Player.PlayerId.Player2;
 
-        if (turnState == TurnState.Player1Turn)
-        {
-            turnText.text = GameManager.instance.playerId == Player.PlayerId.Player1 ? "Your Turn" : "Opponent's Turn";
-        }
-        else
-        {
-            turnText.text = GameManager.instance.playerId == Player.PlayerId.Player2 ? "Your Turn" : "Opponent's Turn";
-        }
-        
+        turnText.text = GameManager.instance.playerId == activePlayer
+            ? "Your Turn"
+            : $"{GameManager.instance.GetPlayerName(activePlayer)}'s Turn";
     }
     
     public async void OnTurnChanged(TurnState current)

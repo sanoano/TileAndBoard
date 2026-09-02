@@ -704,15 +704,8 @@ public class UIManager : MonoBehaviour
         GameManager.instance.SaveGameWin(id);
 
         victoryText.gameObject.SetActive(true);
-        
-        if (id == Player.PlayerId.Player1)
-        {
-            victoryText.text = "Player 1 wins!";
-        }
-        else
-        {
-            victoryText.text = "Player 2 wins!";
-        }
+
+        victoryText.text = $"{GameManager.instance.GetPlayerName(id)} wins!";
 
         yield return new WaitForSeconds(5.0f);
         

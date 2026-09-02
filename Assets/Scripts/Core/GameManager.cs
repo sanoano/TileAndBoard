@@ -110,7 +110,8 @@ public class GameManager : NetworkBehaviour
             UIManager.Instance.player2Name.text = trimmedName;
 
         }
-        
+
+        TurnManager.instance.UpdateTurnText(TurnManager.instance.currentTurn);
     }
     
     [Rpc(SendTo.SpecifiedInParams)]
@@ -126,6 +127,19 @@ public class GameManager : NetworkBehaviour
             UIManager.Instance.player1Name.text = trimmedName;
 
         }
+
+        TurnManager.instance.UpdateTurnText(TurnManager.instance.currentTurn);
+    }
+
+    public string GetPlayerName(Player.PlayerId id)
+    {
+        string name = id == playerId
+            ? UIManager.Instance.player1Name.text
+            : UIManager.Instance.player2Name.text;
+
+        return string.IsNullOrWhiteSpace(name) || name == "Name"
+            ? id == Player.PlayerId.Player1 ? "Player 1" : "Player 2"
+            : name;
     }
 
     private static string TrimPlayerName(string name)
