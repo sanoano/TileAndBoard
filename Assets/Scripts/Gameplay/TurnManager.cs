@@ -218,7 +218,7 @@ public class TurnManager : NetworkBehaviour
                 break;
         }
 
-        if (turnCount % 2 == 0)
+        if (turnCount % 2 == 1)
             StartCoroutine(UIManager.Instance.RoundNumberCounter());
         
     }
