@@ -880,8 +880,8 @@ public class Lobby : MonoBehaviour
            SessionInfoDisplay display = sessionObject.GetComponent<SessionInfoDisplay>();
            display.SetSessionName(session.name + " |");
            display.SetHostName(session.hostName);
-           display.SetMaxTimeText($"Players: {session.playerCount}/{session.maxPlayers}");
-           display.SetMaxLPText($"Version: {session.gameVersion}");
+           display.SetMaxTimeText($"Time: {session.turnTimeSeconds}");
+           display.SetMaxLPText($"Life Points: {session.startingPlayerHealth}");
            display.SetLanJoinButton(session, this);
        }
 

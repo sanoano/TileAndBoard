@@ -18,7 +18,7 @@ public class AudioManager : MonoBehaviour
         }
         
         singleton = this;
-        
+        Settings.ApplySavedVolumes(sfxGroup.audioMixer);
     }
 
 
