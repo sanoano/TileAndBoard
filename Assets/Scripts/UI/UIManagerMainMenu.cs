@@ -10,6 +10,7 @@ using UnityEngine.UI;
 
 public class UIManagerMainMenu : MonoBehaviour
 {//Mmmm buttons
+    private const string GamesWonKey = "GamesWon";
 
     [SerializeField] private CameraMainMenu cameraScript;
     private Lobby lobby;
@@ -50,11 +51,6 @@ public class UIManagerMainMenu : MonoBehaviour
     private float crawlRate;
     private Vector2 startPos;
 
-    [Header("Audio")]
-    [SerializeField] private AudioClip parchment;
-    [SerializeField] private AudioClip stone;
-    private AudioSource source;
-
     void Start()
     {
         UIlist = new GameObject[][] {presstostart, buttons1, buttons2, createGame, joinGame, findGame, options, tutorial, loading, credits, sureQuit};
@@ -66,17 +62,28 @@ public class UIManagerMainMenu : MonoBehaviour
 
         startPos = creditsListTrans.anchoredPosition;
 
-        source = gameObject.GetComponent<AudioSource>();
-
         lobby = NetworkManager.Singleton.GetComponent<Lobby>();
     }
 
     public void SetMenuScreen(int newState)
     {//Each screen has an ID. When setting up buttons, you just need to know the code for what screen you want a button to bring up.
 
+        if (currentState > 0 && newState != currentState)
+        {
+            if (newState < currentState || newState == 10)
+                AudioManager.singleton.PlaySound("stonePush", false, 0.4f);
+            else
+                AudioManager.singleton.PlaySound("scrollOpen", false, 0.6f);
+        }
+
         if (newState == 3)
         {
             lobby?.LoadPreferredMatchSettings();
+        }
+
+        if (newState != 5)
+        {
+            lobby?.StopLanDiscovery();
         }
 
         // try
@@ -212,13 +219,11 @@ public class UIManagerMainMenu : MonoBehaviour
             {
                 SetMenuScreen(1);
                 SetMenuLevel(1);
-                AudioStone();
             }
             else if (currentState == 3 || currentState == 5 || currentState == 7)
             {
                 SetMenuScreen(2);
                 SetMenuLevel(2);
-                AudioStone();
             }
         }
 
@@ -244,13 +249,9 @@ public class UIManagerMainMenu : MonoBehaviour
         Application.OpenURL("https://splitchance.com/games.html");
     }
 
-    //Audio events
-    public void AudioParchment()
+    public int GetGamesWon()
     {
-        source.PlayOneShot(parchment);
+        return PlayerPrefs.GetInt(GamesWonKey, 0);
     }
-    public void AudioStone()
-    {
-        source.PlayOneShot(stone);
-    }
+
 }

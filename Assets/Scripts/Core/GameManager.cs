@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : NetworkBehaviour
 {
+    private const string GamesWonKey = "GamesWon";
 
     [SerializeField] private GameObject playerHead;
     private GameObject headInstance;
@@ -69,7 +70,10 @@ public class GameManager : NetworkBehaviour
     {
         try
         {
-            playerName = await AuthenticationService.Instance.GetPlayerNameAsync();
+            Lobby lobby = NetworkManager.Singleton.GetComponent<Lobby>();
+            playerName = lobby.IsLanSession
+                ? lobby.PlayerDisplayName
+                : await AuthenticationService.Instance.GetPlayerNameAsync();
 
             if (playerId == Player.PlayerId.Player1)
             {
@@ -96,7 +100,7 @@ public class GameManager : NetworkBehaviour
     [Rpc(SendTo.SpecifiedInParams)]
     void SetPlayer1NameRpc(string name, RpcParams rpcParams = default)
     {
-        string trimmedName = name.Substring(0, name.Length - 5); // Removes the username suffix ie. #XXXX
+        string trimmedName = TrimPlayerName(name);
         if (playerId == Player.PlayerId.Player1)
         {
             UIManager.Instance.player1Name.text = trimmedName;
@@ -106,13 +110,14 @@ public class GameManager : NetworkBehaviour
             UIManager.Instance.player2Name.text = trimmedName;
 
         }
-        
+
+        TurnManager.instance.UpdateTurnText(TurnManager.instance.currentTurn);
     }
     
     [Rpc(SendTo.SpecifiedInParams)]
     void SetPlayer2NameRpc(string name, RpcParams rpcParams = default)
     {
-        string trimmedName = name.Substring(0, name.Length - 5); 
+        string trimmedName = TrimPlayerName(name);
         if (playerId == Player.PlayerId.Player1)
         {
             UIManager.Instance.player2Name.text = trimmedName;
@@ -122,6 +127,25 @@ public class GameManager : NetworkBehaviour
             UIManager.Instance.player1Name.text = trimmedName;
 
         }
+
+        TurnManager.instance.UpdateTurnText(TurnManager.instance.currentTurn);
+    }
+
+    public string GetPlayerName(Player.PlayerId id)
+    {
+        string name = id == playerId
+            ? UIManager.Instance.player1Name.text
+            : UIManager.Instance.player2Name.text;
+
+        return string.IsNullOrWhiteSpace(name) || name == "Name"
+            ? id == Player.PlayerId.Player1 ? "Player 1" : "Player 2"
+            : name;
+    }
+
+    private static string TrimPlayerName(string name)
+    {
+        int suffixIndex = name.LastIndexOf('#');
+        return suffixIndex > 0 ? name.Substring(0, suffixIndex) : name;
     }
 
     public async void DisconnectUser()
@@ -156,6 +180,16 @@ public class GameManager : NetworkBehaviour
                 NetworkManager.Singleton.SceneManager.LoadScene("PlayerLobby", LoadSceneMode.Single);
             }
         }
+    }
+
+    public void SaveGameWin(Player.PlayerId winner)
+    {
+        if (playerId != winner)
+            return;
+
+        int gamesWon = PlayerPrefs.GetInt(GamesWonKey, 0);
+        PlayerPrefs.SetInt(GamesWonKey, gamesWon + 1);
+        PlayerPrefs.Save();
     }
 
 }

@@ -105,7 +105,7 @@ public class TurnManager : NetworkBehaviour
 
         if (!isYourTurn)
         {
-            turnButton.gameObject.SetActive(false);
+            turnButton.interactable = false;
         }
     }
 
@@ -113,7 +113,7 @@ public class TurnManager : NetworkBehaviour
     {
         if (NetworkManager.Singleton != null &&
             NetworkManager.Singleton.TryGetComponent(out Lobby lobby) &&
-            lobby._session != null)
+            (lobby._session != null || lobby.IsLanSession))
         {
             maxTimePerTurn = lobby.TurnTimeSeconds;
         }
@@ -190,16 +190,13 @@ public class TurnManager : NetworkBehaviour
 
     public void UpdateTurnText(TurnState turnState)
     {
+        Player.PlayerId activePlayer = turnState == TurnState.Player1Turn
+            ? Player.PlayerId.Player1
+            : Player.PlayerId.Player2;
 
-        if (turnState == TurnState.Player1Turn)
-        {
-            turnText.text = GameManager.instance.playerId == Player.PlayerId.Player1 ? "Your Turn" : "Opponent's Turn";
-        }
-        else
-        {
-            turnText.text = GameManager.instance.playerId == Player.PlayerId.Player2 ? "Your Turn" : "Opponent's Turn";
-        }
-        
+        turnText.text = GameManager.instance.playerId == activePlayer
+            ? "Your Turn"
+            : $"{GameManager.instance.GetPlayerName(activePlayer)}'s Turn";
     }
     
     public async void OnTurnChanged(TurnState current)
@@ -220,6 +217,9 @@ public class TurnManager : NetworkBehaviour
                 StartActivePlayerTurn(Player.PlayerId.Player2, BoardManager.Instance);
                 break;
         }
+
+        if (turnCount % 2 == 1)
+            StartCoroutine(UIManager.Instance.RoundNumberCounter());
         
     }
 
@@ -284,7 +284,7 @@ public class TurnManager : NetworkBehaviour
 
         if (!turnForceEnded)
         {
-            AudioManager.singleton.PlaySound("stonePush", false, 0.4f);
+            AudioManager.singleton.PlaySound("scrollOpen", false, 0.4f);
         }
         turnForceEnded = false;
 
@@ -337,13 +337,13 @@ public class TurnManager : NetworkBehaviour
 
     private void ApplyTurnChange(TurnState turn)
     {
-        if (turnButton.IsActive() == false)
+        if (turnButton.interactable == false)
         {
-            turnButton.gameObject.SetActive(true);
+            turnButton.interactable = true;
         }
         else
         {
-            turnButton.gameObject.SetActive(false);
+            turnButton.interactable = false;
         }
         currentTurn = turn;
         currentTime = maxTimePerTurn;

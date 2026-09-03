@@ -13,6 +13,8 @@ public class UIDialogueSlide : MonoBehaviour
     private RectTransform rect;
     private Vector2 startPos, endPos, mouseSlidePos;
     private float travelLengthMouse, tweenDurationMouse;
+    private bool isSliding = false;
+
     void Start()
     {
         rect = GetComponent<RectTransform>();
@@ -45,8 +47,10 @@ public class UIDialogueSlide : MonoBehaviour
     }
 
 
-    public void SlideIn()
+    public void SlideIn()//Means it is sliding In onto the screen
     {
+        isSliding = true;
+
         if (directionState == 0 || directionState == 1)
         {
             var tweenX = new AnchoredPositionXTween()
@@ -54,7 +58,10 @@ public class UIDialogueSlide : MonoBehaviour
                 from = startPos.x,
                 to = endPos.x,
                 duration = tweenDuration,
-                easeType = EaseType.SineOut
+                easeType = EaseType.SineOut,
+                onEnd = (instance) => {
+                    isSliding = false;
+                }
             };
 
             gameObject.AddTween(tweenX);
@@ -66,15 +73,22 @@ public class UIDialogueSlide : MonoBehaviour
                 from = startPos.y,
                 to = endPos.y,
                 duration = tweenDuration,
-                easeType = EaseType.SineOut
+                easeType = EaseType.SineOut,
+                onEnd = (instance) => {
+                    isSliding = false;
+                }
             };
 
             gameObject.AddTween(tweenY);
         }
+
+        
     }
 
-    public void SlideOut()
+    public void SlideOut()//Means it is sliding Out off of the screen
     {
+        isSliding = true;
+
         if (directionState == 0 || directionState == 1)
         {
             var tweenX = new AnchoredPositionXTween()
@@ -82,7 +96,10 @@ public class UIDialogueSlide : MonoBehaviour
                 from = endPos.x,
                 to = startPos.x,
                 duration = tweenDuration,
-                easeType = EaseType.SineOut
+                easeType = EaseType.SineOut,
+                onEnd = (instance) => {
+                    isSliding = false;
+                }
             };
 
             gameObject.AddTween(tweenX);
@@ -94,17 +111,20 @@ public class UIDialogueSlide : MonoBehaviour
                 from = endPos.y,
                 to = startPos.y,
                 duration = tweenDuration,
-                easeType = EaseType.SineOut
+                easeType = EaseType.SineOut,
+                onEnd = (instance) => {
+                    isSliding = false;
+                }
             };
 
             gameObject.AddTween(tweenY);
         }
     }
 
-    //The following functions are called by Event Triggers that detect On Pointer Enter and Exit events
+    //The following functions are called by Event Triggers that detect On Pointer Enter and Exit events. They shouldn't fire if it's already doing a big slide.
     public void SlideInMouse()
     {
-        if (hasMouseSlide)
+        if (hasMouseSlide && !isSliding)
         {
             if (directionState == 0 || directionState == 1)
             {
@@ -135,7 +155,7 @@ public class UIDialogueSlide : MonoBehaviour
 
     public void SlideOutMouse()
     {
-        if (hasMouseSlide)
+        if (hasMouseSlide && !isSliding)
         {
             if (directionState == 0 || directionState == 1)
             {

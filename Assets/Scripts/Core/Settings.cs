@@ -1,12 +1,14 @@
-using System;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
-using TMPro;
 
 public class Settings : MonoBehaviour
 {
+    private const string MusicVolumeKey = "MusicVolume";
+    private const string SfxVolumeKey = "SFXVolume";
+    private const float DefaultVolume = 0.5f;
+    private const float MutedVolumeDb = -80f;
+
     [SerializeField] private bool isMainMenu;//Hides the tutorial+disconnect options if it's the options dialogue for the main menu
 
     [SerializeField] private Slider musicVolume;
@@ -23,16 +25,16 @@ public class Settings : MonoBehaviour
 
     private void Awake()
     {
+        float savedMusicVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(MusicVolumeKey, DefaultVolume));
+        float savedSfxVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(SfxVolumeKey, DefaultVolume));
 
-        musicVolume.onValueChanged.AddListener((v) =>
-        {
-            musicGroup.audioMixer.SetFloat("MusicVolume", v);
-        });
-        
-        sfxVolume.onValueChanged.AddListener((v) =>
-        {
-            sfxGroup.audioMixer.SetFloat("SFXVolume", v);
-        });
+        musicVolume.SetValueWithoutNotify(savedMusicVolume);
+        sfxVolume.SetValueWithoutNotify(savedSfxVolume);
+        SetMusicVolume(savedMusicVolume);
+        SetSfxVolume(savedSfxVolume);
+
+        musicVolume.onValueChanged.AddListener(SetMusicVolume);
+        sfxVolume.onValueChanged.AddListener(SetSfxVolume);
 
         toggleTutorial(false);
 
@@ -46,6 +48,23 @@ public class Settings : MonoBehaviour
             buttonTutorial.SetActive(true);
             buttonDisconnect.SetActive(true);
         }
+    }
+
+    private void SetMusicVolume(float volume)
+    {
+        PlayerPrefs.SetFloat(MusicVolumeKey, volume);
+        musicGroup.audioMixer.SetFloat(MusicVolumeKey, VolumeToDecibels(volume));
+    }
+
+    private void SetSfxVolume(float volume)
+    {
+        PlayerPrefs.SetFloat(SfxVolumeKey, volume);
+        sfxGroup.audioMixer.SetFloat(SfxVolumeKey, VolumeToDecibels(volume));
+    }
+
+    private static float VolumeToDecibels(float volume)
+    {
+        return volume <= 0f ? MutedVolumeDb : Mathf.Log10(volume) * 20f;
     }
 
     public void toggleTutorial(bool on)

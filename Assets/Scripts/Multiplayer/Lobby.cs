@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Multiplayer;
@@ -19,6 +20,7 @@ public class Lobby : MonoBehaviour
    private const string StartingHealthPropertyKey = "startingPlayerHealth";
    private const string HostNamePropertyKey = "hostName";
    private const string MatchPreferencesFileName = "create-game-preferences.json";
+   private const ushort LanConnectionPort = 7777;
    
    public const int DefaultTurnTimeSeconds = 60;
    public const int DefaultStartingPlayerHealth = 50;
@@ -32,6 +34,9 @@ public class Lobby : MonoBehaviour
    private int selectedStartingPlayerHealth = DefaultStartingPlayerHealth;
    public ISession _session;
    [HideInInspector] public NetworkManager m_NetworkManager;
+   private NetworkTransport onlineTransport;
+   private UnityTransport lanTransport;
+   private LanDiscovery lanDiscovery;
 
    [Header("UI References")]
    [SerializeField] private UIManagerMainMenu UIManagerScript;
@@ -46,6 +51,7 @@ public class Lobby : MonoBehaviour
     [SerializeField] private TMP_InputField sessionName;
     [SerializeField] private TMP_InputField timerInput;
     [SerializeField] private TMP_InputField lpInput;
+    [SerializeField] private Button createLocalGameButton;
      /*[SerializeField] private TMP_Dropdown timerSelect;
       [SerializeField] private TMP_Dropdown healthSelect;*/
 
@@ -57,11 +63,16 @@ public class Lobby : MonoBehaviour
    [SerializeField] private GameObject sessionListContent;
    [SerializeField] private GameObject sessionList;
    [SerializeField] private Button joinButton;
+   [SerializeField] private Button searchLocalButton;
 
    [Header("Parameters")] 
    [SerializeField] private float checkDisconnectTime;
 
    private static Lobby instance;
+
+   public bool IsLanSession { get; private set; }
+   public string LanSessionName { get; private set; }
+   public string PlayerDisplayName => GetPlayerDisplayName();
 
    [Serializable]
    private class MatchPreferences
@@ -94,9 +105,11 @@ public class Lobby : MonoBehaviour
 
         m_NetworkManager = GetComponent<NetworkManager>();
         m_NetworkManager.NetworkConfig.ProtocolVersion = GetProtocolVersion();
+        onlineTransport = m_NetworkManager.NetworkConfig.NetworkTransport;
+        lanDiscovery = gameObject.AddComponent<LanDiscovery>();
+        lanDiscovery.SessionsChanged += DisplayNearbySessions;
         
         m_NetworkManager.SetSingleton();
-        // m_NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
         m_NetworkManager.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
         m_NetworkManager.OnConnectionEvent += OnClientDisconnect;
         m_NetworkManager.OnTransportFailure += OnTransportFailure;
@@ -125,12 +138,14 @@ public class Lobby : MonoBehaviour
         sessionName.onValueChanged.AddListener(onSessionNameSet);
         joinCodeInput.onValueChanged.AddListener(onJoinCodeSet);
         createGameButton.onClick.AddListener(StartSession);
+        createLocalGameButton.onClick.AddListener(StartLanSession);
         joinGameDirectButton.onClick.AddListener(JoinGameByJoinCode);
         privateToggle.onValueChanged.AddListener(onPrivateSet);
         //timerToggle.onValueChanged.AddListener(onTimerSet);
         reconnectButton.onClick.AddListener(Reconnect);
         joinButton.onClick.AddListener(QuerySessionsFromButton);
         refreshButton.onClick.AddListener(QuerySessionsFromButton);
+        searchLocalButton.onClick.AddListener(QueryLanSessions);
         //timerSelect.onValueChanged.AddListener(SetTurnTimePerTurn);
         //healthSelect.onValueChanged.AddListener(SetStartingPlayerHealth);
 
@@ -138,14 +153,22 @@ public class Lobby : MonoBehaviour
         
         // statusText.text = "";
 
-        if (AuthenticationService.Instance.PlayerName != null)
+        if (UnityServices.State == ServicesInitializationState.Initialized &&
+            AuthenticationService.Instance.IsSignedIn &&
+            AuthenticationService.Instance.PlayerName != null)
         {
             username.text = AuthenticationService.Instance.PlayerName;
         }
-        else
+        else if (UnityServices.State == ServicesInitializationState.Initialized &&
+                 AuthenticationService.Instance.IsSignedIn)
         {
             var result = await AuthenticationService.Instance.GetPlayerNameAsync(true);
             username.text = result;
+        }
+
+        if (string.IsNullOrWhiteSpace(username.text))
+        {
+            username.text = SystemInfo.deviceName;
         }
         
         InvokeRepeating(nameof(CheckReconnect), checkDisconnectTime, checkDisconnectTime);
@@ -197,6 +220,8 @@ public class Lobby : MonoBehaviour
 
     private async void StartSession()
     {
+        StopLanDiscovery();
+        UseOnlineTransport();
         UIManagerScript.SetMenuScreen(8);
         UIManagerScript.SetMenuLevel(1);
 
@@ -228,15 +253,11 @@ public class Lobby : MonoBehaviour
 
     public async Task QuerySessions()
     {
+        StopLanDiscovery();
+        UseOnlineTransport();
         statusText.text = "";
 
-        foreach (var child in sessionListContent.GetComponentsInChildren<Transform>())
-        {
-            if (child.gameObject != sessionListContent)
-            {
-                Destroy(child.gameObject);
-            }
-        }
+        ClearSessionList();
         
         
         QuerySessionsResults results;
@@ -281,6 +302,12 @@ public class Lobby : MonoBehaviour
 
     private async void QuerySessionsFromButton()
     {
+        if (lanDiscovery.IsSearching)
+        {
+            QueryLanSessions();
+            return;
+        }
+
         await QuerySessions();
     }
 
@@ -462,6 +489,11 @@ public class Lobby : MonoBehaviour
         
         if (connectionEventData.EventType == ConnectionEvent.PeerDisconnected && connectionEventData.ClientId != NetworkManager.Singleton.LocalClientId)
         {
+            if (IsLanSession && m_NetworkManager.IsHost)
+            {
+                return;
+            }
+
             await LeaveSessionAsync();
         }
         
@@ -469,6 +501,7 @@ public class Lobby : MonoBehaviour
     
     public async Task LeaveSessionAsync()
     {
+        StopLanDiscovery();
       
         if (_session != null)
         {
@@ -483,6 +516,8 @@ public class Lobby : MonoBehaviour
            
             await WaitForShutdown();
         }
+
+        UseOnlineTransport();
         
         // AuthenticationService.Instance.SignOut();
         
@@ -531,31 +566,26 @@ public class Lobby : MonoBehaviour
         }
     }
 
-    // private void OnClientConnectedCallback(ulong clientId)
-    // {
-    //     if (m_NetworkManager.LocalClientId == clientId)
-    //     {
-    //         Debug.Log($"Client-{clientId} is connected and can spawn {nameof(NetworkObject)}s.");
-    //         
-    //         
-    //     }
-    //     
-    //     if (m_NetworkManager.ConnectedClientsList.Count == 2 && m_NetworkManager.LocalClient.IsSessionOwner)
-    //     {
-    //         m_NetworkManager.SceneManager.LoadScene("Battle2", LoadSceneMode.Single);
-    //         
-    //     }
-    // }
-    
-
    private void OnDestroy()
    {
+       if (lanDiscovery != null)
+       {
+           lanDiscovery.SessionsChanged -= DisplayNearbySessions;
+           lanDiscovery.Stop();
+       }
+
        _ = _session?.LeaveAsync();
-       AuthenticationService.Instance.SignOut();
+       if (UnityServices.State == ServicesInitializationState.Initialized &&
+           AuthenticationService.Instance.IsSignedIn)
+       {
+           AuthenticationService.Instance.SignOut();
+       }
    }
 
    public async Task JoinSessionAsync(string id)
    {
+        StopLanDiscovery();
+        UseOnlineTransport();
 
         UIManagerScript.SetMenuScreen(8);
 
@@ -578,9 +608,11 @@ public class Lobby : MonoBehaviour
 
       
    }
-   
+
    public async Task JoinSessionByJoinCodeAsync(string joinCode)
    {
+       StopLanDiscovery();
+       UseOnlineTransport();
        
        try
        {
@@ -663,37 +695,233 @@ public class Lobby : MonoBehaviour
            : fallback;
    }
 
-   private static int GetDropdownSetting(TMP_Dropdown dropdown, int optionIndex, int fallback)
-   {
-       if (dropdown == null || optionIndex < 0 || optionIndex >= dropdown.options.Count)
-       {
-           return fallback;
-       }
+//    private static int GetDropdownSetting(TMP_Dropdown dropdown, int optionIndex, int fallback)
+//    {
+//        if (dropdown == null || optionIndex < 0 || optionIndex >= dropdown.options.Count)
+//        {
+//            return fallback;
+//        }
 
-       return ParsePositiveSetting(dropdown.options[optionIndex].text, fallback);
-   }
+//        return ParsePositiveSetting(dropdown.options[optionIndex].text, fallback);
+//    }
 
-   private static void SetDropdownToSetting(TMP_Dropdown dropdown, int setting)
-   {
-       if (dropdown == null) return;
+//    private static void SetDropdownToSetting(TMP_Dropdown dropdown, int setting)
+//    {
+//        if (dropdown == null) return;
 
-       for (int i = 0; i < dropdown.options.Count; i++)
-       {
-           if (ParsePositiveSetting(dropdown.options[i].text, -1) != setting) continue;
+//        for (int i = 0; i < dropdown.options.Count; i++)
+//        {
+//            if (ParsePositiveSetting(dropdown.options[i].text, -1) != setting) continue;
 
-           dropdown.SetValueWithoutNotify(i);
-           dropdown.RefreshShownValue();
-           return;
-       }
-   }
+//            dropdown.SetValueWithoutNotify(i);
+//            dropdown.RefreshShownValue();
+//            return;
+//        }
+//    }
 
    void OnTransportFailure()
    {
+       StopLanDiscovery();
        NetworkManager.Singleton.Shutdown();
+       UseOnlineTransport();
 
         UIManagerScript.SetMenuScreen(5);
 
         statusText.text = "Transport failure! Please try again. If problem persists, please restart game.";
 
    }
+
+   public void QueryLanSessions()
+   {
+       if (m_NetworkManager.IsListening) return;
+
+       UseOnlineTransport();
+       ClearSessionList();
+       statusText.text = "Searching for nearby games...";
+       lanDiscovery.StartSearching();
+       if (!lanDiscovery.IsSearching)
+       {
+           statusText.text = "Could not search for nearby games.";
+       }
+   }
+
+   public void StopLanDiscovery()
+   {
+       lanDiscovery?.Stop();
+       ClearSessionList();
+   }
+
+   public void JoinLanSession(LanSessionInfo session)
+   {
+       if (session == null || m_NetworkManager.IsListening) return;
+
+       StopLanDiscovery();
+       UIManagerScript.SetMenuScreen(8);
+       statusText.text = "Joining nearby game...";
+
+       IsLanSession = true;
+       LanSessionName = session.name;
+       selectedTurnTimeSeconds = session.turnTimeSeconds;
+       selectedStartingPlayerHealth = session.startingPlayerHealth;
+
+       UnityTransport transport = UseLanTransport();
+       transport.SetConnectionData(session.address, (ushort)session.port);
+       m_NetworkManager.NetworkConfig.ConnectionApproval = true;
+
+       if (!m_NetworkManager.StartClient())
+       {
+           UseOnlineTransport();
+           statusText.text = "Failed to connect to nearby game.";
+           UIManagerScript.SetMenuScreen(5);
+       }
+   }
+
+   public void StartLanSession()
+   {
+       string gameName = string.IsNullOrWhiteSpace(_sessionName)
+           ? sessionName.text.Replace(" ", string.Empty)
+           : _sessionName;
+
+       if (string.IsNullOrWhiteSpace(gameName))
+       {
+           statusText.text = "You must set a game name before hosting a nearby game.";
+           return;
+       }
+
+       StopLanDiscovery();
+       UIManagerScript.SetMenuScreen(8);
+       UIManagerScript.SetMenuLevel(1);
+       statusText.text = "Hosting nearby game...";
+
+       IsLanSession = true;
+       LanSessionName = gameName;
+
+       UnityTransport transport = UseLanTransport();
+       transport.SetConnectionData("127.0.0.1", LanConnectionPort, "0.0.0.0");
+       m_NetworkManager.NetworkConfig.ConnectionApproval = true;
+       m_NetworkManager.ConnectionApprovalCallback = ApproveLanConnection;
+
+       if (!m_NetworkManager.StartHost())
+       {
+           UseOnlineTransport();
+           statusText.text = "Failed to host nearby game.";
+           UIManagerScript.SetMenuScreen(3);
+           return;
+       }
+
+       lanDiscovery.StartHosting(new LanSessionInfo
+       {
+           id = Guid.NewGuid().ToString("N"),
+           name = LanSessionName,
+           hostName = GetPlayerDisplayName(),
+           playerCount = 1,
+           maxPlayers = _maxPlayers,
+           gameVersion = Application.version,
+           port = LanConnectionPort,
+           turnTimeSeconds = selectedTurnTimeSeconds,
+           startingPlayerHealth = selectedStartingPlayerHealth
+       });
+
+       m_NetworkManager.SceneManager.LoadScene("PlayerLobby", LoadSceneMode.Single);
+   }
+
+   private UnityTransport UseLanTransport()
+   {
+       if (lanTransport == null)
+       {
+           foreach (UnityTransport transport in GetComponents<UnityTransport>())
+           {
+               if (transport.GetType() != typeof(UnityTransport)) continue;
+
+               lanTransport = transport;
+               break;
+           }
+       }
+
+       if (lanTransport == null)
+       {
+           lanTransport = gameObject.AddComponent<UnityTransport>();
+       }
+
+       m_NetworkManager.NetworkConfig.NetworkTransport = lanTransport;
+       return lanTransport;
+   }
+
+   private void UseOnlineTransport()
+   {
+       if (!m_NetworkManager.IsListening)
+       {
+           IsLanSession = false;
+           LanSessionName = null;
+           m_NetworkManager.ConnectionApprovalCallback = null;
+           m_NetworkManager.NetworkConfig.ConnectionApproval = false;
+           m_NetworkManager.NetworkConfig.NetworkTransport = onlineTransport;
+       }
+   }
+
+   private void ApproveLanConnection(
+       NetworkManager.ConnectionApprovalRequest request,
+       NetworkManager.ConnectionApprovalResponse response)
+   {
+       response.Approved = m_NetworkManager.ConnectedClientsIds.Count < _maxPlayers;
+       response.CreatePlayerObject = true;
+       response.Reason = response.Approved ? null : "Game is full.";
+   }
+
+   private void DisplayNearbySessions()
+   {
+       if (lanDiscovery == null) return;
+
+       ClearSessionList();
+
+       foreach (LanSessionInfo session in lanDiscovery.Sessions)
+       {
+           GameObject sessionObject = Instantiate(sessionInfoPrefab, sessionListContent.transform);
+           SessionInfoDisplay display = sessionObject.GetComponent<SessionInfoDisplay>();
+           display.SetSessionName(session.name + " |");
+           display.SetHostName(session.hostName);
+           display.SetMaxTimeText($"Players: {session.playerCount}/{session.maxPlayers}");
+           display.SetMaxLPText($"Version: {session.gameVersion}");
+           display.SetLanJoinButton(session, this);
+       }
+
+       statusText.text = lanDiscovery.Sessions.Count == 0
+           ? "Searching for nearby games..."
+           : "";
+   }
+
+    private void ClearSessionList()
+    {
+        if (sessionListContent == null) return;
+
+        foreach (Transform child in sessionListContent.GetComponentsInChildren<Transform>())
+        {
+            if (child.gameObject != sessionListContent)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+    }
+
+   private string GetPlayerDisplayName()
+   {
+       string playerName = username != null ? username.text : null;
+
+       if (string.IsNullOrWhiteSpace(playerName) &&
+           UnityServices.State == ServicesInitializationState.Initialized &&
+           AuthenticationService.Instance.IsSignedIn)
+       {
+           playerName = AuthenticationService.Instance.PlayerName;
+       }
+
+       if (string.IsNullOrWhiteSpace(playerName))
+       {
+           playerName = SystemInfo.deviceName;
+       }
+
+       int suffixIndex = playerName.LastIndexOf('#');
+       string displayName = suffixIndex > 0 ? playerName.Substring(0, suffixIndex) : playerName;
+       return displayName.Length > 48 ? displayName.Substring(0, 48) : displayName;
+   }
+
 }

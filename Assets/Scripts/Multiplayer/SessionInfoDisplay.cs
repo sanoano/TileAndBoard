@@ -24,6 +24,11 @@ public class SessionInfoDisplay : MonoBehaviour
         joinButton.onClick.AddListener(async () => await manager.JoinSessionAsync(sessionID));
     }
 
+    public void SetLanJoinButton(LanSessionInfo session, Lobby manager)
+    {
+        joinButton.onClick.AddListener(() => manager.JoinLanSession(session));
+    }
+
     public void SetMaxTimeText(string time)
     {
         maxTimeText.text = time;

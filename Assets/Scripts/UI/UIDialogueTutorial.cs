@@ -51,6 +51,8 @@ public class UIDialogueTutorial : MonoBehaviour
 
     public void FlipPage(bool forwards)
     {
+        AudioManager.singleton.PlaySound("scrollOpen", false, 0.6f);
+
         if (forwards)
         {
             if (pageIndex == pages.Length - 1)

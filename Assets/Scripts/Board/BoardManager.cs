@@ -109,7 +109,7 @@ public partial class BoardManager : NetworkBehaviour
     {
         if (NetworkManager.Singleton != null &&
             NetworkManager.Singleton.TryGetComponent(out Lobby lobby) &&
-            lobby._session != null)
+            (lobby._session != null || lobby.IsLanSession))
         {
             startingPlayerHealth = lobby.StartingPlayerHealth;
         }

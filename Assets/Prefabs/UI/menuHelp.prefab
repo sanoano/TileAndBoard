@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3955614025912816056}
   - component: {fileID: 4952442336225894419}
   - component: {fileID: 4701422113417312140}
+  - component: {fileID: 8114672307303970704}
   m_Layer: 5
   m_Name: buttonNext
   m_TagString: Untagged
@@ -102,6 +103,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+--- !u!114 &8114672307303970704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3160277937918054090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4191b66cb0721974e94e51dea998a279, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShortcutScroll
+  scrollUp: 1
 --- !u!1 &4457947189727534510
 GameObject:
   m_ObjectHideFlags: 0
@@ -113,6 +127,7 @@ GameObject:
   - component: {fileID: 1687534510827899330}
   - component: {fileID: 822085737060702769}
   - component: {fileID: 94618255053454652}
+  - component: {fileID: 97596800822791683}
   m_Layer: 5
   m_Name: buttonPrev
   m_TagString: Untagged
@@ -204,6 +219,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &97596800822791683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4457947189727534510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4191b66cb0721974e94e51dea998a279, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShortcutScroll
+  scrollUp: 0
 --- !u!1 &5940605411908282148
 GameObject:
   m_ObjectHideFlags: 0
