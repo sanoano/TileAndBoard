@@ -1851,6 +1851,14 @@ private void SetMusicVolume(float volume)
 private void SetSfxVolume(float volume)
 ```
 
+### `ApplySavedVolumes(AudioMixer audioMixer)`
+
+**Access:** Public static
+
+```csharp
+public static void ApplySavedVolumes(AudioMixer audioMixer)
+```
+
 ### `VolumeToDecibels(float volume)`
 
 **Access:** Private static

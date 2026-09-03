@@ -11,26 +11,15 @@ public static class Player
     
     public static PlayerId AssignPlayerID()
     {
-
-        PlayerId playerId;
-
         if (NetworkManager.Singleton)
         {
-            if (NetworkManager.Singleton.LocalClient.ClientId == 1)
-            {
-                playerId = PlayerId.Player1;
-            }
-            else
-            {
-                playerId = PlayerId.Player2;
-            }
-        }
-        else
-        {
-            playerId = PlayerId.Player1;
+            bool isHost = NetworkManager.Singleton.IsHost ||
+                          NetworkManager.Singleton.LocalClient.IsSessionOwner;
+
+            return isHost ? PlayerId.Player1 : PlayerId.Player2;
         }
 
-        return playerId;
+        return PlayerId.Player1;
     }
     
     

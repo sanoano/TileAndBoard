@@ -30,8 +30,7 @@ public class Settings : MonoBehaviour
 
         musicVolume.SetValueWithoutNotify(savedMusicVolume);
         sfxVolume.SetValueWithoutNotify(savedSfxVolume);
-        SetMusicVolume(savedMusicVolume);
-        SetSfxVolume(savedSfxVolume);
+        ApplySavedVolumes(musicGroup.audioMixer);
 
         musicVolume.onValueChanged.AddListener(SetMusicVolume);
         sfxVolume.onValueChanged.AddListener(SetSfxVolume);
@@ -60,6 +59,15 @@ public class Settings : MonoBehaviour
     {
         PlayerPrefs.SetFloat(SfxVolumeKey, volume);
         sfxGroup.audioMixer.SetFloat(SfxVolumeKey, VolumeToDecibels(volume));
+    }
+
+    public static void ApplySavedVolumes(AudioMixer audioMixer)
+    {
+        float savedMusicVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(MusicVolumeKey, DefaultVolume));
+        float savedSfxVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(SfxVolumeKey, DefaultVolume));
+
+        audioMixer.SetFloat(MusicVolumeKey, VolumeToDecibels(savedMusicVolume));
+        audioMixer.SetFloat(SfxVolumeKey, VolumeToDecibels(savedSfxVolume));
     }
 
     private static float VolumeToDecibels(float volume)
