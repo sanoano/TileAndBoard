@@ -970,6 +970,14 @@ Networked version of Recall Card, is called automatically if network is present.
 
 Source: `Assets/Scripts/Core/GameManager.cs`
 
+### `GetPlayerName(Player.PlayerId id)`
+
+**Access:** Public
+
+```csharp
+public string GetPlayerName(Player.PlayerId id)
+```
+
 ### `SaveGameWin(Player.PlayerId winner)`
 
 **Access:** Public
