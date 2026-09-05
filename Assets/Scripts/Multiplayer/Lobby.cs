@@ -26,7 +26,6 @@ public class Lobby : MonoBehaviour
    public const int DefaultStartingPlayerHealth = 50;
 
    private string _sessionName;
-    private string PreferredSessionName;
    private string _sessionJoinCode;
    private int _maxPlayers = 2;
    private bool isPrivate;
@@ -238,14 +237,16 @@ public class Lobby : MonoBehaviour
     
     private async void JoinGameByJoinCode()
     {
-        UIManagerScript.SetMenuScreen(8);
-        
+        UIManagerScript.dontPlayPageSound = true;
+
         if (_sessionJoinCode == String.Empty)
         {
             UIManagerScript.SetMenuScreen(5);
             statusText.text = "You must provide a join code.";
             return;
         }
+
+        UIManagerScript.SetMenuScreen(8);
 
         statusText.text = "Connecting to session...";
         await JoinSessionByJoinCodeAsync(_sessionJoinCode);
@@ -338,7 +339,7 @@ public class Lobby : MonoBehaviour
 
     public void SaveSessionNamePreference()
     {
-        PreferredSessionName = sessionName.text;
+        SavePreferredMatchSettings();
     }
 
 
@@ -462,7 +463,7 @@ public class Lobby : MonoBehaviour
         {
             turnTimeSeconds = selectedTurnTimeSeconds,
             startingPlayerHealth = selectedStartingPlayerHealth,
-            gameName = PreferredSessionName
+            gameName = sessionName.text
         };
 
         string preferencesPath = GetMatchPreferencesPath();
@@ -490,6 +491,12 @@ public class Lobby : MonoBehaviour
         if (connectionEventData.EventType == ConnectionEvent.PeerDisconnected && connectionEventData.ClientId != NetworkManager.Singleton.LocalClientId)
         {
             if (IsLanSession && m_NetworkManager.IsHost)
+            {
+                return;
+            }
+
+            if (!IsLanSession && m_NetworkManager.LocalClient.IsSessionOwner &&
+                SceneManager.GetActiveScene().name == "PlayerLobby")
             {
                 return;
             }

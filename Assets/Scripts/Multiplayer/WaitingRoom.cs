@@ -113,6 +113,11 @@ public class WaitingRoom : NetworkBehaviour
             return;
         }
 
+        if (lobby._session.Players.Count < 2)
+        {
+            UIManagerLobby.Instance.UpdatePlayerName(false, "");
+        }
+
         for (int i = 0; i < lobby._session.Players.Count; i++)
         {
             var player = lobby._session.Players[i];
@@ -136,6 +141,11 @@ public class WaitingRoom : NetworkBehaviour
                     ? ""
                     : lanClientReady.Value ? "READY" : "NOT READY");
             return;
+        }
+
+        if (lobby._session.Players.Count < 2)
+        {
+            UIManagerLobby.Instance.UpdatePlayerStatus(false, "");
         }
 
         for (int i = 0; i < lobby._session.Players.Count; i++)

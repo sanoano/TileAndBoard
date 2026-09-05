@@ -51,6 +51,8 @@ public class UIManagerMainMenu : MonoBehaviour
     private float crawlRate;
     private Vector2 startPos;
 
+    [HideInInspector] public bool dontPlayPageSound = false;
+
     void Start()
     {
         UIlist = new GameObject[][] {presstostart, buttons1, buttons2, createGame, joinGame, findGame, options, tutorial, loading, credits, sureQuit};
@@ -73,7 +75,10 @@ public class UIManagerMainMenu : MonoBehaviour
             if (newState < currentState || newState == 10)
                 AudioManager.singleton.PlaySound("stonePush", false, 0.4f);
             else
-                AudioManager.singleton.PlaySound("scrollOpen", false, 0.6f);
+                if (!dontPlayPageSound)
+                    AudioManager.singleton.PlaySound("scrollOpen", false, 0.6f);
+                else
+                    dontPlayPageSound = false;
         }
 
         if (newState == 3)
