@@ -153,6 +153,8 @@ public class TurnManager : NetworkBehaviour
 
     public void Update()
     {
+        if (maxTimePerTurn == 0) return;
+
         if (!BoardManager.Instance.attackInProgress)
         {
             currentTime -= Time.deltaTime;

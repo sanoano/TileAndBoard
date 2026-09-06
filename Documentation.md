@@ -1471,12 +1471,12 @@ private static ushort GetProtocolVersion()
 <!-- Add description/comments here. -->
 
 
-### `GetPositiveSessionSetting(string key, int fallback)`
+### `GetSessionSetting(string key, int fallback, int minimum = 1)`
 
 **Access:** Private
 
 ```csharp
-private int GetPositiveSessionSetting(string key, int fallback)
+private int GetSessionSetting(string key, int fallback, int minimum = 1)
 ```
 
 **Description / comments:**
@@ -1484,12 +1484,12 @@ private int GetPositiveSessionSetting(string key, int fallback)
 <!-- Add description/comments here. -->
 
 
-### `ParsePositiveSetting(string value, int fallback)`
+### `ParseSessionSetting(string value, int fallback, int minimum = 1)`
 
 **Access:** Private
 
 ```csharp
-private static int ParsePositiveSetting(string value, int fallback)
+private static int ParseSessionSetting(string value, int fallback, int minimum = 1)
 ```
 
 **Description / comments:**

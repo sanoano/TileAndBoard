@@ -81,11 +81,12 @@ public class Lobby : MonoBehaviour
        public string gameName;
    }
 
-   public int TurnTimeSeconds => GetPositiveSessionSetting(
+   public int TurnTimeSeconds => GetSessionSetting(
        TurnTimePropertyKey,
-       selectedTurnTimeSeconds);
+       selectedTurnTimeSeconds,
+       0);
 
-   public int StartingPlayerHealth => GetPositiveSessionSetting(
+   public int StartingPlayerHealth => GetSessionSetting(
        StartingHealthPropertyKey,
        selectedStartingPlayerHealth);
    
@@ -354,7 +355,11 @@ public class Lobby : MonoBehaviour
 
         if (!defaults)
         {
-            if (int.Parse(timerInput.text) < 30)
+            if (int.Parse(timerInput.text) == 0)
+            {
+                selectedTurnTimeSeconds = 0;
+            }
+            else if (int.Parse(timerInput.text) < 30)
             {
                 selectedTurnTimeSeconds = 30;
                 timerInput.text = "30";
@@ -684,20 +689,20 @@ public class Lobby : MonoBehaviour
        return (ushort)(version.Major * 10000 + version.Minor * 100 + version.Build);
    }
 
-   private int GetPositiveSessionSetting(string key, int fallback)
+   private int GetSessionSetting(string key, int fallback, int minimum = 1)
    {
        if (_session != null &&
            _session.Properties.TryGetValue(key, out SessionProperty property))
        {
-           return ParsePositiveSetting(property.Value, fallback);
+           return ParseSessionSetting(property.Value, fallback, minimum);
        }
 
        return fallback;
    }
 
-   private static int ParsePositiveSetting(string value, int fallback)
+   private static int ParseSessionSetting(string value, int fallback, int minimum = 1)
    {
-       return int.TryParse(value, out int parsedValue) && parsedValue > 0
+       return int.TryParse(value, out int parsedValue) && parsedValue >= minimum
            ? parsedValue
            : fallback;
    }
@@ -709,7 +714,7 @@ public class Lobby : MonoBehaviour
 //            return fallback;
 //        }
 
-//        return ParsePositiveSetting(dropdown.options[optionIndex].text, fallback);
+//        return ParseSessionSetting(dropdown.options[optionIndex].text, fallback);
 //    }
 
 //    private static void SetDropdownToSetting(TMP_Dropdown dropdown, int setting)
@@ -718,7 +723,7 @@ public class Lobby : MonoBehaviour
 
 //        for (int i = 0; i < dropdown.options.Count; i++)
 //        {
-//            if (ParsePositiveSetting(dropdown.options[i].text, -1) != setting) continue;
+//            if (ParseSessionSetting(dropdown.options[i].text, -1) != setting) continue;
 
 //            dropdown.SetValueWithoutNotify(i);
 //            dropdown.RefreshShownValue();

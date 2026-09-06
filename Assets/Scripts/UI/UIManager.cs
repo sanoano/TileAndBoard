@@ -167,16 +167,11 @@ public class UIManager : MonoBehaviour
 
         handAmount.text = $"{CardManager.instance.playerHand.Count} / {CardManager.instance.maxCards}";
 
-        /*if (TurnManager.instance.isYourTurn)
+        turnTimer.gameObject.SetActive(TurnManager.instance.maxTimePerTurn > 0);
+        if (TurnManager.instance.maxTimePerTurn > 0)
         {
-            turnTimer.text = String.Format("{0:0}:{1:00}", Mathf.Floor(((int)TurnManager.instance.currentTime) / 60), ((int)TurnManager.instance.currentTime) % 60);
+            turnTimer.text = String.Format("{00:00}:{1:00}", Mathf.Floor(((int)TurnManager.instance.currentTime) / 60), ((int)TurnManager.instance.currentTime) % 60);
         }
-        else
-        {
-            turnTimer.text = String.Empty;
-        }*/
-
-        turnTimer.text = String.Format("{00:00}:{1:00}", Mathf.Floor(((int)TurnManager.instance.currentTime) / 60), ((int)TurnManager.instance.currentTime) % 60);
 
         if (TurnManager.instance.isYourTurn && !slideOnce)
         {
