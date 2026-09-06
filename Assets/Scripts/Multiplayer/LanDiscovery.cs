@@ -194,7 +194,7 @@ public sealed class LanDiscovery : MonoBehaviour
                session.playerCount >= 0 &&
                session.maxPlayers is > 0 and <= 16 &&
                session.playerCount < session.maxPlayers &&
-               session.turnTimeSeconds > 0 &&
+               session.turnTimeSeconds >= 0 &&
                session.startingPlayerHealth > 0;
     }
 
