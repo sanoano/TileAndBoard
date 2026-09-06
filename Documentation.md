@@ -95,6 +95,30 @@ public void Defending()
 
 This is run every frame while the player is in the process of placing a defence instance.
 
+### `UpdateMovementPreview()`
+
+```csharp
+private void UpdateMovementPreview()
+```
+
+### `ResetMovement()`
+
+```csharp
+public void ResetMovement()
+```
+
+### `CancelMovement()`
+
+```csharp
+public void CancelMovement()
+```
+
+### `ConfirmMovement()`
+
+```csharp
+public void ConfirmMovement()
+```
+
 ### `MoveCard(int direction)`
 
 **Access:** Public

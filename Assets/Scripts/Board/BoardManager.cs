@@ -83,6 +83,7 @@ public partial class BoardManager : NetworkBehaviour
     private List<Vector2Int> workingPositions = null;
     
     private Vector2Int[] currentAdjacentPositions;
+    private TweenInstance movementTween;
     
     
 
@@ -684,83 +685,41 @@ public partial class BoardManager : NetworkBehaviour
 
     void Moving()
     {
-        if (currentlySelectedUnit.Movement == 0)
-        {
-            UIManager.Instance.interactionState = UIManager.InteractionState.None;
-            UIManager.Instance.EnableControlsText();
-
-            foreach (var tile in localBoard.TileTransforms)
-            {
-                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-            }
-
-            UpdateTileVisuals();
-        }
-
-        // if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
-        // {
-        //     MoveCard(3);
-        // }
-
-        // if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
-        // {
-        //     if (GameManager.instance.playerId == Player.PlayerId.Player1)
-        //     {
-        //         MoveCard(0);
-        //     }
-        //     else
-        //     {
-        //         MoveCard(1);
-        //     }
-        // }
-
-        // if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
-        // {
-        //     MoveCard(2);
-        // }
-
-        // if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
-        // {
-        //     if (GameManager.instance.playerId == Player.PlayerId.Player1)
-        //     {
-        //         MoveCard(1);
-        //     }
-        //     else
-        //     {
-        //         MoveCard(0);
-        //     }
-        // }
-
-         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-         RaycastHit hit;
-
-        if (Input.GetMouseButtonDown(0)) 
-        {
-          if (Physics.Raycast(ray, out hit, Mathf.Infinity, playerSpecificLayer))
-            {
-                for(int i = 0; i < currentAdjacentPositions.Length; i++)
-                {
-                    if (currentAdjacentPositions[i].Equals(new Vector2Int(-1, -1))) continue;
-                    if (localBoard.TileTransforms[currentAdjacentPositions[i].x, currentAdjacentPositions[i].y] == hit.transform.gameObject)
-                    {
-                        MoveCard(i);
-                    }
-                }
-            }  
-        }
-        
-
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            UIManager.Instance.interactionState = UIManager.InteractionState.None;
-            UIManager.Instance.EnableControlsText();
+            CancelMovement();
+            return;
+        }
 
-            foreach (var tile in localBoard.TileTransforms)
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        {
+            ConfirmMovement();
+            return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            ResetMovement();
+            return;
+        }
+
+        if (Input.GetMouseButtonDown(0) &&
+            !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+        {
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, playerSpecificLayer))
             {
-                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
+                for (int i = 0; i < currentAdjacentPositions.Length; i++)
+                {
+                    Vector2Int position = currentAdjacentPositions[i];
+                    if (position == InvalidTile) continue;
+                    if (localBoard.TileTransforms[position.x, position.y] == hit.transform.gameObject)
+                    {
+                        MoveCard(i);
+                        break;
+                    }
+                }
             }
-
-            UpdateTileVisuals();
         }
     }
 
@@ -797,79 +756,124 @@ public partial class BoardManager : NetworkBehaviour
 
     public void MoveCard(int direction)
     {
-        if (currentlySelectedUnitIndex < 0 || currentlySelectedUnitIndex >= unitsCount) return;
+        if (UIManager.Instance.interactionState != UIManager.InteractionState.Moving ||
+            direction < 0 || direction >= currentAdjacentPositions.Length) return;
 
-        if (currentlySelectedUnit.Movement > 0 &&
-            !currentAdjacentPositions[direction].Equals(new Vector2Int(-1, -1)))
+        Vector2Int destination = currentAdjacentPositions[direction];
+        if (destination == InvalidTile) return;
+
+        int previousStep = workingPositions.IndexOf(destination);
+        if (previousStep >= 0)
         {
-            int unitIndex = currentlySelectedUnitIndex;
-            currentlySelectedUnit.HasActed = true;
+            workingPositions.RemoveRange(previousStep + 1, workingPositions.Count - previousStep - 1);
+        }
+        else
+        {
+            if (workingPositions.Count - 1 >= currentlySelectedUnit.Movement) return;
+            workingPositions.Add(destination);
+        }
 
+        CurrentSelectedTile = destination;
+        UpdateMovementPreview();
+        AudioManager.singleton.PlaySound(Random.Range(0, 2) == 0 ? "cardMove1" : "cardMove2", true);
+    }
 
-            Vector3 position = new Vector3(
-                localBoard.TileTransforms[currentAdjacentPositions[direction].x, currentAdjacentPositions[direction].y]
-                    .transform.position.x,
-                localBoard.TileTransforms[currentAdjacentPositions[direction].x, currentAdjacentPositions[direction].y]
-                    .transform.position.y + cardVerticalOffset,
-                localBoard.TileTransforms[currentAdjacentPositions[direction].x, currentAdjacentPositions[direction].y]
-                    .transform.position.z);
+    private void UpdateMovementPreview()
+    {
+        Vector2Int origin = currentlySelectedUnit.Position;
+        GameObject visual = localBoard.Visuals[origin.x, origin.y];
+        movementTween?.Cancel();
+        movementTween = visual.AddTween(new PositionTween
+        {
+            to = localBoard.TileTransforms[CurrentSelectedTile.x, CurrentSelectedTile.y].transform.position +
+                 Vector3.up * cardVerticalOffset,
+            duration = cardMoveAnimationTime,
+            easeType = EaseType.ElasticOut
+        });
 
-            var tween = new PositionTween()
+        ClearTiles();
+        UpdateTileVisuals();
+        currentAdjacentPositions = GetAdjacentTiles(CurrentSelectedTile, unitsList, unitsCount, GameManager.instance.playerId);
+        for (int i = 0; i < currentAdjacentPositions.Length; i++)
+        {
+            // The committed unit still occupies its origin while its visual previews the path.
+            if (CurrentSelectedTile + AdjacentOffsets[i] == origin)
+                currentAdjacentPositions[i] = origin;
+
+            Vector2Int position = currentAdjacentPositions[i];
+            if (position == InvalidTile) continue;
+            if (workingPositions.Count - 1 >= currentlySelectedUnit.Movement && !workingPositions.Contains(position))
             {
-                to = position,
-                duration = cardMoveAnimationTime,
-                easeType = EaseType.ElasticOut
-            };
-
-            localBoard.Visuals[CurrentSelectedTile.x, CurrentSelectedTile.y].AddTween(tween);
-
-            GameObject visual = localBoard.Visuals[CurrentSelectedTile.x, CurrentSelectedTile.y];
-            localBoard.Visuals[CurrentSelectedTile.x, CurrentSelectedTile.y] = null;
-            localBoard.Visuals[currentAdjacentPositions[direction].x, currentAdjacentPositions[direction].y] = visual;
-
-            currentlySelectedUnit.Position = currentAdjacentPositions[direction];
-
-            currentlySelectedUnit.Movement -= 1;
-            unitsList[unitIndex] = currentlySelectedUnit;
-            CurrentSelectedTile = currentAdjacentPositions[direction];
-            
-            var randInt = Random.Range(0, 2);
-            if (randInt == 0)
-            {
-                AudioManager.singleton.PlaySound("cardMove1", true); 
+                currentAdjacentPositions[i] = InvalidTile;
+                continue;
             }
-            else if(randInt == 1)
+            localBoard.TileTransforms[position.x, position.y].GetComponent<tileColour>().TileRecieveSignal(3, false);
+        }
+    }
+
+    public void ResetMovement()
+    {
+        if (UIManager.Instance.interactionState != UIManager.InteractionState.Moving) return;
+        workingPositions.RemoveRange(1, workingPositions.Count - 1);
+        CurrentSelectedTile = currentlySelectedUnit.Position;
+        UpdateMovementPreview();
+    }
+
+    public void CancelMovement()
+    {
+        if (UIManager.Instance.interactionState != UIManager.InteractionState.Moving) return;
+        Vector2Int origin = currentlySelectedUnit.Position;
+        movementTween?.Cancel();
+        movementTween = null;
+        localBoard.Visuals[origin.x, origin.y].transform.position =
+            localBoard.TileTransforms[origin.x, origin.y].transform.position + Vector3.up * cardVerticalOffset;
+        workingPositions = null;
+        UIManager.Instance.interactionState = UIManager.InteractionState.None;
+        UIManager.Instance.EnableControlsText();
+        ClearTiles();
+        UpdateTileVisuals();
+        NullSelection();
+    }
+
+    public void ConfirmMovement()
+    {
+        if (UIManager.Instance.interactionState != UIManager.InteractionState.Moving) return;
+        if (CurrentSelectedTile == currentlySelectedUnit.Position || !TurnManager.instance.isYourTurn ||
+            !ManaManager.instance.CanAfford(currentlySelectedUnit.Cost))
+        {
+            CancelMovement();
+            return;
+        }
+
+        Vector2Int origin = currentlySelectedUnit.Position;
+        ManaManager.instance.RemoveManaPoints(currentlySelectedUnit.Cost);
+        GameObject visual = localBoard.Visuals[origin.x, origin.y];
+        movementTween?.Cancel();
+        movementTween = null;
+        visual.transform.position = localBoard.TileTransforms[CurrentSelectedTile.x, CurrentSelectedTile.y].transform.position +
+                                    Vector3.up * cardVerticalOffset;
+        localBoard.Visuals[origin.x, origin.y] = null;
+        localBoard.Visuals[CurrentSelectedTile.x, CurrentSelectedTile.y] = visual;
+        currentlySelectedUnit.Position = CurrentSelectedTile;
+        currentlySelectedUnit.Movement -= workingPositions.Count - 1;
+        currentlySelectedUnit.HasActed = true;
+        unitsList[currentlySelectedUnitIndex] = currentlySelectedUnit;
+
+        if (NetworkManager.Singleton)
+        {
+            foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
             {
-                AudioManager.singleton.PlaySound("cardMove2", true); 
-            }
-
-            if (NetworkManager.Singleton)
-            {
-                foreach (ulong clientIds in NetworkManager.Singleton.ConnectedClientsIds)
-                {
-                    if (clientIds == NetworkManager.LocalClientId) continue;
-                    MoveCardRpc(unitIndex, currentAdjacentPositions[direction],
-                        RpcTarget.Single(clientIds, RpcTargetUse.Temp));
-                }
-            }
-
-
-            foreach (var tile in localBoard.TileTransforms)
-            {
-                tile.GetComponent<tileColour>().TileRecieveSignal(0, false);
-            }
-            
-            ClearTiles();
-            UpdateTileVisuals();
-
-            currentAdjacentPositions = GetAdjacentTiles(CurrentSelectedTile, unitsList, unitsCount, GameManager.instance.playerId);
-
-            foreach (var pos in currentAdjacentPositions)
-            {
-                if (pos.Equals(new Vector2Int(-1, -1))) continue;
-                localBoard.TileTransforms[pos.x, pos.y].GetComponent<tileColour>().TileRecieveSignal(3, false);
+                if (clientId == NetworkManager.LocalClientId) continue;
+                MoveCardRpc(currentlySelectedUnitIndex, CurrentSelectedTile, RpcTarget.Single(clientId, RpcTargetUse.Temp));
             }
         }
+
+        workingPositions = null;
+        UIManager.Instance.interactionState = UIManager.InteractionState.None;
+        UIManager.Instance.EnableControlsText();
+        ClearTiles();
+        UpdateTileVisuals();
+        NullSelection();
     }
 
 
@@ -1179,46 +1183,24 @@ public partial class BoardManager : NetworkBehaviour
 
     public void PrepareMovement()
     {
-        // if (!TacticsManager.instance.CanAfford(1)) return;
-
-        
-        UIManager.Instance.DestroyCurrentInfoInstance();
-        workingPositions = null;
-        currentlySelectedUnit = default;
-        currentlySelectedUnitIndex = -1;
+        if (UIManager.Instance.interactionState != UIManager.InteractionState.None ||
+            !TurnManager.instance.isYourTurn) return;
 
         for (int i = 0; i < unitsCount; i++)
         {
             Unit unit = unitsList[i];
-            if (unit.Position == CurrentSelectedTile && unit.ID == GameManager.instance.playerId)
-            {
-                workingPositions = new List<Vector2Int>(unit.AttackPositionCount);
-                for (int attackIndex = 0; attackIndex < unit.AttackPositionCount; attackIndex++)
-                {
-                    workingPositions.Add(unit.AttackPositions[attackIndex]);
-                }
-                currentlySelectedUnit = unit;
-                currentlySelectedUnitIndex = i;
-            }
+            if (unit.Position != CurrentSelectedTile || unit.ID != GameManager.instance.playerId) continue;
+            if (unit.HasActed || unit.Movement <= 0 || !ManaManager.instance.CanAfford(unit.Cost)) return;
+
+            currentlySelectedUnit = unit;
+            currentlySelectedUnitIndex = i;
+            workingPositions = new List<Vector2Int> { unit.Position };
+            UIManager.Instance.DestroyCurrentInfoInstance();
+            UIManager.Instance.interactionState = UIManager.InteractionState.Moving;
+            UIManager.Instance.EnableControlsText();
+            UpdateMovementPreview();
+            return;
         }
-        
-        ManaManager.instance.RemoveManaPoints(currentlySelectedUnit.Cost);
-        if (workingPositions == null) return;
-
-        ClearTiles();
-        UpdateTileVisuals();
-
-        currentAdjacentPositions = GetAdjacentTiles(CurrentSelectedTile, unitsList, unitsCount, GameManager.instance.playerId);
-
-        foreach (var pos in currentAdjacentPositions)
-        {
-            if (pos.Equals(new Vector2Int(-1, -1))) continue;
-            localBoard.TileTransforms[pos.x, pos.y].GetComponent<tileColour>().TileRecieveSignal(3, false);
-        }
-
-        UIManager.Instance.interactionState = UIManager.InteractionState.Moving;
-
-        UIManager.Instance.EnableControlsText();
     }
 
     public void ClearTiles()
