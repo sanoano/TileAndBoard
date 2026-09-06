@@ -798,7 +798,7 @@ public class UIManager : MonoBehaviour
     public IEnumerator RoundNumberCounter()
     {//Shows a message after both players have taken their turns.
 
-        Vector2 start = roundMsgBgRect.sizeDelta;
+        Vector2 start = new Vector2(2050, 0);
         Vector2 end = new Vector2(2050, 300);
 
         float timer = 0.0f;
