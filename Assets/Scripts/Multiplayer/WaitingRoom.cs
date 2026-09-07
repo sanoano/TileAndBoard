@@ -18,6 +18,7 @@ public class WaitingRoom : NetworkBehaviour
     public static WaitingRoom Instance;
 
     private const string ReadyPropertyKey = "ready";
+    private const string WinsPropertyKey = "totalWins";
 
     private Lobby lobby;
     private bool isUpdatingReadyState;
@@ -39,6 +40,11 @@ public class WaitingRoom : NetworkBehaviour
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server);
 
+    private readonly NetworkVariable<int> lanHostWins = new(0,
+        NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private readonly NetworkVariable<int> lanClientWins = new(0,
+        NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
     [Header("UI References")] 
     [SerializeField] private Button readyGameButton;
     
@@ -53,6 +59,9 @@ public class WaitingRoom : NetworkBehaviour
         
         if (!lobby.IsLanSession)
         {
+            lobby._session.CurrentPlayer.SetProperty(
+                WinsPropertyKey,
+                new PlayerProperty(PlayerPrefs.GetInt("GamesWon", 0).ToString(), VisibilityPropertyOptions.Public));
             await SetReadyStateAsync(false);
         }
 
@@ -67,7 +76,7 @@ public class WaitingRoom : NetworkBehaviour
         lobby = NetworkManager.Singleton.gameObject.GetComponent<Lobby>();
         if (!lobby.IsLanSession) return;
 
-        RegisterLanPlayerRpc(new FixedString64Bytes(lobby.PlayerDisplayName));
+        RegisterLanPlayerRpc(new FixedString64Bytes(lobby.PlayerDisplayName), PlayerPrefs.GetInt("GamesWon", 0));
     }
 
     private void Update()
@@ -106,19 +115,20 @@ public class WaitingRoom : NetworkBehaviour
 
     private void UpdatePlayerName()
     {
+        bool hasPeer = NetworkManager.Singleton.ConnectedClientsIds.Count == 2;
         if (lobby.IsLanSession)
         {
-            UIManagerLobby.Instance.UpdatePlayerName(true, lanHostName.Value.ToString());
-            UIManagerLobby.Instance.UpdatePlayerName(false, lanClientName.Value.ToString());
+            UIManagerLobby.Instance.UpdatePlayerName(true, lanHostName.Value.ToString(), lanHostWins.Value);
+            UIManagerLobby.Instance.UpdatePlayerName(false, hasPeer ? lanClientName.Value.ToString() : "", lanClientWins.Value);
             return;
         }
 
-        if (lobby._session.Players.Count < 2)
+        if (!hasPeer || lobby._session.Players.Count < 2)
         {
             UIManagerLobby.Instance.UpdatePlayerName(false, "");
         }
 
-        for (int i = 0; i < lobby._session.Players.Count; i++)
+        for (int i = 0; i < lobby._session.Players.Count && (i == 0 || hasPeer); i++)
         {
             var player = lobby._session.Players[i];
 
@@ -126,29 +136,36 @@ public class WaitingRoom : NetworkBehaviour
             int suffixIndex = name.LastIndexOf('#');
             string trimmedName = suffixIndex > 0 ? name.Substring(0, suffixIndex) : name;
 
-            UIManagerLobby.Instance.UpdatePlayerName(i == 0, trimmedName);
+            int wins = 0;
+            if (player.Properties != null && player.Properties.TryGetValue(WinsPropertyKey, out var winsProperty))
+            {
+                int.TryParse(winsProperty.Value, out wins);
+            }
+
+            UIManagerLobby.Instance.UpdatePlayerName(i == 0, trimmedName, wins);
         }
     }
 
     private void UpdatePlayerStatus()
     {
+        bool hasPeer = NetworkManager.Singleton.ConnectedClientsIds.Count == 2;
         if (lobby.IsLanSession)
         {
             UIManagerLobby.Instance.UpdatePlayerStatus(true, lanHostReady.Value ? "READY" : "NOT READY");
             UIManagerLobby.Instance.UpdatePlayerStatus(
                 false,
-                string.IsNullOrEmpty(lanClientName.Value.ToString())
+                !hasPeer || string.IsNullOrEmpty(lanClientName.Value.ToString())
                     ? ""
                     : lanClientReady.Value ? "READY" : "NOT READY");
             return;
         }
 
-        if (lobby._session.Players.Count < 2)
+        if (!hasPeer || lobby._session.Players.Count < 2)
         {
             UIManagerLobby.Instance.UpdatePlayerStatus(false, "");
         }
 
-        for (int i = 0; i < lobby._session.Players.Count; i++)
+        for (int i = 0; i < lobby._session.Players.Count && (i == 0 || hasPeer); i++)
         {
             var player = lobby._session.Players[i];
             string readyStatus = IsPlayerReady(player) ? "READY" : "NOT READY";
@@ -167,6 +184,7 @@ public class WaitingRoom : NetworkBehaviour
         if (lobby.IsLanSession && IsServer && id != NetworkManager.ServerClientId)
         {
             lanClientName.Value = default;
+            lanClientWins.Value = 0;
             lanClientReady.Value = false;
         }
 
@@ -295,15 +313,17 @@ public class WaitingRoom : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    private void RegisterLanPlayerRpc(FixedString64Bytes playerName, RpcParams rpcParams = default)
+    private void RegisterLanPlayerRpc(FixedString64Bytes playerName, int totalWins, RpcParams rpcParams = default)
     {
         if (rpcParams.Receive.SenderClientId == NetworkManager.ServerClientId)
         {
             lanHostName.Value = playerName;
+            lanHostWins.Value = totalWins;
         }
         else
         {
             lanClientName.Value = playerName;
+            lanClientWins.Value = totalWins;
         }
     }
 
