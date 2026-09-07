@@ -51,8 +51,6 @@ public class UIManagerMainMenu : MonoBehaviour
     [Header("Tooltips")]
     [SerializeField] private GameObject[] tooltips;
 
-    [HideInInspector] public bool dontPlayPageSound = false;
-
     void Start()
     {
         UIlist = new GameObject[][] {presstostart, buttons1, buttons2, createGame, joinGame, findGame, options, tutorial, loading, credits, sureQuit};
@@ -89,10 +87,8 @@ public class UIManagerMainMenu : MonoBehaviour
             if (newState < currentState || newState == 10)
                 AudioManager.singleton.PlaySound("stonePush", false, 0.4f);
             else
-                if (!dontPlayPageSound)
-                    AudioManager.singleton.PlaySound("scrollOpen", false, 0.6f);
-                else
-                    dontPlayPageSound = false;
+                 AudioManager.singleton.PlaySound("scrollOpen", false, 0.6f);
+               
         }
 
         if (newState == 3)

@@ -267,7 +267,7 @@ public class Lobby : MonoBehaviour
 
     private async void JoinGameByJoinCode()
     {
-        UIManagerScript.dontPlayPageSound = true;
+        
 
         if (_sessionJoinCode == String.Empty)
         {
