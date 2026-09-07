@@ -1,4 +1,4 @@
-//using Mono.Cecil.Cil;
+﻿//using Mono.Cecil.Cil;
 using System;
 using System.Collections;
 using System.Linq;
@@ -19,13 +19,10 @@ public class UIManagerMainMenu : MonoBehaviour
     [SerializeField] private GameObject title;//Title graphic
     [SerializeField] private GameObject status;//Connection status messages
     [SerializeField] private GameObject[] playerNameElements;
-    //[SerializeField] private GameObject versionText;
+    private TextMeshProUGUI playerWinsTMP;
+    [SerializeField] private TextMeshProUGUI versionTMP;//just adds a wee α (0) or β (1) to the version. 2 means full version, so no letter prefix.
+    [SerializeField] private int verType = 0;
     private TextMeshProUGUI statusTMP;
-
-    [Header("Tooltips")]
-    [SerializeField] private GameObject ttipLP;//(0)
-    [SerializeField] private GameObject ttipPriv;//(1)
-    [SerializeField] private GameObject ttipTime;//(2)
 
     [Header("Screens")]
     [SerializeField] private GameObject[] presstostart; //(0)
@@ -51,6 +48,9 @@ public class UIManagerMainMenu : MonoBehaviour
     private float crawlRate;
     private Vector2 startPos;
 
+    [Header("Tooltips")]
+    [SerializeField] private GameObject[] tooltips;
+
     [HideInInspector] public bool dontPlayPageSound = false;
 
     void Start()
@@ -65,6 +65,20 @@ public class UIManagerMainMenu : MonoBehaviour
         startPos = creditsListTrans.anchoredPosition;
 
         lobby = NetworkManager.Singleton.GetComponent<Lobby>();
+
+        playerWinsTMP = playerNameElements[2].GetComponent<TextMeshProUGUI>();
+        if (GetGamesWon() > 0)
+            playerWinsTMP.text = "Wins: " + GetGamesWon().ToString();
+        else
+            playerWinsTMP.text = "";
+
+        //Lets players know what version they're running when they're in the lobby. Just remember to update it in the build player settings.
+        if (verType == 0)
+            versionTMP.text = "Version: " + "α " + Application.version;
+        else if (verType == 1)
+            versionTMP.text = "Version: " + "β " + Application.version;
+        else
+            versionTMP.text = "Version: " + Application.version;
     }
 
     public void SetMenuScreen(int newState)
@@ -91,8 +105,7 @@ public class UIManagerMainMenu : MonoBehaviour
             lobby?.StopLanDiscovery();
         }
 
-        // try
-        // {
+
         foreach (GameObject[] array in UIlist)
         {
             foreach (GameObject element in array)
@@ -100,11 +113,6 @@ public class UIManagerMainMenu : MonoBehaviour
                 element.SetActive(false);
             }
         }
-        //}
-        // catch (Exception e)
-        // {
-        //     
-        // }
 
 
         if (newState != 9)
@@ -113,14 +121,24 @@ public class UIManagerMainMenu : MonoBehaviour
             {
                 element.SetActive(true);
 
+                //The following if statements deal with sliding the dialogues and buttons in and out...it's a lot of repeated code prolly a better way to do this
                 if (newState == 1)
                 {
                     foreach (GameObject button in buttons1)
                     {
-                        UIDialogueSlide buttons1SlideScript = button.GetComponent<UIDialogueSlide>();
-                        if (buttons1SlideScript != null)
-                            StartCoroutine(PlaySlideNextFrame(buttons1SlideScript, true));
+                        UIDialogueSlide slideScript = button.GetComponent<UIDialogueSlide>();
+                        if (slideScript != null)
+                            StartCoroutine(PlaySlideNextFrame(slideScript, true));
+                    }
 
+                    if (currentState == 2)
+                    {
+                        foreach (GameObject button in buttons2)
+                        {
+                            UIDialogueSlide slideScript = button.GetComponent<UIDialogueSlide>();
+                            if (slideScript != null)
+                                StartCoroutine(PlaySlideNextFrame(slideScript, false));
+                        }
                     }
                 }
                 else if (newState == 2)
@@ -132,11 +150,19 @@ public class UIManagerMainMenu : MonoBehaviour
                             StartCoroutine(PlaySlideNextFrame(buttons2SlideScript, true));
                     }
 
-                    foreach (GameObject button in buttons1)
-                    {// This won't work because buttons1 is disabled at this point. oh well.
-                        UIDialogueSlide buttons1SlideScript = button.GetComponent<UIDialogueSlide>();
-                        if (buttons1SlideScript != null)
-                            StartCoroutine(PlaySlideNextFrame(buttons1SlideScript, false));
+                    if (currentState == 1)
+                    {
+                        foreach (GameObject button in buttons1)
+                        {
+                            UIDialogueSlide slideScript = button.GetComponent<UIDialogueSlide>();
+                            if (slideScript != null)
+                                StartCoroutine(PlaySlideNextFrame(slideScript, false));
+                        }
+                    }
+                    else if (currentState == 3)
+                    {
+                        UIDialogueSlide slideScript = createGame[0].GetComponent<UIDialogueSlide>();
+                        StartCoroutine(PlaySlideNextFrame(slideScript, false));
                     }
                 }
                 else if (newState == 3)
@@ -147,12 +173,44 @@ public class UIManagerMainMenu : MonoBehaviour
                         if (menuSlideScript != null)
                             StartCoroutine(PlaySlideNextFrame(menuSlideScript, true));
                     }
+
+                    foreach (GameObject button in buttons2)
+                    {
+                        UIDialogueSlide buttons2SlideScript = button.GetComponent<UIDialogueSlide>();
+                        if (buttons2SlideScript != null)
+                            StartCoroutine(PlaySlideNextFrame(buttons2SlideScript, false));
+                    }
+                }
+                else if (newState == 6)
+                {
+                    foreach (GameObject button in buttons1)
+                    {
+                        UIDialogueSlide slideScript = button.GetComponent<UIDialogueSlide>();
+                        if (slideScript != null)
+                            StartCoroutine(PlaySlideNextFrame(slideScript, false));
+                    }
+                }
+                else if (newState == 5 || newState == 7)
+                {
+                    foreach (GameObject button in buttons2)
+                    {
+                        UIDialogueSlide slideScript = button.GetComponent<UIDialogueSlide>();
+                        if (slideScript != null)
+                            StartCoroutine(PlaySlideNextFrame(slideScript, false));
+                    }
                 }
             }
         }
         else
         {
             StartCredits();
+
+            foreach (GameObject button in buttons1)
+            {
+                UIDialogueSlide slideScript = button.GetComponent<UIDialogueSlide>();
+                if (slideScript != null)
+                    StartCoroutine(PlaySlideNextFrame(slideScript, false));
+            }
         }
 
         //Makes sure the status messages don't clog up the nice views of irrelevant menus
@@ -232,6 +290,35 @@ public class UIManagerMainMenu : MonoBehaviour
             }
         }
 
+    }
+
+    //The following tooltip function shows up when you hover on a create game option. 0 for timer, 1 for lp, 2 for private, 3 for local
+    //Kinda borked rn. Using basic on pointerEnter/Exit events produces odd behaviour when hovering over the edges of the element, so this just makes them pop up for a second
+    public void TooltipTimer(bool show)
+    {
+        StartCoroutine(showTooltip(0));
+    }
+    public void TooltipLP(bool show)
+    {
+        StartCoroutine(showTooltip(1));
+    }
+    public void TooltipPrivate(bool show)
+    {
+        StartCoroutine(showTooltip(2));
+    }
+    public void TooltipLocal(bool show)
+    {
+        StartCoroutine(showTooltip(3));
+    }
+    private IEnumerator showTooltip(int code)
+    {
+        tooltips[code].SetActive(true);
+
+        yield return new WaitForSeconds(1);
+
+        tooltips[code].SetActive(false);
+
+        yield return null;
     }
 
     public void QuitGame()
