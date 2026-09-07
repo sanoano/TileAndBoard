@@ -16,81 +16,86 @@ using UnityEngine.UI;
 
 public class Lobby : MonoBehaviour
 {
-   private const string TurnTimePropertyKey = "turnTimeSeconds";
-   private const string StartingHealthPropertyKey = "startingPlayerHealth";
-   private const string HostNamePropertyKey = "hostName";
-   private const string MatchPreferencesFileName = "create-game-preferences.json";
-   private const ushort LanConnectionPort = 7777;
-   
-   public const int DefaultTurnTimeSeconds = 60;
-   public const int DefaultStartingPlayerHealth = 50;
+    private const string TurnTimePropertyKey = "turnTimeSeconds";
+    private const string StartingHealthPropertyKey = "startingPlayerHealth";
+    private const string HostNamePropertyKey = "hostName";
+    private const string MatchPreferencesFileName = "create-game-preferences.json";
+    private const ushort LanConnectionPort = 7777;
 
-   private string _sessionName;
-   private string _sessionJoinCode;
-   private int _maxPlayers = 2;
-   private bool isPrivate;
-   private int selectedTurnTimeSeconds = DefaultTurnTimeSeconds;
-   private int selectedStartingPlayerHealth = DefaultStartingPlayerHealth;
-   public ISession _session;
-   [HideInInspector] public NetworkManager m_NetworkManager;
-   private NetworkTransport onlineTransport;
-   private UnityTransport lanTransport;
-   private LanDiscovery lanDiscovery;
+    public const int DefaultTurnTimeSeconds = 60;
+    public const int DefaultStartingPlayerHealth = 50;
 
-   [Header("UI References")]
-   [SerializeField] private UIManagerMainMenu UIManagerScript;
-   [SerializeField] private TMP_InputField username;
-   [SerializeField] private TextMeshProUGUI statusText;
-   [SerializeField] private Button reconnectButton;
+    private string _sessionName;
+    private string _sessionJoinCode;
+    private int _maxPlayers = 2;
+    private bool isPrivate;
+    private bool hasTimer;
+    private bool isLocal;
+    private int selectedTurnTimeSeconds = DefaultTurnTimeSeconds;
+    private int selectedStartingPlayerHealth = DefaultStartingPlayerHealth;
+    public ISession _session;
+    [HideInInspector] public NetworkManager m_NetworkManager;
+    private NetworkTransport onlineTransport;
+    private UnityTransport lanTransport;
+    private LanDiscovery lanDiscovery;
+
+    [Header("UI References")]
+    [SerializeField] private UIManagerMainMenu UIManagerScript;
+    [SerializeField] private TMP_InputField username;
+    [SerializeField] private TextMeshProUGUI statusText;
+    [SerializeField] private Button reconnectButton;
 
     [Header("Create Game UI")]
     [SerializeField] private Button createGameButton;
     [SerializeField] private Toggle privateToggle;
-    //[SerializeField] private Toggle timerToggle; Need code to deal with no timer in games
+    [SerializeField] private Toggle timerToggle;
     [SerializeField] private TMP_InputField sessionName;
     [SerializeField] private TMP_InputField timerInput;
+    [SerializeField] private GameObject timerHeader;
     [SerializeField] private TMP_InputField lpInput;
-    [SerializeField] private Button createLocalGameButton;
-     /*[SerializeField] private TMP_Dropdown timerSelect;
-      [SerializeField] private TMP_Dropdown healthSelect;*/
+    [SerializeField] private Toggle localToggle;
+    private bool assignToggleButtonOnce = false;
+    //[SerializeField] private Button createLocalGameButton;
+    /*[SerializeField] private TMP_Dropdown timerSelect;
+     [SerializeField] private TMP_Dropdown healthSelect;*/
 
-    [Header("Join Game UI")] 
-   [SerializeField] private GameObject sessionInfoPrefab;
-   [SerializeField] private Button joinGameDirectButton;
-   [SerializeField] private Button refreshButton; 
-   [SerializeField] private TMP_InputField joinCodeInput;
-   [SerializeField] private GameObject sessionListContent;
-   [SerializeField] private GameObject sessionList;
-   [SerializeField] private Button joinButton;
-   [SerializeField] private Button searchLocalButton;
+    [Header("Join Game UI")]
+    [SerializeField] private GameObject sessionInfoPrefab;
+    [SerializeField] private Button joinGameDirectButton;
+    [SerializeField] private Button refreshButton;
+    [SerializeField] private TMP_InputField joinCodeInput;
+    [SerializeField] private GameObject sessionListContent;
+    [SerializeField] private GameObject sessionList;
+    [SerializeField] private Button joinButton;
+    [SerializeField] private Button searchLocalButton;
 
-   [Header("Parameters")] 
-   [SerializeField] private float checkDisconnectTime;
+    [Header("Parameters")]
+    [SerializeField] private float checkDisconnectTime;
 
-   private static Lobby instance;
+    private static Lobby instance;
 
-   public bool IsLanSession { get; private set; }
-   public string LanSessionName { get; private set; }
-   public string PlayerDisplayName => GetPlayerDisplayName();
+    public bool IsLanSession { get; private set; }
+    public string LanSessionName { get; private set; }
+    public string PlayerDisplayName => GetPlayerDisplayName();
 
-   [Serializable]
-   private class MatchPreferences
-   {
-       public int turnTimeSeconds;
-       public int startingPlayerHealth;
-       public string gameName;
-   }
+    [Serializable]
+    private class MatchPreferences
+    {
+        public int turnTimeSeconds;
+        public int startingPlayerHealth;
+        public string gameName;
+    }
 
-   public int TurnTimeSeconds => GetSessionSetting(
-       TurnTimePropertyKey,
-       selectedTurnTimeSeconds,
-       0);
+    public int TurnTimeSeconds => GetSessionSetting(
+        TurnTimePropertyKey,
+        selectedTurnTimeSeconds,
+        0);
 
-   public int StartingPlayerHealth => GetSessionSetting(
-       StartingHealthPropertyKey,
-       selectedStartingPlayerHealth);
-   
-   
+    public int StartingPlayerHealth => GetSessionSetting(
+        StartingHealthPropertyKey,
+        selectedStartingPlayerHealth);
+
+
     private async void Awake()
     {
 
@@ -99,7 +104,7 @@ public class Lobby : MonoBehaviour
             DestroyImmediate(instance.gameObject);
             Destroy(instance);
         }
-        
+
         instance = this;
 
 
@@ -108,7 +113,7 @@ public class Lobby : MonoBehaviour
         onlineTransport = m_NetworkManager.NetworkConfig.NetworkTransport;
         lanDiscovery = gameObject.AddComponent<LanDiscovery>();
         lanDiscovery.SessionsChanged += DisplayNearbySessions;
-        
+
         m_NetworkManager.SetSingleton();
         m_NetworkManager.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
         m_NetworkManager.OnConnectionEvent += OnClientDisconnect;
@@ -132,25 +137,29 @@ public class Lobby : MonoBehaviour
             Debug.Log(e);
             statusText.text = "Multiplayer Services failed to initialize.";
         }
-        
-        
+
+
         username.onValueChanged.AddListener(onUsernameSet);
         sessionName.onValueChanged.AddListener(onSessionNameSet);
         joinCodeInput.onValueChanged.AddListener(onJoinCodeSet);
-        createGameButton.onClick.AddListener(StartSession);
-        createLocalGameButton.onClick.AddListener(StartLanSession);
+
         joinGameDirectButton.onClick.AddListener(JoinGameByJoinCode);
-        privateToggle.onValueChanged.AddListener(onPrivateSet);
-        //timerToggle.onValueChanged.AddListener(onTimerSet);
         reconnectButton.onClick.AddListener(Reconnect);
+        createGameButton.onClick.AddListener(DetermineSession);
         joinButton.onClick.AddListener(QuerySessionsFromButton);
         refreshButton.onClick.AddListener(QuerySessionsFromButton);
         searchLocalButton.onClick.AddListener(QueryLanSessions);
+
+        privateToggle.onValueChanged.AddListener(onPrivateSet);
+        timerToggle.onValueChanged.AddListener(onTimerShow);
+        localToggle.onValueChanged.AddListener(SetSessionType);
+        
+
         //timerSelect.onValueChanged.AddListener(SetTurnTimePerTurn);
         //healthSelect.onValueChanged.AddListener(SetStartingPlayerHealth);
 
         LoadPreferredMatchSettings();
-        
+
         // statusText.text = "";
 
         if (UnityServices.State == ServicesInitializationState.Initialized &&
@@ -170,7 +179,7 @@ public class Lobby : MonoBehaviour
         {
             username.text = SystemInfo.deviceName;
         }
-        
+
         InvokeRepeating(nameof(CheckReconnect), checkDisconnectTime, checkDisconnectTime);
 
     }
@@ -189,10 +198,10 @@ public class Lobby : MonoBehaviour
 
     private async void Reconnect()
     {
-        
+
         reconnectButton.gameObject.SetActive(false);
         statusText.text = "Reconnecting...";
-        
+
         try
         {
             if (UnityServices.State == ServicesInitializationState.Uninitialized)
@@ -218,6 +227,26 @@ public class Lobby : MonoBehaviour
         reconnectButton.gameObject.SetActive(false);
     }
 
+    private void SetSessionType(bool value)
+    {
+        isLocal = value;
+    }
+    
+    private void DetermineSession()
+    {//Decides whether to start a local or an online game
+
+        if (isLocal)
+        {
+            Debug.Log("Starting local session");
+            StartLanSession();
+        }
+        else
+        {
+            Debug.Log("Starting online session");
+            StartSession();
+        }
+    }
+
     private async void StartSession()
     {
         StopLanDiscovery();
@@ -235,10 +264,10 @@ public class Lobby : MonoBehaviour
         await CreateSessionAsync();
         statusText.text = "Creating session...";
     }
-    
+
     private async void JoinGameByJoinCode()
     {
-        UIManagerScript.dontPlayPageSound = true;
+        
 
         if (_sessionJoinCode == String.Empty)
         {
@@ -260,8 +289,8 @@ public class Lobby : MonoBehaviour
         statusText.text = "";
 
         ClearSessionList();
-        
-        
+
+
         QuerySessionsResults results;
 
         try
@@ -280,7 +309,7 @@ public class Lobby : MonoBehaviour
             statusText.text = "Failed to query sessions. Please try again.";
             return;
         }
-        
+
 
         if (results.Sessions.Count > 0)
         {
@@ -299,7 +328,7 @@ public class Lobby : MonoBehaviour
         {
             statusText.text = "No sessions found.";
         }
-        
+
     }
 
     private async void QuerySessionsFromButton()
@@ -317,11 +346,11 @@ public class Lobby : MonoBehaviour
     {
         if (value == String.Empty) return;
         if (AuthenticationService.Instance.PlayerName == value) return;
-        
+
         string cleanedValue = value.Replace(" ", String.Empty);
         AuthenticationService.Instance.UpdatePlayerNameAsync(cleanedValue);
     }
-    
+
     private void onSessionNameSet(string value)
     {
         string cleanedValue = value.Replace(" ", String.Empty);
@@ -332,6 +361,18 @@ public class Lobby : MonoBehaviour
     {
         _sessionJoinCode = value;
     }
+
+    private void onTimerShow(bool value) 
+    {
+        timerHeader.gameObject.SetActive(value);
+        timerInput.gameObject.SetActive(value);
+
+        if (!value)
+        {
+            selectedTurnTimeSeconds = 0;
+        }
+    }
+
 
     private void onPrivateSet(bool value)
     {
@@ -355,11 +396,7 @@ public class Lobby : MonoBehaviour
 
         if (!defaults)
         {
-            if (int.Parse(timerInput.text) == 0)
-            {
-                selectedTurnTimeSeconds = 0;
-            }
-            else if (int.Parse(timerInput.text) < 30)
+            if (int.Parse(timerInput.text) < 30)
             {
                 selectedTurnTimeSeconds = 30;
                 timerInput.text = "30";
@@ -373,7 +410,10 @@ public class Lobby : MonoBehaviour
                 selectedTurnTimeSeconds = int.Parse(timerInput.text);
         }
         else
+        {
             selectedTurnTimeSeconds = DefaultTurnTimeSeconds;
+        }
+            
     }
 
     public void SetStartingPlayerHealth(bool defaults)
@@ -422,6 +462,7 @@ public class Lobby : MonoBehaviour
         {
             lpInput.text = DefaultStartingPlayerHealth.ToString();
             timerInput.text = DefaultTurnTimeSeconds.ToString();
+            timerToggle.isOn = true;
 
             SetTurnTimePerTurn(true);
             SetStartingPlayerHealth(true);
@@ -446,7 +487,19 @@ public class Lobby : MonoBehaviour
             //SetDropdownToSetting(healthSelect, preferences.startingPlayerHealth);
 
             lpInput.text = preferences.startingPlayerHealth.ToString();
-            timerInput.text = preferences.turnTimeSeconds.ToString();
+
+            if (preferences.turnTimeSeconds == 0)
+            {
+                //timerInput.text = DefaultTurnTimeSeconds.ToString();
+                timerToggle.isOn = false;
+            }
+            else
+            {
+                timerInput.text = preferences.turnTimeSeconds.ToString();
+                timerToggle.isOn = true;
+            }
+                
+
             sessionName.text = preferences.gameName;
 
             SetTurnTimePerTurn(false);
