@@ -2775,12 +2775,12 @@ private bool IsLocalPlayerReady()
 
 <!-- Add description/comments here. -->
 
-### `RegisterLanPlayerRpc(FixedString64Bytes playerName, RpcParams rpcParams = default)`
+### `RegisterLanPlayerRpc(FixedString64Bytes playerName, int totalWins, RpcParams rpcParams = default)`
 
 **Access:** Private
 
 ```csharp
-private void RegisterLanPlayerRpc(FixedString64Bytes playerName, RpcParams rpcParams = default)
+private void RegisterLanPlayerRpc(FixedString64Bytes playerName, int totalWins, RpcParams rpcParams = default)
 ```
 
 ### `SetLanReadyRpc(bool isReady, RpcParams rpcParams = default)`
@@ -2862,3 +2862,9 @@ public override void OnDestroy()
 **Description / comments:**
 
 <!-- Add description/comments here. -->
+
+## UIManagerLobby
+
+```csharp
+public void UpdatePlayerName(bool host, string name, int totalWins = 0)
+```

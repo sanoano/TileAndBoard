@@ -26,6 +26,8 @@ public class UIManagerLobby : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI player1NameTMP, player2NameTMP, player1StatusTMP, player2StatusTMP;
 
+    [SerializeField] private TextMeshProUGUI player1WinsTMP, player2WinsTMP;
+
     [SerializeField] private TextMeshProUGUI countdownTMP;
 
     [SerializeField] private GameObject waitingStatus;
@@ -81,6 +83,8 @@ public class UIManagerLobby : MonoBehaviour
 
         player1NameTMP.text = "";
         player2NameTMP.text = "";
+        player1WinsTMP.text = "";
+        player2WinsTMP.text = "";
         player1StatusTMP.text = "";
         player2StatusTMP.text = "";
 
@@ -135,12 +139,12 @@ public class UIManagerLobby : MonoBehaviour
         playerListTMP.text += name;
     }*/
 
-    public void UpdatePlayerName(bool host, string name)
+    public void UpdatePlayerName(bool host, string name, int totalWins = 0)
     {
-        if (host)
-            player1NameTMP.text = name;
-        else
-            player2NameTMP.text = name;
+        TextMeshProUGUI nameTMP = host ? player1NameTMP : player2NameTMP;
+        TextMeshProUGUI winsTMP = host ? player1WinsTMP : player2WinsTMP;
+        nameTMP.text = name;
+        winsTMP.text = string.IsNullOrEmpty(name) ? "" : $"Total Wins: {totalWins}";
     }
 
     public void UpdatePlayerStatus(bool host, string status)
