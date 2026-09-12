@@ -67,6 +67,6 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "tileandboard.slnx",
+    "dotnet.defaultSolution": "TileAndBoard.slnx",
     "dotnet.preferCSharpExtension": true
 }

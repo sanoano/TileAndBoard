@@ -52,6 +52,7 @@ public class WaitingRoom : NetworkBehaviour
     private async void Start()
     {     
         lobby = NetworkManager.Singleton.gameObject.GetComponent<Lobby>();
+        UIManagerLobby.Instance.SetParameterValues(lobby.TurnTimeSeconds, lobby.StartingPlayerHealth);
         
         lobby.m_NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
         lobby.m_NetworkManager.OnClientDisconnectCallback += OnClientDisconnectCallback;
@@ -66,7 +67,6 @@ public class WaitingRoom : NetworkBehaviour
         }
 
         UIManagerLobby.Instance.UpdateReadyButton(0);
-        UIManagerLobby.Instance.SetParameterValues(lobby.TurnTimeSeconds, lobby.StartingPlayerHealth);
     }
 
     public override void OnNetworkSpawn()
