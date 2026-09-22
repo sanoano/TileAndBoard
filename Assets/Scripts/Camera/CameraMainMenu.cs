@@ -6,8 +6,8 @@ using System.Collections;
 public class CameraMainMenu : MonoBehaviour
 {//Controls the position of the camera in the main menu, for cosmetic purposes. Switches between preset values. Controlled by buttons in-scene.
 
-    private Vector3 pivotPos0, pivotPos1, pivotPos2;
-    private Quaternion pivotAngles0, pivotAngles1, pivotAngles2;
+    private Vector3 pivotPos0, pivotPos1, pivotPos2, pivotPos3;
+    private Quaternion pivotAngles0, pivotAngles1, pivotAngles2, pivotAngles3;
 
     private Vector3 targetPos;
     private Quaternion targetAngles;
@@ -29,6 +29,10 @@ public class CameraMainMenu : MonoBehaviour
         //State 2 lower shot of the island
         pivotAngles2 = Quaternion.Euler(15.8f, -274.0f, 0.0f);
         pivotPos2 = new Vector3(0.74f, 2.34f, 0.0f);
+
+        //State 3 is of the character for chargen
+        pivotAngles3 = Quaternion.Euler(-25.2f, 155.4f, 0.3f);
+        pivotPos3 = new Vector3(0.77f, 2.97f, -0.95f);
 
 
         //Makes sure things are at State 0
@@ -54,6 +58,11 @@ public class CameraMainMenu : MonoBehaviour
             //transform.position = pivotPos2;
             targetAngles = pivotAngles2;
             targetPos = pivotPos2;
+        }
+        else if (state == 3)
+        {
+            targetAngles = pivotAngles3;
+            targetPos = pivotPos3;
         }
         else
         {
