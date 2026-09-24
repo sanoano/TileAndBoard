@@ -16,7 +16,8 @@ public class chargen : MonoBehaviour
 
     [Header("Data Files")]
     CosmeticStatus cosmeticStatus;
-    string defaultCode = "ADD8E68B00005C2B2400000009";//blue skin (6), red eyes (6), auburn hair (6), first outfit (3), first head (3), ninth sprite (2)
+    public const string DefaultCode = "ADD8E68B00005C2B2400000009";
+    string defaultCode = DefaultCode;//blue skin (6), red eyes (6), auburn hair (6), first outfit (3), first head (3), ninth sprite (2)
     string code;
     string filePath;
     const string fileName = "Cosmetics.json";
@@ -37,6 +38,32 @@ public class chargen : MonoBehaviour
     public struct CosmeticStatus
     {
         public string characterCode;
+    }
+
+    public static string LoadSavedCharacterCode()
+    {
+        string path = Path.Combine(Application.persistentDataPath, fileName);
+        if (!File.Exists(path)) return DefaultCode;
+        try
+        {
+            string saved = JsonUtility.FromJson<CosmeticStatus>(File.ReadAllText(path)).characterCode;
+            return IsValidCharacterCode(saved) ? saved : DefaultCode;
+        }
+        catch (Exception exception)
+        {
+            Debug.LogWarning($"Could not load cosmetics: {exception.Message}");
+            return DefaultCode;
+        }
+    }
+
+    public static bool IsValidCharacterCode(string value)
+    {
+        if (string.IsNullOrEmpty(value) || value.Length != 26) return false;
+        for (int i = 0; i < 18; i++)
+            if (!Uri.IsHexDigit(value[i])) return false;
+        for (int i = 18; i < 26; i++)
+            if (value[i] < '0' || value[i] > '9') return false;
+        return true;
     }
 
     private void Awake()
@@ -98,7 +125,7 @@ public class chargen : MonoBehaviour
 
             code = cosmeticStatus.characterCode;
 
-            if (string.IsNullOrEmpty(code) || code.Length < defaultCode.Length)
+            if (!IsValidCharacterCode(code))
             {
                 code = defaultCode;
                 cosmeticStatus.characterCode = code;
@@ -144,6 +171,7 @@ public class chargen : MonoBehaviour
         chOutfits.instance.loadTorso(torsoIndex);
         chOutfits.instance.loadHead(headIndex);*/
 
+        spriteIndex = Mathf.Clamp(spriteIndex, 0, GameAssets.i.characterSprites.Length - 1);
         UIManagerMainMenu.instance.outfitsManager.loadSprite(spriteIndex);
     }
 

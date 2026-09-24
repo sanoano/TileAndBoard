@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using UnityEngine;
@@ -9,8 +10,6 @@ public class GameManager : NetworkBehaviour
     private const string GamesWonKey = "GamesWon";
 
     [SerializeField] private GameObject playerHead;
-    private GameObject headInstance;
-    private NetworkObject headInstanceNO;
 
     public static GameManager instance;
 
@@ -54,11 +53,10 @@ public class GameManager : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
 
-        headInstance = Instantiate(playerHead);
-
-        headInstanceNO = headInstance.GetComponent<NetworkObject>();
-        
-        headInstanceNO.Spawn(destroyWithScene: true);
+        if (NetworkManager.DistributedAuthorityMode || IsServer)
+        {
+            NetworkManager.SceneManager.OnLoadEventCompleted += SpawnCameraMarkers;
+        }
         
         GetPlayerName();
 
@@ -66,6 +64,36 @@ public class GameManager : NetworkBehaviour
         
     }
     
+    public override void OnNetworkDespawn()
+    {
+        if (NetworkManager != null && NetworkManager.SceneManager != null)
+            NetworkManager.SceneManager.OnLoadEventCompleted -= SpawnCameraMarkers;
+    }
+
+    private void SpawnCameraMarkers(string sceneName, LoadSceneMode loadSceneMode,
+        List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
+    {
+        if (sceneName != gameObject.scene.name) return;
+        foreach (ulong clientId in clientsCompleted)
+        {
+            if (NetworkManager.DistributedAuthorityMode && clientId != NetworkManager.LocalClientId)
+                continue;
+
+            bool hasMarker = false;
+            foreach (NetworkObject spawned in NetworkManager.SpawnManager.SpawnedObjectsList)
+            {
+                if (spawned.OwnerClientId == clientId && spawned.GetComponent<CameraFollow>() != null)
+                {
+                    hasMarker = true;
+                    break;
+                }
+            }
+            if (!hasMarker)
+                Instantiate(playerHead).GetComponent<NetworkObject>()
+                    .SpawnWithOwnership(clientId, destroyWithScene: true);
+        }
+    }
+
     async void GetPlayerName()
     {
         try

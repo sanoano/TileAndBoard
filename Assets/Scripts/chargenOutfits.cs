@@ -15,7 +15,7 @@ public class chargenOutfits : MonoBehaviour
     private int currentHead, currentTorso;
 
     [Header("Data Files")]
-    public Sprite[] sprites;
+    public Sprite[] sprites => GameAssets.i.characterSprites;
 
     void Awake()
     {
