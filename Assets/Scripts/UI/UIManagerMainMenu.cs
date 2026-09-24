@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -10,6 +11,9 @@ using UnityEngine.UI;
 
 public class UIManagerMainMenu : MonoBehaviour
 {//Mmmm buttons
+
+    public static UIManagerMainMenu instance;
+
     private const string GamesWonKey = "GamesWon";
 
     [SerializeField] private CameraMainMenu cameraScript;
@@ -38,8 +42,9 @@ public class UIManagerMainMenu : MonoBehaviour
     [SerializeField] private GameObject[] loading;//(8)
     [SerializeField] private GameObject[] credits;//(9)
     [SerializeField] private GameObject[] sureQuit;//(10) 
+    [SerializeField] private GameObject[] chargenMenu;//(11) 
 
-    GameObject[][] UIlist;
+    private GameObject[][] UIlist;
     private int currentState = 0;
 
     [Header("Credits")]
@@ -48,12 +53,24 @@ public class UIManagerMainMenu : MonoBehaviour
     private float crawlRate;
     private Vector2 startPos;
 
+    [Header("Character Generation")]
+    public chargenOutfits outfitsManager;
+
     [Header("Tooltips")]
     [SerializeField] private GameObject[] tooltips;
 
+
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
+    }
+
     void Start()
     {
-        UIlist = new GameObject[][] {presstostart, buttons1, buttons2, createGame, joinGame, findGame, options, tutorial, loading, credits, sureQuit};
+        UIlist = new GameObject[][] {presstostart, buttons1, buttons2, createGame, joinGame, findGame, options, tutorial, loading, credits, sureQuit, chargenMenu};
 
         statusTMP = status.GetComponent<TextMeshProUGUI>();
         statusTMP.text = "";
@@ -177,6 +194,22 @@ public class UIManagerMainMenu : MonoBehaviour
                             StartCoroutine(PlaySlideNextFrame(buttons2SlideScript, false));
                     }
                 }
+                else if (newState == 11)
+                {
+                    foreach (GameObject menu in chargenMenu)
+                    {
+                        UIDialogueSlide menuSlideScript = menu.GetComponent<UIDialogueSlide>();
+                        if (menuSlideScript != null)
+                            StartCoroutine(PlaySlideNextFrame(menuSlideScript, true));
+                    }
+
+                    foreach (GameObject button in buttons2)
+                    {
+                        UIDialogueSlide buttons2SlideScript = button.GetComponent<UIDialogueSlide>();
+                        if (buttons2SlideScript != null)
+                            StartCoroutine(PlaySlideNextFrame(buttons2SlideScript, false));
+                    }
+                }
                 else if (newState == 6)
                 {
                     foreach (GameObject button in buttons1)
@@ -232,6 +265,8 @@ public class UIManagerMainMenu : MonoBehaviour
             cameraScript.SetCameraState(2);
         else if (newState == 5 || newState == 8)
             cameraScript.SetCameraState(1);
+        else if (newState == 11)
+            cameraScript.SetCameraState(3);
         else
             cameraScript.SetCameraState(0); 
 
@@ -286,6 +321,76 @@ public class UIManagerMainMenu : MonoBehaviour
             }
         }
 
+    }
+
+    public void navigateCosmetics(bool forwards, int type)//0 is head, 1 is torso, 2 is sprite
+    {
+
+        //int torsoAmount = chargenOutfits.instance.torsoAmount();// This is so if more cosmetics are added to the outfits manager script, nothing needs to be changed here
+        //int headAmount = chargenOutfits.instance.headAmount();
+
+        int spriteAmount = outfitsManager.sprites.Length;
+
+        /*if (type == 0)
+        {
+            if (forwards)
+            {
+                if (headIndex == headAmount - 1)
+                    headIndex = 0;
+                else
+                    headIndex++;
+            }
+            else
+            {
+                if (headIndex == 0)
+                    headIndex = headAmount - 1;
+                else
+                    headIndex--;
+            }
+
+            //chargenOutfits.instance.loadHead(headIndex);
+
+        }
+        else if (type == 1)
+        {
+            if (forwards)
+            {
+                if (torsoIndex == torsoAmount - 1)
+                    torsoIndex = 0;
+                else
+                    torsoIndex++;
+            }
+            else
+            {
+                if (torsoIndex == 0)
+                    torsoIndex = torsoAmount - 1;
+                else
+                    torsoIndex--;
+            }
+
+            //chOutfits.instance.loadTorso(torsoIndex);
+
+        }*/
+
+        if (type == 2)
+        {
+            if (forwards)
+            {
+                if (chargen.instance.spriteIndex == spriteAmount - 1)
+                    chargen.instance.spriteIndex = 0;
+                else
+                    chargen.instance.spriteIndex++;
+            }
+            else
+            {
+                if (chargen.instance.spriteIndex == 0)
+                    chargen.instance.spriteIndex = spriteAmount - 1;
+                else
+                    chargen.instance.spriteIndex--;
+            }
+
+            outfitsManager.loadSprite(chargen.instance.spriteIndex);
+        }
     }
 
     //The following tooltip function shows up when you hover on a create game option. 0 for timer, 1 for lp, 2 for private, 3 for local
