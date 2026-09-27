@@ -40,6 +40,9 @@ public class chargen : MonoBehaviour
         public string characterCode;
     }
 
+    private static string currentCharacterCode;
+    public static string CurrentCharacterCode => currentCharacterCode ?? LoadSavedCharacterCode();
+
     public static string LoadSavedCharacterCode()
     {
         string path = Path.Combine(Application.persistentDataPath, fileName);
@@ -142,6 +145,8 @@ public class chargen : MonoBehaviour
         }
 
 
+        currentCharacterCode = code;
+
         //Turns whatever was loaded from the above function into variables for the script
         string skinColourSubstring = code.Substring(0, 6);
         ColorUtility.TryParseHtmlString("#" + skinColourSubstring, out skinColour);
@@ -201,6 +206,7 @@ public class chargen : MonoBehaviour
             spriteIndexSubstring = "0" + spriteIndexSubstring;
 
         cosmeticStatus.characterCode = skinColourSubstring + eyeColourSubstring + hairColourSubstring + torsoIndexSubstring + headIndexSubstring + spriteIndexSubstring;
+        currentCharacterCode = cosmeticStatus.characterCode;
         Debug.Log(cosmeticStatus.characterCode);
 
         string cosmeticStatusJson = JsonUtility.ToJson(cosmeticStatus);

@@ -29,7 +29,7 @@ public class CameraFollow : NetworkBehaviour
         portrait = visual.AddComponent<SpriteRenderer>();
         CharacterCode.OnValueChanged += ApplyCharacterCode;
         if (IsOwner)
-            CharacterCode.Value = new FixedString128Bytes(chargen.LoadSavedCharacterCode());
+            CharacterCode.Value = new FixedString128Bytes(chargen.CurrentCharacterCode);
         ApplyCharacterCode(default, CharacterCode.Value);
     }
 

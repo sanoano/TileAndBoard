@@ -2769,12 +2769,12 @@ private bool IsLocalPlayerReady()
 
 <!-- Add description/comments here. -->
 
-### `RegisterLanPlayerRpc(FixedString64Bytes playerName, int totalWins, RpcParams rpcParams = default)`
+### `RegisterLanPlayerRpc(FixedString64Bytes playerName, int totalWins, FixedString128Bytes characterCode, RpcParams rpcParams = default)`
 
 **Access:** Private
 
 ```csharp
-private void RegisterLanPlayerRpc(FixedString64Bytes playerName, int totalWins, RpcParams rpcParams = default)
+private void RegisterLanPlayerRpc(FixedString64Bytes playerName, int totalWins, FixedString128Bytes characterCode, RpcParams rpcParams = default)
 ```
 
 ### `SetLanReadyRpc(bool isReady, RpcParams rpcParams = default)`
@@ -2870,4 +2870,11 @@ public override void OnNetworkDespawn()
 private void SpawnCameraMarkers(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
 public static string LoadSavedCharacterCode()
 public static bool IsValidCharacterCode(string value)
+```
+
+## UIManagerLobby
+
+```csharp
+private Image CreatePlayerPortrait(RectTransform winsLabel)
+public void UpdatePlayerCharacter(bool host, string characterCode)
 ```
