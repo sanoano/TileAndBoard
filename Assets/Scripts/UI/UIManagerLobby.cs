@@ -28,6 +28,8 @@ public class UIManagerLobby : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI player1WinsTMP, player2WinsTMP;
 
+    private Image player1Portrait, player2Portrait;
+
     [SerializeField] private TextMeshProUGUI countdownTMP;
 
     [SerializeField] private GameObject waitingStatus;
@@ -69,6 +71,9 @@ public class UIManagerLobby : MonoBehaviour
 
         readyGameButtonTMP = readyGameButton.GetComponentInChildren<TextMeshProUGUI>();
         waitingStatusTMP = waitingStatus.GetComponentInChildren<TextMeshProUGUI>();
+
+        player1Portrait = CreatePlayerPortrait(player1WinsTMP.rectTransform);
+        player2Portrait = CreatePlayerPortrait(player2WinsTMP.rectTransform);
 
         infoBannerRect = infoBanner.GetComponent<RectTransform>();
         infoBannerRect.sizeDelta = new Vector2(300, 290);
@@ -145,6 +150,38 @@ public class UIManagerLobby : MonoBehaviour
         TextMeshProUGUI winsTMP = host ? player1WinsTMP : player2WinsTMP;
         nameTMP.text = name;
         winsTMP.text = string.IsNullOrEmpty(name) ? "" : $"Total Wins: {totalWins}";
+    }
+
+    private Image CreatePlayerPortrait(RectTransform winsLabel)
+    {
+        var portraitObject = new GameObject("Player Portrait", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        var portrait = portraitObject.GetComponent<Image>();
+        portrait.transform.SetParent(winsLabel.parent, false);
+        portrait.rectTransform.anchorMin = winsLabel.anchorMin;
+        portrait.rectTransform.anchorMax = winsLabel.anchorMax;
+        portrait.rectTransform.anchoredPosition = winsLabel.anchoredPosition + new Vector2(0, 170);
+        portrait.rectTransform.sizeDelta = new Vector2(220, 260);
+        portrait.preserveAspect = true;
+        portrait.raycastTarget = false;
+        portrait.enabled = false;
+        portrait.transform.SetSiblingIndex(winsLabel.GetSiblingIndex());
+        return portrait;
+    }
+
+    public void UpdatePlayerCharacter(bool host, string characterCode)
+    {
+        Image portrait = host ? player1Portrait : player2Portrait;
+        if (string.IsNullOrEmpty(characterCode))
+        {
+            portrait.enabled = false;
+            portrait.sprite = null;
+            return;
+        }
+        if (!chargen.IsValidCharacterCode(characterCode)) characterCode = chargen.DefaultCode;
+        Sprite[] sprites = GameAssets.i.characterSprites;
+        int index = Mathf.Clamp(int.Parse(characterCode.Substring(24, 2)), 0, sprites.Length - 1);
+        portrait.sprite = sprites[index];
+        portrait.enabled = portrait.sprite != null;
     }
 
     public void UpdatePlayerStatus(bool host, string status)

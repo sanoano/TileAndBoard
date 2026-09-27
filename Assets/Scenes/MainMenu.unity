@@ -16687,38 +16687,6 @@ MonoBehaviour:
   skinMat: {fileID: 0}
   eyeMat: {fileID: 0}
   hairMat: {fileID: 0}
-  sprites:
-  - {fileID: 21300000, guid: f63f665745cf38240918e85fe5be6734, type: 3}
-  - {fileID: 21300000, guid: 3245a7e2899eb824386ab50afb9cdabf, type: 3}
-  - {fileID: 21300000, guid: 5de847051a7eb4741865f773915c087b, type: 3}
-  - {fileID: 21300000, guid: 9e0d4ac6986d4544aba43fbc626ef64d, type: 3}
-  - {fileID: 21300000, guid: 31648b137093417448ee528e9c9c00c7, type: 3}
-  - {fileID: 21300000, guid: 9e0d4ac6986d4544aba43fbc626ef64d, type: 3}
-  - {fileID: 21300000, guid: 38932566eeda7964ca686470dfd4358f, type: 3}
-  - {fileID: 21300000, guid: 597f90f479545ec4aa92822f6914312d, type: 3}
-  - {fileID: 21300000, guid: aedf9b39023e90044a846599ab8062ac, type: 3}
-  - {fileID: 21300000, guid: 8bf56198258e84c408489c2358744561, type: 3}
-  - {fileID: 21300000, guid: efb1df2ceba57744fb8075f01aacc2f0, type: 3}
-  - {fileID: 21300000, guid: afad9f0f28f3155479aeecfd1a752890, type: 3}
-  - {fileID: 21300000, guid: 3bcd065a77c09734993e377cf61d73cb, type: 3}
-  - {fileID: 21300000, guid: bc5d2722b2a55af4ab8f2eb004ececd6, type: 3}
-  - {fileID: 21300000, guid: 67ebe8404aa701b4d9e96f43b73f23b4, type: 3}
-  - {fileID: 21300000, guid: b7dd5dec65997da46a8f186f09018fa4, type: 3}
-  - {fileID: 21300000, guid: 90d96e029f3990c449e92f52d5e68bfd, type: 3}
-  - {fileID: 21300000, guid: 64bad51f17e39aa48837ef491d0c9f32, type: 3}
-  - {fileID: 21300000, guid: ef7fa728915476b4888b192bd31e8d0b, type: 3}
-  - {fileID: 21300000, guid: 99f749817ab05be4994d077994cfef3c, type: 3}
-  - {fileID: 21300000, guid: 44eb06d0a94407f4e91d7b42cacda4a9, type: 3}
-  - {fileID: 21300000, guid: cccfbc4fcce1cfb4098be3118a787a8b, type: 3}
-  - {fileID: 21300000, guid: ef81aa33db379394f8995d2552b6cc8d, type: 3}
-  - {fileID: 21300000, guid: fef550a13b3173149a981ca050ad679e, type: 3}
-  - {fileID: 21300000, guid: 60d33765801617b45b1d616464b64e5f, type: 3}
-  - {fileID: 21300000, guid: ed6d1697e2128d446a1e240456fac355, type: 3}
-  - {fileID: 21300000, guid: 9e0d4ac6986d4544aba43fbc626ef64d, type: 3}
-  - {fileID: 21300000, guid: 9e0d4ac6986d4544aba43fbc626ef64d, type: 3}
-  - {fileID: 21300000, guid: 9e0d4ac6986d4544aba43fbc626ef64d, type: 3}
-  - {fileID: 21300000, guid: 7ad3466bc7f65e2409932d7d13977d7d, type: 3}
-  - {fileID: 21300000, guid: a5674d7096222724eb49c58a01c52aba, type: 3}
 --- !u!4 &2008414274
 Transform:
   m_ObjectHideFlags: 0

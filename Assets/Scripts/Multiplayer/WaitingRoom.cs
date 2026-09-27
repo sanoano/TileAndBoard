@@ -19,6 +19,9 @@ public class WaitingRoom : NetworkBehaviour
 
     private const string ReadyPropertyKey = "ready";
     private const string WinsPropertyKey = "totalWins";
+    private const string CharacterPropertyKey = "characterCode";
+    private readonly NetworkVariable<FixedString128Bytes> lanHostCharacter = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private readonly NetworkVariable<FixedString128Bytes> lanClientCharacter = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     private Lobby lobby;
     private bool isUpdatingReadyState;
@@ -63,6 +66,8 @@ public class WaitingRoom : NetworkBehaviour
             lobby._session.CurrentPlayer.SetProperty(
                 WinsPropertyKey,
                 new PlayerProperty(PlayerPrefs.GetInt("GamesWon", 0).ToString(), VisibilityPropertyOptions.Public));
+            lobby._session.CurrentPlayer.SetProperty(CharacterPropertyKey,
+                new PlayerProperty(chargen.CurrentCharacterCode, VisibilityPropertyOptions.Public));
             await SetReadyStateAsync(false);
         }
 
@@ -76,7 +81,7 @@ public class WaitingRoom : NetworkBehaviour
         lobby = NetworkManager.Singleton.gameObject.GetComponent<Lobby>();
         if (!lobby.IsLanSession) return;
 
-        RegisterLanPlayerRpc(new FixedString64Bytes(lobby.PlayerDisplayName), PlayerPrefs.GetInt("GamesWon", 0));
+        RegisterLanPlayerRpc(new FixedString64Bytes(lobby.PlayerDisplayName), PlayerPrefs.GetInt("GamesWon", 0), new FixedString128Bytes(chargen.CurrentCharacterCode));
     }
 
     private void Update()
@@ -118,6 +123,8 @@ public class WaitingRoom : NetworkBehaviour
         bool hasPeer = NetworkManager.Singleton.ConnectedClientsIds.Count == 2;
         if (lobby.IsLanSession)
         {
+            UIManagerLobby.Instance.UpdatePlayerCharacter(true, lanHostCharacter.Value.ToString());
+            UIManagerLobby.Instance.UpdatePlayerCharacter(false, hasPeer ? lanClientCharacter.Value.ToString() : "");
             UIManagerLobby.Instance.UpdatePlayerName(true, lanHostName.Value.ToString(), lanHostWins.Value);
             UIManagerLobby.Instance.UpdatePlayerName(false, hasPeer ? lanClientName.Value.ToString() : "", lanClientWins.Value);
             return;
@@ -126,6 +133,7 @@ public class WaitingRoom : NetworkBehaviour
         if (!hasPeer || lobby._session.Players.Count < 2)
         {
             UIManagerLobby.Instance.UpdatePlayerName(false, "");
+            UIManagerLobby.Instance.UpdatePlayerCharacter(false, "");
         }
 
         for (int i = 0; i < lobby._session.Players.Count && (i == 0 || hasPeer); i++)
@@ -142,6 +150,10 @@ public class WaitingRoom : NetworkBehaviour
                 int.TryParse(winsProperty.Value, out wins);
             }
 
+            string character = chargen.DefaultCode;
+            if (player.Properties != null && player.Properties.TryGetValue(CharacterPropertyKey, out var characterProperty))
+                character = characterProperty.Value;
+            UIManagerLobby.Instance.UpdatePlayerCharacter(i == 0, character);
             UIManagerLobby.Instance.UpdatePlayerName(i == 0, trimmedName, wins);
         }
     }
@@ -185,6 +197,7 @@ public class WaitingRoom : NetworkBehaviour
         {
             lanClientName.Value = default;
             lanClientWins.Value = 0;
+            lanClientCharacter.Value = default;
             lanClientReady.Value = false;
         }
 
@@ -313,17 +326,19 @@ public class WaitingRoom : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    private void RegisterLanPlayerRpc(FixedString64Bytes playerName, int totalWins, RpcParams rpcParams = default)
+    private void RegisterLanPlayerRpc(FixedString64Bytes playerName, int totalWins, FixedString128Bytes characterCode, RpcParams rpcParams = default)
     {
         if (rpcParams.Receive.SenderClientId == NetworkManager.ServerClientId)
         {
             lanHostName.Value = playerName;
             lanHostWins.Value = totalWins;
+            lanHostCharacter.Value = characterCode;
         }
         else
         {
             lanClientName.Value = playerName;
             lanClientWins.Value = totalWins;
+            lanClientCharacter.Value = characterCode;
         }
     }
 

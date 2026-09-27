@@ -2571,18 +2571,12 @@ Calculates total damage for given damage and defense and returns a totaldamage s
 
 Source: `Assets/Scripts/Camera/CameraFollow.cs`
 
-### `SendPositionRpc(Vector3 position, Quaternion rotation, RpcParams rpcParams = default)`
-
-**Access:** Private
-
 ```csharp
-private void SendPositionRpc(Vector3 position, Quaternion rotation, RpcParams rpcParams = default)
+public override void OnNetworkSpawn()
+public override void OnNetworkDespawn()
+private void ApplyCharacterCode(FixedString128Bytes previous, FixedString128Bytes current)
+private void LateUpdate()
 ```
-
-**Description / comments:**
-
-<!-- Add description/comments here. -->
-
 
 ## CardDrag
 
@@ -2775,12 +2769,12 @@ private bool IsLocalPlayerReady()
 
 <!-- Add description/comments here. -->
 
-### `RegisterLanPlayerRpc(FixedString64Bytes playerName, int totalWins, RpcParams rpcParams = default)`
+### `RegisterLanPlayerRpc(FixedString64Bytes playerName, int totalWins, FixedString128Bytes characterCode, RpcParams rpcParams = default)`
 
 **Access:** Private
 
 ```csharp
-private void RegisterLanPlayerRpc(FixedString64Bytes playerName, int totalWins, RpcParams rpcParams = default)
+private void RegisterLanPlayerRpc(FixedString64Bytes playerName, int totalWins, FixedString128Bytes characterCode, RpcParams rpcParams = default)
 ```
 
 ### `SetLanReadyRpc(bool isReady, RpcParams rpcParams = default)`
@@ -2867,4 +2861,20 @@ public override void OnDestroy()
 
 ```csharp
 public void UpdatePlayerName(bool host, string name, int totalWins = 0)
+```
+
+## Character networking
+
+```csharp
+public override void OnNetworkDespawn()
+private void SpawnCameraMarkers(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
+public static string LoadSavedCharacterCode()
+public static bool IsValidCharacterCode(string value)
+```
+
+## UIManagerLobby
+
+```csharp
+private Image CreatePlayerPortrait(RectTransform winsLabel)
+public void UpdatePlayerCharacter(bool host, string characterCode)
 ```
