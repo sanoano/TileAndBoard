@@ -99,12 +99,13 @@ public class UIManagerMainMenu : MonoBehaviour
     public void SetMenuScreen(int newState)
     {//Each screen has an ID. When setting up buttons, you just need to know the code for what screen you want a button to bring up.
 
+        //Audio prompts
         if (currentState > 0 && newState != currentState)
         {
             if (newState < currentState || newState == 10)
                 AudioManager.singleton.PlaySound("stonePush", false, 0.4f);
             else
-                 AudioManager.singleton.PlaySound("scrollOpen", false, 0.6f);
+                AudioManager.singleton.PlaySound("scrollOpen", false, 0.6f);
                
         }
 
@@ -259,6 +260,11 @@ public class UIManagerMainMenu : MonoBehaviour
             foreach (GameObject element in playerNameElements)
                 element.SetActive(false);
 
+        //Version text
+        if (newState == 9 || newState == 11)
+            versionTMP.gameObject.SetActive(false);
+        else
+            versionTMP.gameObject.SetActive(true);
 
         //camera stuff
         if (newState == 3 || newState == 4 || newState == 9)
