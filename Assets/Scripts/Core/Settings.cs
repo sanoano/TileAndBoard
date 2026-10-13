@@ -6,6 +6,7 @@ public class Settings : MonoBehaviour
 {
     private const string MusicVolumeKey = "MusicVolume";
     private const string SfxVolumeKey = "SFXVolume";
+    private const string AcrossBoardViewKey = "AcrossBoardView";
     private const float DefaultVolume = 0.5f;
     private const float MutedVolumeDb = -80f;
 
@@ -13,6 +14,9 @@ public class Settings : MonoBehaviour
 
     [SerializeField] private Slider musicVolume;
     [SerializeField] private Slider sfxVolume;
+    [SerializeField] private Toggle acrossBoardView;
+
+    public static bool UsesAcrossBoardView => PlayerPrefs.GetInt(AcrossBoardViewKey, 0) == 1;
 
     [SerializeField] private AudioMixerGroup musicGroup;
     [SerializeField] private AudioMixerGroup sfxGroup;
@@ -34,6 +38,7 @@ public class Settings : MonoBehaviour
 
         musicVolume.onValueChanged.AddListener(SetMusicVolume);
         sfxVolume.onValueChanged.AddListener(SetSfxVolume);
+        acrossBoardView.onValueChanged.AddListener(SetAcrossBoardView);
 
         toggleTutorial(false);
 
@@ -47,6 +52,20 @@ public class Settings : MonoBehaviour
             buttonTutorial.SetActive(true);
             buttonDisconnect.SetActive(true);
         }
+    }
+
+    private void OnEnable()
+    {
+        acrossBoardView.SetIsOnWithoutNotify(UsesAcrossBoardView);
+    }
+
+    private void SetAcrossBoardView(bool enabled)
+    {
+        PlayerPrefs.SetInt(AcrossBoardViewKey, enabled ? 1 : 0);
+        PlayerPrefs.Save();
+
+        if (Camera.main != null && Camera.main.TryGetComponent(out OrbitCamera orbitCamera))
+            orbitCamera.ApplyDefaultView(enabled);
     }
 
     private void SetMusicVolume(float volume)
