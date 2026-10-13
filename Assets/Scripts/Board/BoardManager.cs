@@ -84,6 +84,7 @@ public partial class BoardManager : NetworkBehaviour
     
     private Vector2Int[] currentAdjacentPositions;
     private TweenInstance movementTween;
+    private readonly Dictionary<GameObject, TweenInstance> placementRotationTweens = new();
     
     
 
@@ -971,7 +972,7 @@ public partial class BoardManager : NetworkBehaviour
         
         position = new Vector3(tile.transform.position.x, tile.transform.position.y + cardVerticalOffset,
                 tile.transform.position.z);
-        rotation = Quaternion.Euler(new Vector3(45, 0, -90));
+        rotation = cameraInfo.GetPlacedCardRotation(unit.ID);
         
         
 
@@ -984,11 +985,12 @@ public partial class BoardManager : NetworkBehaviour
             easeType = EaseType.ExpoOut
         };
 
-        var rotationTween = new LocalRotationTween()
+        var rotationTween = new RotationTween()
         {
             to = rotation,
             duration = placeAnimationTime,
-            easeType = EaseType.ExpoOut
+            easeType = EaseType.ExpoOut,
+            onFinally = _ => placementRotationTweens.Remove(cardVisual)
         };
 
         var scaleTween = new LocalScaleTween()
@@ -1003,6 +1005,7 @@ public partial class BoardManager : NetworkBehaviour
         };
 
         var instances = cardVisual.AddTween(positionTween, rotationTween, scaleTween);
+        placementRotationTweens[cardVisual] = instances[1];
 
         cardVisual.GetComponent<CardDrag>().isPlaced = true;
         
@@ -1080,19 +1083,45 @@ public partial class BoardManager : NetworkBehaviour
             
         }
         
-        Quaternion rotation = Quaternion.Euler(new Vector3(45, 0, 90));
+        Quaternion rotation = cameraInfo.GetPlacedCardRotation(unit.ID);
         Vector3 position = new Vector3(tile.transform.position.x, tile.transform.position.y + cardVerticalOffset,
             tile.transform.position.z);
 
         Vector3 scale = new Vector3(7, 8, 6);
 
         cardVisual.transform.position = position;
-        cardVisual.transform.localRotation = rotation;
+        cardVisual.transform.rotation = rotation;
         cardVisual.transform.localScale = scale;
 
         cardVisual.transform.parent = tile.transform;
 
         cardPlaced.Invoke();
+    }
+
+    public void UpdatePlacedCardOrientations()
+    {
+        if (localBoard.Visuals == null || enemyBoard.Visuals == null) return;
+
+        foreach (GameObject visual in localBoard.Visuals)
+        {
+            if (visual == null) continue;
+            if (placementRotationTweens.TryGetValue(visual, out TweenInstance tween)) tween.Cancel();
+            visual.transform.rotation = cameraInfo.GetPlacedCardRotation(GameManager.instance.playerId);
+        }
+
+        Player.PlayerId enemy = GameManager.instance.playerId == Player.PlayerId.Player1
+            ? Player.PlayerId.Player2 : Player.PlayerId.Player1;
+        foreach (GameObject visual in enemyBoard.Visuals)
+        {
+            if (visual == null) continue;
+            visual.transform.rotation = cameraInfo.GetPlacedCardRotation(enemy);
+        }
+    }
+
+    public Vector3 GetBoardCenter(Player.PlayerId player)
+    {
+        return player == Player.PlayerId.Player1
+            ? player1BoardGameObject.transform.position : player2BoardGameObject.transform.position;
     }
 
     public void PrepareAttack()

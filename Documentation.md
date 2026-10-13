@@ -67,6 +67,18 @@ This is called automatically to clean stuff up, don't worry about it.
 
 Sources: `Assets/Scripts/Board/BoardManager.cs`, `Assets/Scripts/Board/BoardManager.Collections.cs`, and `Assets/Scripts/Board/BoardManager.TileHelpers.cs`
 
+### `GetBoardCenter(Player.PlayerId player)`
+
+```csharp
+public Vector3 GetBoardCenter(Player.PlayerId player)
+```
+
+### `UpdatePlacedCardOrientations()`
+
+```csharp
+public void UpdatePlacedCardOrientations()
+```
+
 ### `NullSelection()`
 
 **Access:** Public
@@ -1779,6 +1791,18 @@ Checks if local player has the amount of mana passed in
 
 Source: `Assets/Scripts/Camera/OrbitCamera.cs`
 
+### `GetPlacedCardRotation(Player.PlayerId owner)`
+
+```csharp
+public Quaternion GetPlacedCardRotation(Player.PlayerId owner)
+```
+
+### `ApplyDefaultView(bool acrossBoard)`
+
+```csharp
+public void ApplyDefaultView(bool acrossBoard)
+```
+
 ### `SwapCameraMode()`
 
 **Access:** Public
@@ -1858,6 +1882,18 @@ public void SetLanJoinButton(LanSessionInfo session, Lobby manager)
 ## Settings
 
 Source: `Assets/Scripts/Core/Settings.cs`
+
+### `OnEnable()`
+
+```csharp
+private void OnEnable()
+```
+
+### `SetAcrossBoardView(bool enabled)`
+
+```csharp
+private void SetAcrossBoardView(bool enabled)
+```
 
 ### `SetMusicVolume(float volume)`
 
@@ -2188,6 +2224,24 @@ public void FlipPage(bool forwards)
 ## UIManager
 
 Source: `Assets/Scripts/UI/UIManager.cs`
+
+### `PositionHealthDisplay(RectTransform display, Vector3 boardCenter, bool left)`
+
+```csharp
+private void PositionHealthDisplay(RectTransform display, Vector3 boardCenter, bool left)
+```
+
+### `LateUpdate()`
+
+```csharp
+private void LateUpdate()
+```
+
+### `SetHealthDisplayView(bool acrossBoard)`
+
+```csharp
+public void SetHealthDisplayView(bool acrossBoard)
+```
 
 ### `CreateInfoPanel(Vector2Int position, Player.PlayerId playerId)`
 

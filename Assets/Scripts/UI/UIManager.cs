@@ -63,6 +63,9 @@ public class UIManager : MonoBehaviour
     [Header("Health Display")] [SerializeField]
     private TextMeshProUGUI player1HealthDisplay;
     [SerializeField] private TextMeshProUGUI player2HealthDisplay;
+    private Vector2 sideViewLocalHealthPosition;
+    private Vector2 sideViewEnemyHealthPosition;
+    private bool acrossBoardHealthDisplay;
 
     [Header("Controls Display")]
     [SerializeField] private TextMeshProUGUI controlsText;
@@ -114,6 +117,8 @@ public class UIManager : MonoBehaviour
         }
 
         interactionState = InteractionState.None;
+        sideViewLocalHealthPosition = player1HealthDisplay.rectTransform.anchoredPosition;
+        sideViewEnemyHealthPosition = player2HealthDisplay.rectTransform.anchoredPosition;
         EnableControlsText();
         
     }
@@ -256,6 +261,36 @@ public class UIManager : MonoBehaviour
         }
 
        
+    }
+
+    public void SetHealthDisplayView(bool acrossBoard)
+    {
+        acrossBoardHealthDisplay = acrossBoard;
+        if (acrossBoard) return;
+        player1HealthDisplay.rectTransform.anchoredPosition = sideViewLocalHealthPosition;
+        player2HealthDisplay.rectTransform.anchoredPosition = sideViewEnemyHealthPosition;
+    }
+
+    private void LateUpdate()
+    {
+        if (!acrossBoardHealthDisplay) return;
+
+        Player.PlayerId local = GameManager.instance.playerId;
+        Player.PlayerId enemy = local == Player.PlayerId.Player1 ? Player.PlayerId.Player2 : Player.PlayerId.Player1;
+        PositionHealthDisplay(player1HealthDisplay.rectTransform, BoardManager.Instance.GetBoardCenter(local), true);
+        PositionHealthDisplay(player2HealthDisplay.rectTransform, BoardManager.Instance.GetBoardCenter(enemy), false);
+    }
+
+    private void PositionHealthDisplay(RectTransform display, Vector3 boardCenter, bool left)
+    {
+        Camera camera = UnityEngine.Camera.main;
+        Vector3 edge = boardCenter + camera.transform.right * (left ? -14f : 14f);
+        UnityEngine.Canvas canvas = display.GetComponentInParent<UnityEngine.Canvas>();
+        Camera uiCamera = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)display.parent,
+            camera.WorldToScreenPoint(edge), uiCamera, out Vector2 point);
+        point.x += (left ? -1f : 1f) * (display.rect.width * 0.5f + 24f);
+        display.localPosition = new Vector3(point.x, point.y, display.localPosition.z);
     }
 
     void UpdateCardAmountDisplay()

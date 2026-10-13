@@ -17,6 +17,8 @@ public class OrbitCamera : MonoBehaviour
 
     [Header("Tween")]
     [SerializeField] private float returnDuration;
+    [SerializeField] private Vector3 acrossBoardOffset = new Vector3(0f, 65f, -90f);
+    [SerializeField] private Vector3 acrossBoardLookOffset = new Vector3(0f, 0f, -21f);
 
     private float yaw;
     private float pitch;
@@ -25,6 +27,8 @@ public class OrbitCamera : MonoBehaviour
 
     private Vector3 cameraStaticPostion;
     private Quaternion cameraStaticRotation;
+    private Vector3 sideViewPosition;
+    private Quaternion sideViewRotation;
     public CameraState cameraState;
 
     public enum CameraState
@@ -40,15 +44,53 @@ public class OrbitCamera : MonoBehaviour
 
     void Start()
     {
-        cameraStaticPostion = transform.position;
-        cameraStaticRotation = transform.rotation;
-        defaultPitch = transform.eulerAngles.x;
-        defaultYaw = transform.eulerAngles.y;
-
-
+        sideViewPosition = transform.position;
+        sideViewRotation = transform.rotation;
         cameraState = CameraState.Static;
+        ApplyDefaultView(Settings.UsesAcrossBoardView);
         yaw = transform.eulerAngles.y;
         pitch = transform.eulerAngles.x;
+    }
+
+    public void ApplyDefaultView(bool acrossBoard)
+    {
+        cameraStaticPostion = sideViewPosition;
+        cameraStaticRotation = sideViewRotation;
+
+        if (acrossBoard)
+        {
+            Vector3 offset = acrossBoardOffset;
+            Vector3 lookOffset = acrossBoardLookOffset;
+            if (GameManager.instance.playerId == Player.PlayerId.Player2)
+            {
+                offset = Quaternion.Euler(0f, 180f, 0f) * offset;
+                lookOffset = Quaternion.Euler(0f, 180f, 0f) * lookOffset;
+            }
+
+            cameraStaticPostion = target.position + offset;
+            cameraStaticRotation = Quaternion.LookRotation(target.position + lookOffset - cameraStaticPostion);
+        }
+
+        defaultPitch = cameraStaticRotation.eulerAngles.x;
+        defaultYaw = cameraStaticRotation.eulerAngles.y;
+
+        if (cameraState == CameraState.Static)
+        {
+            gameObject.CancelTweens();
+            transform.SetPositionAndRotation(cameraStaticPostion, cameraStaticRotation);
+        }
+
+        BoardManager.Instance.UpdatePlacedCardOrientations();
+        UIManager.Instance.SetHealthDisplayView(acrossBoard);
+    }
+
+    public Quaternion GetPlacedCardRotation(Player.PlayerId owner)
+    {
+        if (Settings.UsesAcrossBoardView)
+            return Quaternion.Euler(90f, GameManager.instance.playerId == Player.PlayerId.Player1 ? 0f : 180f, 0f);
+
+        return sideViewRotation * Quaternion.Euler(45f, 0f,
+            owner == GameManager.instance.playerId ? -90f : 90f);
     }
 
     void Update()
@@ -96,6 +138,7 @@ public class OrbitCamera : MonoBehaviour
 
     public void SwapCameraMode()
     {
+        gameObject.CancelTweens();
         if (cameraState == CameraState.Static)
         {
             cameraState = CameraState.Free;
@@ -143,4 +186,4 @@ public class OrbitCamera : MonoBehaviour
     }
 }
 
-  
+
